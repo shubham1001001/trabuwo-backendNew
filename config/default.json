@@ -1,0 +1,77 @@
+{
+  "port": 3000,
+  "jwtSecret": "",
+  "msg91AuthKey": "",
+  "msg91BaseUrl": "https://control.msg91.com",
+  "msg91TemplateId": "",
+  "resetPasswordSecret": "",
+  "db": {
+    "name": "",
+    "user": "",
+    "password": "",
+    "host": "",
+    "port": 5432
+  },
+  "redis": {
+    "url": "",
+    "keyPrefix": "trabuwo"
+  },
+  "bullmq": {
+    "connection": {
+      "url": ""
+    },
+    "cronJobs": {
+      "hourly": "BULLMQ_HOURLY_CRON"
+    }
+  },
+  "aws": {
+    "region": "ap-south-1",
+    "accessKeyId": "",
+    "secretAccessKey": "",
+    "s3": {
+      "bucketName": "",
+      "bucketRegion": "ap-south-1"
+    },
+    "cloudfront": {
+      "domain": ""
+    }
+  },
+  "razorpay": {
+    "keyId": "",
+    "keySecret": "",
+    "webhookSecret": ""
+  },
+  "shiprocket": {
+    "email": "",
+    "password": "",
+    "baseUrl": "https://apiv2.shiprocket.in/v1",
+    "timeout": 30000,
+    "tokenKey": "shiprocket:token",
+    "tokenTtl": 777600,
+    "webhookApiKey": ""
+  },
+  "opentelemetry": {
+    "enabled": false,
+    "serviceName": "trabuwo-backend",
+    "serviceVersion": "1.0.0",
+    "endpoint": "",
+    "headers": "",
+    "environment": "development"
+  },
+  "encryption": {
+    "keys": {
+      "1": ""
+    },
+    "defaultKeyVersion": 1
+  },
+  "blindIndex": {
+    "salt": ""
+  },
+  "graphileWorker": {
+    "schema": "graphile_worker",
+    "concurrency": 5
+  },
+  "gst": {
+    "gstinCheckApiKey": ""
+  }
+}

@@ -1,0 +1,253 @@
+/* eslint-env node */
+/* global process */
+require("dotenv").config();
+
+const express = require("express");
+const cors = require("cors");
+const helmet = require("helmet");
+const logger = require("./config/logger");
+const cookieParser = require("cookie-parser");
+const config = require("config");
+const sequelize = require("./config/database");
+const {
+  healthCheck: redisHealthCheck,
+  closeConnection: closeRedisConnection,
+} = require("./config/redis");
+const graphileWorkerService = require("./services/graphileWorkerService");
+const errorHandler = require("./middleware/errorHandler");
+const swaggerUi = require("swagger-ui-express");
+const swaggerSpec = require("./config/swagger");
+const { Role } = require("./modules/auth/model");
+const { v4: uuidv4 } = require("uuid");
+const asyncHandler = require("./utils/asyncHandler");
+const app = express();
+
+// Webhook route - bypasses all middleware except raw body parsing
+const paymentController = require("./modules/payment/controller");
+const shiprocketController = require("./modules/shiprocket/controller");
+
+app.post(
+  "/webhook",
+  express.raw({ type: "application/json" }),
+  paymentController.webhook,
+);
+
+app.use(express.json());
+
+app.post(
+  "/logistics-webhook",
+  asyncHandler(shiprocketController.handleWebhook),
+);
+
+/*IMPROVEMENT  RATE LIMITING etc before production */
+/*IMPROVEMENT  No API Error throwing in service layer */
+
+
+// app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        connectSrc: ["'self'", "http://localhost:5000"],
+        scriptSrc: ["'self'", "'unsafe-inline'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        imgSrc: ["'self'", "data:", "https:"],
+      },
+    },
+  })
+);
+
+app.use(cors());
+app.use(cookieParser());
+
+app.use((req, res, next) => {
+  req.correlationId = uuidv4();
+  logger.info("Request started", {
+    correlationId: req.correlationId,
+    method: req.method,
+    url: req.originalUrl,
+    userAgent: req.get("User-Agent"),
+    /*IMPROVEMENT app.set('trust proxy', true); // Add this before your middleware */
+    ip: req.ip || "unknown",
+    timestamp: new Date().toISOString(),
+  });
+
+  res.on("finish", () => {
+    logger.info("Request completed", {
+      correlationId: req.correlationId,
+      method: req.method,
+      url: req.originalUrl,
+      statusCode: res.statusCode,
+      responseTime: Date.now() - req._startTime,
+      contentLength: res.get("Content-Length") || 0,
+      timestamp: new Date().toISOString(),
+    });
+  });
+
+  req._startTime = Date.now();
+  next();
+});
+
+app.get(
+  "/health-check",
+  asyncHandler(async (req, res) => {
+    await sequelize.query("SELECT 1");
+    const redisHealthy = await redisHealthCheck();
+
+    return res.status(200).json({
+      success: true,
+      message: "Service is healthy",
+      data: {
+        status: "healthy",
+        timestamp: new Date().toISOString(),
+        database: "connected",
+        redis: redisHealthy ? "connected" : "degraded",
+      },
+    });
+  }),
+);
+
+app.use("/api", require("./routes"));
+
+// app.use("/", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use(
+  "/",
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerSpec, {
+    explorer: true,
+    swaggerOptions: {
+      persistAuthorization: true,
+    },
+  })
+);
+
+
+app.use(errorHandler);
+
+async function connectDatabase() {
+  try {
+    await sequelize.authenticate();
+    logger.info("✅ Database connection established.");
+  } catch (err) {
+    logger.error("❌ Database connection failed:", err);
+    throw err;
+  }
+}
+
+async function connectRedis() {
+  try {
+    const isHealthy = await redisHealthCheck();
+    if (isHealthy) {
+      logger.info("Redis connection established.");
+    } else {
+      logger.warn("Redis connection failed, but continuing...");
+    }
+  } catch (err) {
+    logger.warn("Redis connection failed, but continuing...", err);
+  }
+}
+
+async function initializeGraphileWorker() {
+  try {
+    await graphileWorkerService.initialize();
+    await graphileWorkerService.scheduleRecurringTasks();
+    logger.info("Graphile Worker initialized and recurring tasks scheduled.");
+  } catch (err) {
+    logger.warn(
+      "Graphile Worker initialization failed, but continuing...",
+      err,
+    );
+  }
+}
+
+async function setupPgTrgmIndex() {
+  try {
+    //remember to look into this before going to production
+    await sequelize.query(`
+      CREATE EXTENSION IF NOT EXISTS pg_trgm;
+      CREATE INDEX IF NOT EXISTS category_name_trgm_idx
+      ON categories
+      USING GIN (name gin_trgm_ops);
+    `);
+    logger.info("🔍 pg_trgm extension and GIN index set up successfully.");
+  } catch (err) {
+    logger.warn(
+      "Could not set up pg_trgm or index. Continuing without it.",
+      err,
+    );
+  }
+}
+
+async function setupProductSearchIndexes() {
+  try {
+    await sequelize.query(`
+      -- Enable extensions required for trigram & full-text
+      CREATE EXTENSION IF NOT EXISTS pg_trgm;
+      CREATE EXTENSION IF NOT EXISTS unaccent;
+
+      -- Create GIN index for full-text search on searchVector
+      CREATE INDEX IF NOT EXISTS products_search_vector_idx 
+      ON products USING GIN ("search_vector");
+
+      -- Create GIN trigram index for fuzzy search on product name
+      CREATE INDEX IF NOT EXISTS products_name_trgm_idx 
+      ON products USING GIN (name gin_trgm_ops);
+    `);
+
+    logger.info("Product search indexes created successfully.");
+  } catch (err) {
+    logger.warn("Could not create product search indexes.", err);
+  }
+}
+
+async function seedRoles() {
+  const roles = ["admin", "buyer", "seller"];
+  for (const roleName of roles) {
+    await Role.findOrCreate({ where: { name: roleName } });
+  }
+  logger.info("Default roles seeded.");
+}
+
+async function startServer() {
+  try {
+    await connectDatabase();
+    // if (process.argv[2] !== "NODE_ENV=development") {
+    await connectRedis();
+    await initializeGraphileWorker();
+    // }
+
+    await setupPgTrgmIndex();
+    await setupProductSearchIndexes();
+    await seedRoles();
+
+    const PORT = config.get("port") || 3000;
+    app.listen(PORT, () => {
+      logger.info(`Server running on port ${PORT}`);
+    });
+  } catch (err) {
+    logger.error("Server failed to start:", err);
+    process.exit(1);
+  }
+}
+
+startServer();
+
+process.on("SIGTERM", async () => {
+  logger.info("SIGTERM received, shutting down gracefully...");
+  await sequelize.close();
+  await closeRedisConnection();
+  await graphileWorkerService.close();
+  process.exit(0);
+});
+
+process.on("SIGINT", async () => {
+  logger.info("SIGINT received, shutting down gracefully...");
+  await sequelize.close();
+  await closeRedisConnection();
+  await graphileWorkerService.close();
+  process.exit(0);
+});
+
+//TODO : Before going to production
+// For every module check or implement Sequelize Cascade & Referential Integrity.

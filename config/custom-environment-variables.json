@@ -1,0 +1,79 @@
+{
+  "port": "PORT",
+  "jwtSecret": "JWT_SECRET",
+  "msg91AuthKey": "MSG91_AUTH_KEY",
+  "msg91BaseUrl": "MSG91_BASE_URL",
+  "msg91TemplateId": "MSG91_TEMPLATE_ID",
+  "resetPasswordSecret": "RESET_PASSWORD_SECRET",
+  "db": {
+    "name": "DB_NAME",
+    "user": "DB_USER",
+    "password": "DB_PASSWORD",
+    "host": "DB_HOST",
+    "port": "DB_PORT"
+  },
+  "redis": {
+    "url": "REDIS_URL",
+    "keyPrefix": "REDIS_KEY_PREFIX"
+  },
+  "bullmq": {
+    "connection": {
+      "url": "REDIS_URL"
+    },
+    "cronJobs": {
+      "hourly": "BULLMQ_HOURLY_CRON"
+    }
+  },
+  "aws": {
+    "region": "AWS_REGION",
+    "accessKeyId": "AWS_ACCESS_KEY_ID",
+    "secretAccessKey": "AWS_SECRET_ACCESS_KEY",
+    "s3": {
+      "bucketName": "AWS_S3_BUCKET_NAME",
+      "bucketRegion": "AWS_S3_BUCKET_REGION"
+    },
+    "cloudfront": {
+      "domain": "AWS_CLOUDFRONT_DOMAIN"
+    }
+  },
+  "razorpay": {
+    "keyId": "RAZORPAY_KEY_ID",
+    "keySecret": "RAZORPAY_KEY_SECRET",
+    "webhookSecret": "RAZORPAY_WEBHOOK_SECRET"
+  },
+  "shiprocket": {
+    "email": "SHIPROCKET_EMAIL",
+    "password": "SHIPROCKET_PASSWORD",
+    "baseUrl": "SHIPROCKET_BASE_URL",
+    "timeout": "SHIPROCKET_TIMEOUT",
+    "tokenKey": "SHIPROCKET_TOKEN_KEY",
+    "tokenTtl": "SHIPROCKET_TOKEN_TTL",
+    "token": "SHIPROCKET_TOKEN",
+    "webhookApiKey": "SHIPROCKET_WEBHOOK_API_KEY"
+  },
+  "opentelemetry": {
+    "enabled": "OTEL_ENABLED",
+    "serviceName": "OTEL_SERVICE_NAME",
+    "serviceVersion": "OTEL_SERVICE_VERSION",
+    "endpoint": "OTEL_ENDPOINT",
+    "headers": "OTEL_HEADERS",
+    "environment": "OTEL_ENVIRONMENT"
+  },
+  "encryption": {
+    "keys": {
+      "1": "ENCRYPTION_KEY_V1",
+      "2": "ENCRYPTION_KEY_V2"
+    },
+    "defaultKeyVersion": "ENCRYPTION_DEFAULT_KEY_VERSION"
+  },
+  "blindIndex": {
+    "salt": "BLIND_INDEX_SALT"
+  },
+  "graphileWorker": {
+    "schema": "GRAPHILE_WORKER_SCHEMA",
+    "concurrency": "GRAPHILE_WORKER_CONCURRENCY"
+  },
+  "gst": {
+    "gstinCheckApiKey": "GSTIN_API_KEY"
+  }
+}
