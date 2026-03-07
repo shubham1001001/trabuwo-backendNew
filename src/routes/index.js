@@ -8,7 +8,9 @@ router.use(
   "/legal-and-policies",
   require("../modules/legalAndPolicies/routes")
 );
-router.use("/category", require("../modules/category/routes"));
+//router.use("/category", require("../modules/category/routes"));
+
+
 router.use("/catalogue", require("../modules/catalogue/routes"));
 router.use("/category-schema", require("../modules/categorySchema/routes"));
 router.use("/product", require("../modules/product/routes"));
