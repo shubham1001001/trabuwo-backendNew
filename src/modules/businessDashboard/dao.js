@@ -405,71 +405,127 @@ async function getWeeklyComparisonStats(userId) {
 }
 
 
-async function getDashboardCards(userId) {
-  // Total Products
-  const totalProducts = await Product.count({
-    include: [
-      {
-        model: Catalogue,
-        as: "catalogue",
-        where: { userId },
-        attributes: [],
-      },
-    ],
-  });
+// async function getDashboardCards(userId) {
+//   // Total Products
+//   const totalProducts = await Product.count({
+//     include: [
+//       {
+//         model: Catalogue,
+//         as: "catalogue",
+//         where: { userId },
+//         attributes: [],
+//       },
+//     ],
+//   });
 
-  // Total Orders
-  const totalOrdersResult = await ProductMetricsDaily.findOne({
-    attributes: [[fn("SUM", col("orders")), "totalOrders"]],
-    include: [
-      {
-        model: Product,
-        as: "product",
-        include: [
-          {
-            model: Catalogue,
-            as: "catalogue",
-            where: { userId },
-            attributes: [],
-          },
-        ],
-        attributes: [],
-      },
-    ],
-    raw: true,
-  });
+//   // Total Orders
+//   const totalOrdersResult = await ProductMetricsDaily.findOne({
+//     attributes: [[fn("SUM", col("orders")), "totalOrders"]],
+//     include: [
+//       {
+//         model: Product,
+//         as: "product",
+//         include: [
+//           {
+//             model: Catalogue,
+//             as: "catalogue",
+//             where: { userId },
+//             attributes: [],
+//           },
+//         ],
+//         attributes: [],
+//       },
+//     ],
+//     raw: true,
+//   });
 
-  // Total Revenue
-  const totalRevenueResult = await ProductMetricsDaily.findOne({
-    attributes: [[fn("SUM", col("sales_amount")), "totalRevenue"]],
-    include: [
-      {
-        model: Product,
-        as: "product",
-        include: [
-          {
-            model: Catalogue,
-            as: "catalogue",
-            where: { userId },
-            attributes: [],
-          },
-        ],
-        attributes: [],
-      },
-    ],
-    raw: true,
-  });
+//   // Total Revenue
+//   const totalRevenueResult = await ProductMetricsDaily.findOne({
+//     attributes: [[fn("SUM", col("sales_amount")), "totalRevenue"]],
+//     include: [
+//       {
+//         model: Product,
+//         as: "product",
+//         include: [
+//           {
+//             model: Catalogue,
+//             as: "catalogue",
+//             where: { userId },
+//             attributes: [],
+//           },
+//         ],
+//         attributes: [],
+//       },
+//     ],
+//     raw: true,
+//   });
 
-const totalCustomers = await User.count();
+// const totalCustomers = await User.count();
+
+//   return {
+//     totalProducts: totalProducts || 0,
+//     totalOrders: Number(totalOrdersResult?.totalOrders) || 0,
+//     totalRevenue: Number(totalRevenueResult?.totalRevenue) || 0,
+//     totalCustomers: totalCustomers || 0,
+//   };
+// }
+
+
+
+async function getDashboardCards() {
+
+  const [
+    newRegistrations,
+    totalOrders,
+    totalSellers,
+    totalBuyers,
+    pendingApprovals
+  ] = await Promise.all([
+
+    // New Registrations Today
+    User.count({
+      where: {
+        createdAt: {
+          [Op.gte]: new Date(new Date().setHours(0,0,0,0))
+        }
+      }
+    }),
+
+    // Total Orders
+    Order.count(),
+
+    // Total Sellers
+    SellerOnboarding.count(),
+
+    // Total Buyers
+    User.count({
+      include: [{
+        model: Role,
+        as: "Roles",
+        where: { name: "buyer" },
+        through: { attributes: [] }
+      }]
+    }),
+
+    // Pending Seller Approvals
+    SellerOnboarding.count({
+      where: {
+        currentStep: {
+          [Op.ne]: "COMPLETED"
+        }
+      }
+    })
+
+  ]);
 
   return {
-    totalProducts: totalProducts || 0,
-    totalOrders: Number(totalOrdersResult?.totalOrders) || 0,
-    totalRevenue: Number(totalRevenueResult?.totalRevenue) || 0,
-    totalCustomers: totalCustomers || 0,
+    newRegistrations,
+    totalOrders,
+    totalSellers,
+    totalBuyers,
+    pendingApprovals
   };
 }
-
 
 async function getSellerList(page, limit) {
   const offset = (page - 1) * limit;
