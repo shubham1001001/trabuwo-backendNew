@@ -140,3 +140,13 @@ exports.getPaymentOverview = async (req, res) => {
     "Payment overview retrieved successfully"
   );
 };
+
+
+exports.getDashboardGraph = async (req, res) => {
+  const data = await service.getDashboardGraph();
+  return apiResponse.success(
+    res,
+    data,
+    "Dashboard graph retrieved successfully"
+  );
+};

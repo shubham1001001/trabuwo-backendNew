@@ -656,5 +656,20 @@ router.get(
   businessDashboardController.getPaymentOverview
 );
 
-
+/**
+ * @swagger
+ * /api/business-dashboard/dashboard-graph:
+ *   get:
+ *     summary: Get dashboard graph data (daily revenue & payments)
+ *     tags: [Business Dashboard]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Dashboard graph retrieved successfully
+ */
+router.get(
+  "/dashboard-graph",
+  businessDashboardController.getDashboardGraph
+);
 module.exports = router;

@@ -63,3 +63,8 @@ exports.getDashboardRiskSummary = async () => {
 exports.getPaymentOverview = async () => {
   return dao.getPaymentOverview();
 };
+
+
+exports.getDashboardGraph = async () => {
+  return dao.getDashboardGraph();
+};

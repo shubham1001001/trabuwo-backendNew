@@ -693,7 +693,34 @@ async function getPaymentOverview() {
   };
 }
 
+async function getDashboardGraph() {
+  const graphData = await Payment.findAll({
+    attributes: [
+      [
+        sequelize.fn("DATE", sequelize.col("Payment.created_at")),
+        "date",
+      ],
+      [
+        sequelize.fn("COUNT", sequelize.col("Payment.id")),
+        "totalPayments",
+      ],
+      [
+        sequelize.fn("SUM", sequelize.col("Payment.amount")),
+        "totalRevenue",
+      ],
+    ],
+    where: {
+      status: "captured",
+    },
+    group: [sequelize.fn("DATE", sequelize.col("Payment.created_at"))],
+    order: [
+      [sequelize.fn("DATE", sequelize.col("Payment.created_at")), "ASC"],
+    ],
+    raw: true,
+  });
 
+  return { graph: graphData };
+}
 module.exports = {
   getProductsMetrics,
   getTotalMetrics,
@@ -704,5 +731,6 @@ module.exports = {
   getOrderList,
   getDashboardSummary,
   getDashboardRiskSummary,
-  getPaymentOverview
+  getPaymentOverview,
+  getDashboardGraph
 };
