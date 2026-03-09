@@ -119,3 +119,4 @@ exports.updateNotificationChannel = (id, data) =>
   NotificationChannel.update(data, { where: { id }, returning: true });
 
 /*Reminder - User Cron Job to cleanup expired tokens */
+

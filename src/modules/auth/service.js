@@ -414,3 +414,55 @@ exports.updateWhatsAppNumber = async (userId, mobile) => {
     return notificationChannel;
   }
 };
+
+
+exports.editProfile = async (userId, payload) => {
+  const user = await dao.findUserById(userId);
+
+  if (!user) {
+    throw new NotFoundError("User not found");
+  }
+
+  Object.keys(payload).forEach(
+    (key) => payload[key] === undefined && delete payload[key]
+  );
+
+  payload.email = user.email;
+  payload.mobile = user.mobile;
+
+  const [, [updatedUser]] = await dao.updateUser(userId, payload);
+
+  const userData = updatedUser.toJSON();
+  delete userData.password;
+
+  return userData;
+};
+exports.getProfile = async (userId) => {
+  const user = await dao.findUserWithRoles({ id: userId });
+
+  if (!user) {
+    throw new NotFoundError("User not found");
+  }
+
+  return {
+    id: user.id,
+    publicId: user.publicId,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    email: user.email,
+    mobile: user.mobile,
+    gender: user.gender,
+    dob: user.dob,
+    maritalStatus: user.maritalStatus,
+    numberOfKids: user.numberOfKids,
+    occupation: user.occupation,
+    education: user.education,
+    monthlyIncome: user.monthlyIncome,
+    aboutMe: user.aboutMe,
+    languageSpoken: user.languageSpoken,
+    profileImage: user.profileImage,
+    roles: user.Roles ? user.Roles.map((r) => r.name) : [],
+    createdAt: user.createdAt,
+    updatedAt: user.updatedAt
+  };
+};

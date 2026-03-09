@@ -210,3 +210,17 @@ exports.updateWhatsAppNumber = async (req, res) => {
     "WhatsApp number updated successfully"
   );
 };
+
+
+
+exports.editProfile = async (req, res) => {
+  const user = await authService.editProfile(req.user.id, req.body);
+
+  return apiResponse.success(res, user, "Profile updated successfully");
+};
+
+exports.getProfile = async (req, res) => {
+  const user = await authService.getProfile(req.user.id);
+
+  return apiResponse.success(res, user, "Profile fetched successfully");
+};

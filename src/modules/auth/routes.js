@@ -15,6 +15,7 @@ const {
   subscribeEmailValidation,
   subscribeWhatsAppValidation,
   updateWhatsAppValidation,
+  editProfileValidation
 } = require("./validation");
 const asyncHandler = require("../../utils/asyncHandler");
 const { authenticate } = require("../../middleware/auth");
@@ -924,5 +925,135 @@ router.put(
   updateWhatsAppValidation,
   asyncHandler(authController.updateWhatsAppNumber)
 );
+
+
+/**
+ * @swagger
+ * /api/auth/edit-profile:
+ *   put:
+ *     summary: Edit user profile
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: false
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               firstName:
+ *                 type: string
+ *                 example: Rohit
+ *               lastName:
+ *                 type: string
+ *                 example: Sharma
+ *               gender:
+ *                 type: string
+ *                 enum: [male, female, other]
+ *                 example: female
+ *               dob:
+ *                 type: string
+ *                 format: date
+ *                 example: 1998-05-10
+ *               maritalStatus:
+ *                 type: string
+ *                 enum: [single, married, divorced, widowed]
+ *                 example: single
+ *               numberOfKids:
+ *                 type: integer
+ *                 example: 0
+ *               occupation:
+ *                 type: string
+ *                 example: Software Developer
+ *               education:
+ *                 type: string
+ *                 example: B.Tech
+ *               monthlyIncome:
+ *                 type: number
+ *                 example: 40000
+ *               aboutMe:
+ *                 type: string
+ *                 example: I am a backend developer
+ *               languageSpoken:
+ *                 type: string
+ *                 example: Hindi, English
+ *               profileImage:
+ *                 type: string
+ *                 example: https://example.com/profile.jpg
+ *     responses:
+ *       200:
+ *         description: Profile updated successfully
+ */
+router.put(
+  "/edit-profile",
+  authenticate,
+  editProfileValidation,
+  asyncHandler(authController.editProfile)
+);
+
+
+
+/**
+ * @swagger
+ * /api/auth/profile:
+ *   get:
+ *     summary: Get logged in user profile
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Profile fetched successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Profile fetched successfully
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                       example: 1
+ *                     publicId:
+ *                       type: string
+ *                       example: 019975e7-6fbf-77da-b993-a2be045c0de9
+ *                     firstName:
+ *                       type: string
+ *                       example: Rohit
+ *                     lastName:
+ *                       type: string
+ *                       example: Sharma
+ *                     email:
+ *                       type: string
+ *                       example: test@test.com
+ *                     mobile:
+ *                       type: string
+ *                       example: 916283914650
+ *                     profileImage:
+ *                       type: string
+ *                       example: https://example.com/profile.jpg
+ *                     roles:
+ *                       type: array
+ *                       items:
+ *                         type: string
+ *                       example: ["buyer"]
+ *                     createdAt:
+ *                       type: string
+ *                       format: date-time
+ */
+router.get(
+  "/profile",
+  authenticate,
+  asyncHandler(authController.getProfile)
+);
+
 
 module.exports = router;

@@ -31,6 +31,65 @@ const User = sequelize.define(
       type: DataTypes.STRING,
       allowNull: true,
     },
+    firstName: {
+  type: DataTypes.STRING,
+  allowNull: true,
+},
+
+lastName: {
+  type: DataTypes.STRING,
+  allowNull: true,
+},
+
+gender: {
+  type: DataTypes.STRING,
+  allowNull: true,
+},
+
+dob: {
+  type: DataTypes.DATE,
+  allowNull: true,
+},
+
+maritalStatus: {
+  type: DataTypes.STRING,
+  allowNull: true,
+},
+
+numberOfKids: {
+  type: DataTypes.INTEGER,
+  allowNull: true,
+},
+
+occupation: {
+  type: DataTypes.STRING,
+  allowNull: true,
+},
+
+education: {
+  type: DataTypes.STRING,
+  allowNull: true,
+},
+
+monthlyIncome: {
+  type: DataTypes.INTEGER,
+  allowNull: true,
+},
+
+aboutMe: {
+  type: DataTypes.TEXT,
+  allowNull: true,
+},
+
+languageSpoken: {
+  type: DataTypes.STRING,
+  allowNull: true,
+},
+
+profileImage: {
+  type: DataTypes.TEXT,
+  allowNull: true,
+},
   },
   {
     tableName: "users",
