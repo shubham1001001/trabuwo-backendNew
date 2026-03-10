@@ -423,12 +423,18 @@ exports.editProfile = async (userId, payload) => {
     throw new NotFoundError("User not found");
   }
 
+  // email unique check
+  if (payload.email && payload.email !== user.email) {
+    const existingUser = await dao.findUserByEmail(payload.email);
+
+    if (existingUser) {
+      throw new ValidationError("Email already exists");
+    }
+  }
+
   Object.keys(payload).forEach(
     (key) => payload[key] === undefined && delete payload[key]
   );
-
-  payload.email = user.email;
-  payload.mobile = user.mobile;
 
   const [, [updatedUser]] = await dao.updateUser(userId, payload);
 

@@ -195,4 +195,61 @@ router.put("/bank-details", validation.upsertBankDetailsValidation, controller.u
  */
 router.put("/upi-details", validation.upsertUpiDetailsValidation, controller.upsertUpiDetails);
 
+
+
+
+
+/**
+ * @swagger
+ * /api/user-bank-info/my-bank-upi-details:
+ *   get:
+ *     summary: Get my bank and UPI details
+ *     description: Returns bank account and UPI details for the authenticated user.
+ *     tags: [User Bank Info]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Bank and UPI details fetched successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Bank and UPI details fetched successfully"
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     publicId:
+ *                       type: string
+ *                       format: uuid
+ *                     bankAccountNumber:
+ *                       type: string
+ *                       nullable: true
+ *                       example: "****9012"
+ *                     bankIfsc:
+ *                       type: string
+ *                       nullable: true
+ *                       example: "HDFC0001234"
+ *                     bankAccountHolderName:
+ *                       type: string
+ *                       nullable: true
+ *                       example: "John Doe"
+ *                     upiId:
+ *                       type: string
+ *                       nullable: true
+ *                       example: "user@paytm"
+ *                     upiName:
+ *                       type: string
+ *                       nullable: true
+ *                       example: "John Doe"
+ *       401:
+ *         $ref: '#/components/responses/Unauthorized'
+ */
+router.get("/my-bank-upi-details", controller.getMyBankAndUpiDetails);
 module.exports = router;

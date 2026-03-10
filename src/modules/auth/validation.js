@@ -128,8 +128,15 @@ exports.updateWhatsAppValidation = [
 
 
 exports.editProfileValidation = [
-  body("firstName").optional().isString().withMessage("First name must be string"),
-  body("lastName").optional().isString().withMessage("Last name must be string"),
+  body("email")
+    .optional()
+    .isEmail()
+    .withMessage("Valid email is required"),
+
+  body("fullName")
+    .optional()
+    .isString()
+    .withMessage("Full name must be string"),
 
   body("gender")
     .optional()
@@ -151,35 +158,12 @@ exports.editProfileValidation = [
     .isInt({ min: 0 })
     .withMessage("Number of kids must be positive number"),
 
-  body("occupation")
-    .optional()
-    .isString()
-    .withMessage("Occupation must be string"),
-
-  body("education")
-    .optional()
-    .isString()
-    .withMessage("Education must be string"),
-
-  body("monthlyIncome")
-    .optional()
-    .isNumeric()
-    .withMessage("Monthly income must be number"),
-
-  body("aboutMe")
-    .optional()
-    .isString()
-    .withMessage("AboutMe must be string"),
-
-  body("languageSpoken")
-    .optional()
-    .isString()
-    .withMessage("Language must be string"),
-
-  body("profileImage")
-    .optional()
-    .isString()
-    .withMessage("Profile image must be string URL"),
+  body("occupation").optional().isString(),
+  body("education").optional().isString(),
+  body("monthlyIncome").optional().isNumeric(),
+  body("aboutMe").optional().isString(),
+  body("languageSpoken").optional().isString(),
+  body("profileImage").optional().isString(),
 
   handleValidationErrors,
 ];

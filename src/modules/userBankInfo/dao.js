@@ -82,3 +82,10 @@ exports.findByBlindIndex = (indexType, indexValue, options = {}) => {
     ...options,
   });
 };
+
+
+exports.findUserBankInfoByUserId = async (userId) => {
+  return await UserBankInfo.findOne({
+    where: { userId },
+  });
+};

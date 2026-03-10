@@ -40,3 +40,15 @@ exports.getUserBankInfo = async (userId) => {
     upiName: userBankInfo.encryptedUpiName,
   };
 };
+
+
+
+exports.getMyBankAndUpiDetails = async (userId) => {
+  const userBankInfo = await dao.findUserBankInfoByUserId(userId);
+
+  if (!userBankInfo) {
+    throw new NotFoundError("Bank details not found");
+  }
+
+  return userBankInfo;
+};

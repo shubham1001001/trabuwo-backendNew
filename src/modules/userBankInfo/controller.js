@@ -54,3 +54,23 @@ exports.upsertUpiDetails = asyncHandler(async (req, res) => {
     "UPI details updated successfully"
   );
 });
+
+
+exports.getMyBankAndUpiDetails = asyncHandler(async (req, res) => {
+  const userId = req.user.id;
+
+  const userBankInfo = await service.getMyBankAndUpiDetails(userId);
+
+  return apiResponse.success(
+    res,
+    {
+      publicId: userBankInfo?.publicId || null,
+      bankAccountNumber: maskAccountNumber(userBankInfo?.encryptedBankAccountNumber),
+      bankIfsc: userBankInfo?.encryptedBankIfsc || null,
+      bankAccountHolderName: userBankInfo?.encryptedBankAccountHolderName || null,
+      upiId: userBankInfo?.encryptedUpiId || null,
+      upiName: userBankInfo?.encryptedUpiName || null,
+    },
+    "Bank and UPI details fetched successfully"
+  );
+});
