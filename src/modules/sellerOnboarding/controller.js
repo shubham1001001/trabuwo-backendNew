@@ -54,12 +54,36 @@ exports.createBankDetails = async (req, res) => {
   return apiResponse.success(res, bankDetails, "Bank details created", 201);
 };
 
+
+const maskAccountNumber = (accountNumber) => {
+  if (!accountNumber) return accountNumber;
+  return accountNumber.slice(-4).padStart(accountNumber.length, "*");
+};
+
+
+
 exports.getBankDetailsByOnboardingId = async (req, res) => {
   const onboarding = await service.getSellerOnboardingByUserId(req.user.id);
+
   if (!onboarding) throw new NotFoundError("Seller onboarding not found");
+
   const bankDetails = await service.getBankDetailsByOnboardingId(onboarding.id);
-  return apiResponse.success(res, bankDetails);
+
+  if (!bankDetails) throw new NotFoundError("Bank details not found");
+
+  const maskedData = {
+    ...bankDetails.toJSON(),
+    accountNumber: maskAccountNumber(bankDetails.accountNumber),
+  };
+
+  return apiResponse.success(res, maskedData);
 };
+// exports.getBankDetailsByOnboardingId = async (req, res) => {
+//   const onboarding = await service.getSellerOnboardingByUserId(req.user.id);
+//   if (!onboarding) throw new NotFoundError("Seller onboarding not found");
+//   const bankDetails = await service.getBankDetailsByOnboardingId(onboarding.id);
+//   return apiResponse.success(res, bankDetails);
+// };
 
 exports.createLocation = async (req, res) => {
   const location = await service.createLocation(req.body);

@@ -8,6 +8,7 @@ const { Order,OrderItem } = require("../order/model");
 const { ProductVariant } = require("../product/model"); 
 const { UserAddress } = require("../userAddress/model");
 const { Payment, Refund } = require("../payment/model");
+const Category = require("../category/model");
 const sequelize = require("../../config/database");
 
 async function aggregateMetricsForProducts(productIds, startDate, endDate) {
@@ -777,6 +778,68 @@ async function getDashboardGraph() {
 
   return { graph: graphData };
 }
+
+
+async function getTopSellingCategories(limit) {
+  const result = await OrderItem.findAll({
+    attributes: [
+      [
+        sequelize.col("productVariant->product->catalogue.category_id"),
+        "categoryId",
+      ],
+      [
+        sequelize.col("productVariant->product->catalogue->category.name"),
+        "categoryName",
+      ],
+      [
+        sequelize.fn("SUM", sequelize.col("OrderItem.quantity")),
+        "totalSales",
+      ],
+    ],
+
+    include: [
+      {
+        model: ProductVariant,
+        as: "productVariant",
+        attributes: [],
+        include: [
+          {
+            model: Product,
+            as: "product",
+            attributes: [],
+            include: [
+              {
+                model: Catalogue,
+                as: "catalogue",
+                attributes: [],
+                include: [
+                  {
+                    model: Category,
+                    as: "category",
+                    attributes: [],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+
+    group: [
+      "productVariant->product->catalogue.category_id",
+      "productVariant->product->catalogue->category.id",
+      "productVariant->product->catalogue->category.name",
+    ],
+
+    order: [[sequelize.fn("SUM", sequelize.col("OrderItem.quantity")), "DESC"]],
+
+    limit,
+    raw: true,
+  });
+
+  return result;
+}
 module.exports = {
   getProductsMetrics,
   getTotalMetrics,
@@ -788,5 +851,6 @@ module.exports = {
   getDashboardSummary,
   getDashboardRiskSummary,
   getPaymentOverview,
-  getDashboardGraph
+  getDashboardGraph,
+  getTopSellingCategories
 };

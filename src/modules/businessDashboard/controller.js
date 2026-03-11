@@ -150,3 +150,24 @@ exports.getDashboardGraph = async (req, res) => {
     "Dashboard graph retrieved successfully"
   );
 };
+
+
+exports.getTopSellingCategories = async (req, res, next) => {
+  try {
+
+    const { limit = 5 } = req.query;
+
+    const result = await service.getTopSellingCategories({
+      limit: Number(limit)
+    });
+
+    return apiResponse.success(
+      res,
+      result,
+      "Top selling categories retrieved successfully"
+    );
+
+  } catch (error) {
+    next(error);
+  }
+};

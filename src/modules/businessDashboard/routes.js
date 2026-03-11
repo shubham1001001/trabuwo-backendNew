@@ -672,4 +672,23 @@ router.get(
   "/dashboard-graph",
   businessDashboardController.getDashboardGraph
 );
+
+
+/**
+ * @swagger
+ * /api/business-dashboard/top-selling-categories:
+ *   get:
+ *     summary: Get top selling categories
+ *     tags: [Business Dashboard]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Top selling categories retrieved successfully
+ */
+router.get(
+  "/top-selling-categories",
+  businessDashboardValidation.validateTopSellingCategories,
+  businessDashboardController.getTopSellingCategories
+);
 module.exports = router;

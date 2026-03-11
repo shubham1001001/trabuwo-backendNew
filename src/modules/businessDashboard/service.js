@@ -68,3 +68,11 @@ exports.getPaymentOverview = async () => {
 exports.getDashboardGraph = async () => {
   return dao.getDashboardGraph();
 };
+
+exports.getTopSellingCategories = async (query) => {
+
+  const limit = parseInt(query.limit) || 10;
+
+  return await dao.getTopSellingCategories(limit);
+
+};
