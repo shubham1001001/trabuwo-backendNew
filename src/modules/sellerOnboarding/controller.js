@@ -175,3 +175,24 @@ exports.addPickupLocation = async (req, res) => {
     "Pickup location added to Shiprocket successfully"
   );
 };
+
+
+
+exports.getAdminSellerDetails = async (req, res) => {
+  const { id } = req.params;
+
+  const sellerDetails = await service.getAdminSellerDetails(id);
+
+  if (!sellerDetails) {
+    throw new NotFoundError("Seller not found");
+  }
+
+  // mask account number
+  if (sellerDetails.bankDetails?.accountNumber) {
+    const acc = sellerDetails.bankDetails.accountNumber;
+    sellerDetails.bankDetails.accountNumber =
+      acc.slice(-4).padStart(acc.length, "*");
+  }
+
+  return apiResponse.success(res, sellerDetails);
+};

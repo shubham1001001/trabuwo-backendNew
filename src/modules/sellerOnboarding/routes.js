@@ -793,4 +793,21 @@ router.post(
   asyncHandler(controller.addPickupLocation)
 );
 
+
+
+/**
+ * @swagger
+ * /api/seller-onboarding/seller/{id}:
+ *   get:
+ *     summary: Get complete seller details for admin
+ *     tags: [Seller Onboarding]
+ *     security:
+ *       - bearerAuth: []
+ */
+
+router.get(
+  "/seller/:id",
+  asyncHandler(controller.getAdminSellerDetails)
+);
+
 module.exports = router;

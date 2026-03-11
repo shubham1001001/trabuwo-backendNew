@@ -97,3 +97,9 @@ exports.getSellerOnboardingWithAllDataByUserId = (userId) =>
       },
     ],
   });
+
+
+  exports.getStoreInfoByOnboardingId = (sellerOnboardingId) =>
+  Store.findOne({
+    where: { sellerOnboardingId },
+  });

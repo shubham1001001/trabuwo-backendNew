@@ -380,3 +380,20 @@ exports.addPickupLocationToShiprocket = async (userId) => {
 
   return response;
 };
+
+
+exports.getAdminSellerDetails = async (onboardingId) => {
+  const seller = await dao.getSellerOnboardingById(onboardingId);
+  if (!seller) return null;
+
+  const taxIdentity = await dao.getTaxIdentitiesByOnboardingId(onboardingId);
+  const bankDetails = await dao.getBankDetailsByOnboardingId(onboardingId);
+  const storeInfo = await dao.getStoreInfoByOnboardingId(onboardingId);
+
+  return {
+    seller,
+    taxIdentity,
+    bankDetails,
+    storeInfo,
+  };
+};
