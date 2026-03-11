@@ -470,3 +470,22 @@ exports.searchCategoryFilters = async (searchTerm) => {
     filters: filtersData,
   };
 };
+
+
+
+exports.getCategoryDetailsById = async (id) => {
+  const category = await dao.getCategoryById(id);
+
+  if (!category) return null;
+
+  const children = await dao.getCategoriesByParentId(id);
+  const parent = category.parentId
+    ? await dao.getCategoryById(category.parentId)
+    : null;
+
+  return {
+    category,
+    parent,
+    children,
+  };
+};

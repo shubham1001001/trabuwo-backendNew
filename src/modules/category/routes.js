@@ -828,4 +828,38 @@ router.get(
  */
 router.put("/bulk-update", asyncHandler(controller.bulkUpdateCategories));
 
+
+/**
+ * @swagger
+ * /api/category/category-details/{id}:
+ *   get:
+ *     summary: Get category detailed info by ID
+ *     tags: [Category]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Category ID
+ *         example: 1
+ *     responses:
+ *       200:
+ *         description: Category details retrieved successfully
+ *       404:
+ *         $ref: '#/components/responses/NotFound'
+ *       500:
+ *         $ref: '#/components/responses/InternalError'
+ */
+router.get(
+  "/category-details/:id",
+  validation.getCategoryByIdValidation,
+  asyncHandler(controller.getCategoryDetailsById)
+);
+
+
+
+
 module.exports = router;

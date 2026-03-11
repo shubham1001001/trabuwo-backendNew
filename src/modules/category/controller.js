@@ -184,3 +184,16 @@ exports.searchCategoryFilters = async (req, res) => {
     "Category filters retrieved successfully"
   );
 };
+
+
+exports.getCategoryDetailsById = async (req, res) => {
+  const { id } = req.params;
+
+  const category = await service.getCategoryDetailsById(id);
+
+  if (!category) {
+    throw new NotFoundError("Category not found");
+  }
+
+  return apiResponse.success(res, category);
+};
