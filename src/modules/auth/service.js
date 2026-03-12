@@ -453,8 +453,7 @@ exports.getProfile = async (userId) => {
   return {
     id: user.id,
     publicId: user.publicId,
-    firstName: user.firstName,
-    lastName: user.lastName,
+    fullName: user.fullName,
     email: user.email,
     mobile: user.mobile,
     gender: user.gender,
