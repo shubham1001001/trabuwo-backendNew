@@ -3,8 +3,22 @@ const { PasswordResetToken } = require("./model");
 const sequelize = require("../../config/database");
 
 exports.createUser = (data) => User.create(data);
-exports.findUserByEmail = (email) => User.findOne({ where: { email } });
-exports.findUserByMobile = (mobile) => User.findOne({ where: { mobile } });
+// exports.findUserByEmail = (email) => User.findOne({ where: { email } });
+
+
+exports.findUserByEmail = (email) =>
+  User.findOne({
+    where: { email, status: "active" }
+  });
+
+
+// exports.findUserByMobile = (mobile) => User.findOne({ where: { mobile } });
+
+
+exports.findUserByMobile = (mobile) =>
+  User.findOne({
+    where: { mobile, status: "active" }
+  });
 exports.findUserById = (id, options = {}) => User.findByPk(id, options);
 exports.findUserByPublicId = (publicId, options = {}) =>
   User.findOne({ where: { publicId }, ...options });
@@ -120,3 +134,20 @@ exports.updateNotificationChannel = (id, data) =>
 
 /*Reminder - User Cron Job to cleanup expired tokens */
 
+
+
+
+exports.softDeleteUser = async (userId) => {
+  const result = await User.update(
+    { status: "deleted" },
+    {
+      where: { id: userId },
+      returning: true,
+      validate: false
+    }
+  );
+
+  console.log("Rows updated:", result);
+
+  return result;
+};

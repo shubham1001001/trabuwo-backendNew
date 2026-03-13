@@ -218,6 +218,11 @@ exports.findOrCreateUserByMobile = async (mobile) => {
 exports.authenticateWithOtp = async ({ mobile, otp }) => {
   const otpResult = await exports.verifyOtp({ mobile, otp });
   const user = await exports.findOrCreateUserByMobile(mobile);
+
+    if (user.status === "deleted") {
+    throw new AuthenticationError("Account has been deleted");
+  }
+
   const authResponse = await exports.generateAuthResponse(user);
 
   return Result.success({
@@ -233,6 +238,11 @@ exports.authenticateWithPassword = async ({ email, password }) => {
     throw new AuthenticationError("Invalid email or password");
   }
 
+
+   if (user.status === "deleted") {
+    throw new AuthenticationError("Account has been deleted");
+  }
+
   const isPasswordValid = await exports.comparePasswords(
     password,
     user.password
@@ -246,6 +256,11 @@ exports.authenticateWithPassword = async ({ email, password }) => {
 
   return Result.success(authResponse);
 };
+
+
+
+
+
 
 exports.generatePasswordResetToken = async (user) => {
   const jti = uuidv4();
@@ -470,4 +485,21 @@ exports.getProfile = async (userId) => {
     createdAt: user.createdAt,
     updatedAt: user.updatedAt
   };
+};
+
+
+exports.deleteAccount = async (userId) => {
+  const user = await dao.findUserById(userId);
+
+  if (!user) {
+    throw new NotFoundError("User not found");
+  }
+
+  // revoke refresh tokens
+  await dao.revokeAllUserTokens(userId);
+
+  // soft delete user
+  await dao.softDeleteUser(userId);
+
+  return true;
 };

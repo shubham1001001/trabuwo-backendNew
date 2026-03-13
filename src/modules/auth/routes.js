@@ -1056,4 +1056,57 @@ router.get(
 );
 
 
+
+/**
+ * @swagger
+ * /api/auth/delete-account:
+ *   delete:
+ *     summary: Delete logged in user account
+ *     description:  Soft deletes the authenticated user's account by marking status as deleted.
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Account deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Account deleted successfully
+ *                 data:
+ *                   type: object
+ *                   nullable: true
+ *       401:
+ *         $ref: '#/components/responses/Unauthorized'
+ *       404:
+ *         description: User not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: User not found
+ *                 code:
+ *                   type: string
+ *                   example: NOT_FOUND_ERROR
+ *       500:
+ *         $ref: '#/components/responses/InternalError'
+ */
+router.delete(
+  "/delete-account",
+  authenticate,
+  asyncHandler(authController.deleteAccount)
+);
 module.exports = router;

@@ -86,6 +86,11 @@ profileImage: {
   type: DataTypes.TEXT,
   allowNull: true,
 },
+status: {
+  type: DataTypes.ENUM("active", "deleted"),
+  allowNull: false,
+  defaultValue: "active"
+},
   },
   {
     tableName: "users",

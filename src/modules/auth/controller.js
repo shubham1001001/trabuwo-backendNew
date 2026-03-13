@@ -224,3 +224,16 @@ exports.getProfile = async (req, res) => {
 
   return apiResponse.success(res, user, "Profile fetched successfully");
 };
+
+
+exports.deleteAccount = async (req, res) => {
+  const userId = req.user.id;
+console.log("id>>>>",userId)
+  const result = await authService.deleteAccount(userId);
+
+  return apiResponse.success(
+    res,
+    null,
+    "Account deleted successfully"
+  );
+};
