@@ -118,6 +118,20 @@ class InfluencerMarketingController {
   });
 
 
+
+becomeInfluencer = asyncHandler(async (req, res) => {
+  const userId = req.user.id;
+
+  const result = await service.becomeInfluencer(userId);
+
+  return apiResponse.success(
+    res,
+    result,
+    "User is now an influencer"
+  );
+});
+
+
   createReel = asyncHandler(async (req, res) => {
   const influencerId = req.user.id;
   const { contentLink, contentType, catalogueId } = req.body;

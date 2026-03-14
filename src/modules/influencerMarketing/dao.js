@@ -5,6 +5,7 @@ const Catalogue = require("../catalogue/model");
 const Category = require("../category/model");
 const { Product, ProductImage, ProductVariant } = require("../product/model");
 const { Op } = require("sequelize");
+const { Role, UserRole } = require("../auth/model");
 
 class InfluencerMarketingDAO {
   async createOptIn(sellerId, options = {}) {
@@ -274,6 +275,33 @@ class InfluencerMarketingDAO {
 
 async createInfluencerContent(data) {
   return InfluencerContent.create(data);
+}
+
+
+async becomeInfluencer(userId) {
+  const role = await Role.findOne({
+    where: { name: "influencer" },
+  });
+
+  if (!role) {
+    throw new NotFoundError("Influencer role not found");
+  }
+
+  const existing = await UserRole.findOne({
+    where: {
+      userId,
+      roleId: role.id,
+    },
+  });
+
+  if (existing) {
+    throw new ConflictError("User is already an influencer");
+  }
+
+  return UserRole.create({
+    userId,
+    roleId: role.id,
+  });
 }
 }
 

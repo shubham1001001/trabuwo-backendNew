@@ -189,6 +189,43 @@ router.put(
 
 /**
  * @swagger
+ * /api/influencer-marketing/become-influencer:
+ *   post:
+ *     summary: Become an influencer
+ *     description: Allows a logged-in user to become an influencer by assigning the influencer role to the user.
+ *     tags: [Influencer Marketing]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: User successfully became an influencer
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: User is now an influencer
+ *       401:
+ *         description: Unauthorized
+ *       400:
+ *         description: Bad request
+ */
+router.post(
+  "/become-influencer",
+  asyncHandler(controller.becomeInfluencer)
+);
+
+
+
+
+
+/**
+ * @swagger
  * /api/influencer-marketing/reels:
  *   post:
  *     summary: Post a new reel by influencer

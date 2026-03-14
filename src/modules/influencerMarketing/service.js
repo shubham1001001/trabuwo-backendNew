@@ -115,6 +115,12 @@ class InfluencerMarketingService {
   async getCataloguesNotInPromotions(pagination = {}, userId) {
     return dao.getCataloguesNotInPromotions(pagination, userId);
   }
+  
+
+
+  async becomeInfluencer(userId) {
+  return dao.becomeInfluencer(userId);
+}
 
 
   async createReel({ influencerId, contentLink, contentType, catalogueId }) {
@@ -137,6 +143,10 @@ class InfluencerMarketingService {
     catalogueId,
   });
 }
+
+
+
+
 }
 
 module.exports = new InfluencerMarketingService();
