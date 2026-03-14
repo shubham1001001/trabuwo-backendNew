@@ -1,4 +1,4 @@
-const { InfluencerOptIn, InfluencerPromotion } = require("./model");
+const { InfluencerOptIn, InfluencerPromotion ,InfluencerContent} = require("./model");
 const { NotFoundError, ConflictError } = require("../../utils/errors");
 const catalogueService = require("../catalogue/service");
 const Catalogue = require("../catalogue/model");
@@ -270,6 +270,11 @@ class InfluencerMarketingDAO {
       },
     };
   }
+
+
+async createInfluencerContent(data) {
+  return InfluencerContent.create(data);
+}
 }
 
 module.exports = new InfluencerMarketingDAO();

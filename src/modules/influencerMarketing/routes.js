@@ -184,4 +184,50 @@ router.put(
   asyncHandler(controller.updateStatus)
 );
 
+
+
+
+/**
+ * @swagger
+ * /api/influencer-marketing/reels:
+ *   post:
+ *     summary: Post a new reel by influencer
+ *     tags: [Influencer Marketing]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - contentLink
+ *               - contentType
+ *             properties:
+ *               contentLink:
+ *                 type: string
+ *                 description: URL of the reel video (S3 or CDN link)
+ *                 example: https://cdn.trabuwo.com/reels/reel1.mp4
+ *               contentType:
+ *                 type: string
+ *                 enum: [REEL]
+ *                 description: Type of influencer content
+ *               catalogueId:
+ *                 type: integer
+ *                 description: Optional catalogue ID linked to the reel
+ *     responses:
+ *       201:
+ *         description: Reel posted successfully
+ *       400:
+ *         description: Validation error
+ *       401:
+ *         description: Unauthorized
+ */
+router.post(
+  "/reels",
+  requireRole("influencer"),
+  validation.createReelValidation,
+  asyncHandler(controller.createReel)
+);
 module.exports = router;

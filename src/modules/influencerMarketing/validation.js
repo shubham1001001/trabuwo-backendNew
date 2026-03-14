@@ -88,6 +88,26 @@ const getCataloguesNotInPromotionsValidation = [
   handleValidationErrors,
 ];
 
+
+const createReelValidation = [
+  body("contentLink")
+    .notEmpty()
+    .withMessage("contentLink is required")
+    .isURL()
+    .withMessage("contentLink must be a valid URL"),
+
+  body("contentType")
+    .equals("REEL")
+    .withMessage("contentType must be REEL"),
+
+  body("catalogueId")
+    .optional()
+    .isInt({ min: 1 })
+    .withMessage("catalogueId must be a positive integer"),
+
+  handleValidationErrors,
+];
+
 module.exports = {
   selectProductValidation,
   approveOptInValidation,
@@ -96,4 +116,5 @@ module.exports = {
   updateStatusValidation,
   getAllInfluencerPromotionsValidation,
   getCataloguesNotInPromotionsValidation,
+  createReelValidation,
 };

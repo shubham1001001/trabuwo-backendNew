@@ -116,6 +116,21 @@ class InfluencerMarketingController {
       "Catalogues not in promotions retrieved successfully"
     );
   });
+
+
+  createReel = asyncHandler(async (req, res) => {
+  const influencerId = req.user.id;
+  const { contentLink, contentType, catalogueId } = req.body;
+
+  const result = await service.createReel({
+    influencerId,
+    contentLink,
+    contentType,
+    catalogueId,
+  });
+
+  return apiResponse.success(res, result, "Reel posted successfully", 201);
+});
 }
 
 module.exports = new InfluencerMarketingController();

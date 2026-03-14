@@ -115,6 +115,28 @@ class InfluencerMarketingService {
   async getCataloguesNotInPromotions(pagination = {}, userId) {
     return dao.getCataloguesNotInPromotions(pagination, userId);
   }
+
+
+  async createReel({ influencerId, contentLink, contentType, catalogueId }) {
+  if (catalogueId) {
+    const catalogueIds = await catalogueService.getCatalogueIdsByUserId(
+      influencerId
+    );
+
+    if (!catalogueIds.includes(`${catalogueId}`)) {
+      throw new ValidationError(
+        "The provided catalogueId is not associated with this influencer"
+      );
+    }
+  }
+
+  return dao.createInfluencerContent({
+    influencerId,
+    contentLink,
+    contentType,
+    catalogueId,
+  });
+}
 }
 
 module.exports = new InfluencerMarketingService();
