@@ -131,6 +131,55 @@ exports.countBySellerId = async (sellerId) => {
   return parseInt(rows?.[0]?.count, 10) || 0;
 };
 
+// exports.getOrdersBySellerIdWithFilters = async (sellerId, filters = {}) => {
+//   const whereClause = {};
+
+//   if (filters.status) {
+//     whereClause.status = filters.status;
+//   }
+
+//   if (filters.slaStatus) {
+//     whereClause.slaStatus = filters.slaStatus;
+//   }
+
+//   if (filters.startDispatchDate || filters.endDispatchDate) {
+//     whereClause.dispatchDate = {};
+//     if (filters.startDispatchDate) {
+//       whereClause.dispatchDate[Op.gte] = new Date(filters.startDispatchDate);
+//     }
+//     if (filters.endDispatchDate) {
+//       whereClause.dispatchDate[Op.lte] = new Date(filters.endDispatchDate);
+//     }
+//   }
+
+//   if (filters.startSlaDate || filters.endSlaDate) {
+//     whereClause.slaDate = {};
+//     if (filters.startSlaDate) {
+//       whereClause.slaDate[Op.gte] = new Date(filters.startSlaDate);
+//     }
+//     if (filters.endSlaDate) {
+//       whereClause.slaDate[Op.lte] = new Date(filters.endSlaDate);
+//     }
+//   }
+
+//   const limit = filters.limit || 10;
+//   const offset = (filters.page - 1) * limit || 0;
+
+//   if ((filters.productName && filters.productName.trim()) || filters.skuId) {
+//     return handleProductSearch(sellerId, whereClause, filters, limit, offset);
+//   }
+
+//   return handleStandardQuery(sellerId, whereClause, limit, offset);
+// };
+
+
+
+const getEndOfDay = (date) => {
+  const d = new Date(date);
+  d.setHours(23, 59, 59, 999);
+  return d;
+};
+
 exports.getOrdersBySellerIdWithFilters = async (sellerId, filters = {}) => {
   const whereClause = {};
 
@@ -142,23 +191,42 @@ exports.getOrdersBySellerIdWithFilters = async (sellerId, filters = {}) => {
     whereClause.slaStatus = filters.slaStatus;
   }
 
+  // Dispatch Date Filter
   if (filters.startDispatchDate || filters.endDispatchDate) {
     whereClause.dispatchDate = {};
+
     if (filters.startDispatchDate) {
       whereClause.dispatchDate[Op.gte] = new Date(filters.startDispatchDate);
     }
+
     if (filters.endDispatchDate) {
-      whereClause.dispatchDate[Op.lte] = new Date(filters.endDispatchDate);
+      whereClause.dispatchDate[Op.lte] = getEndOfDay(filters.endDispatchDate);
     }
   }
 
+  // SLA Date Filter
   if (filters.startSlaDate || filters.endSlaDate) {
     whereClause.slaDate = {};
+
     if (filters.startSlaDate) {
       whereClause.slaDate[Op.gte] = new Date(filters.startSlaDate);
     }
+
     if (filters.endSlaDate) {
-      whereClause.slaDate[Op.lte] = new Date(filters.endSlaDate);
+      whereClause.slaDate[Op.lte] = getEndOfDay(filters.endSlaDate);
+    }
+  }
+
+  // Order Date Filter
+  if (filters.startOrderDate || filters.endOrderDate) {
+    whereClause.createdAt = {};
+
+    if (filters.startOrderDate) {
+      whereClause.createdAt[Op.gte] = new Date(filters.startOrderDate);
+    }
+
+    if (filters.endOrderDate) {
+      whereClause.createdAt[Op.lte] = getEndOfDay(filters.endOrderDate);
     }
   }
 

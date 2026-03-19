@@ -2,20 +2,58 @@ const service = require("./service");
 const apiResponse = require("../../utils/apiResponse");
 const asyncHandler = require("../../utils/asyncHandler");
 
-exports.getSellerOrders = async (req, res) => {
-  const filters = {
-    status: req.query.status,
-    productName: req.query.productName,
-    skuId: req.query.skuId,
-    startDispatchDate: req.query.startDispatchDate,
-    endDispatchDate: req.query.endDispatchDate,
-    startSlaDate: req.query.startSlaDate,
-    endSlaDate: req.query.endSlaDate,
-    slaStatus: req.query.slaStatus,
-    page: req.query.page ? parseInt(req.query.page) : 1,
-    limit: req.query.limit ? parseInt(req.query.limit) : 10,
-  };
+// exports.getSellerOrders = async (req, res) => {
+//   const filters = {
+//     status: req.query.status,
+//     productName: req.query.productName,
+//     skuId: req.query.skuId,
+//     startDispatchDate: req.query.startDispatchDate,
+//     endDispatchDate: req.query.endDispatchDate,
+//     startSlaDate: req.query.startSlaDate,
+//     endSlaDate: req.query.endSlaDate,
+//     slaStatus: req.query.slaStatus,
+//     page: req.query.page ? parseInt(req.query.page) : 1,
+//     limit: req.query.limit ? parseInt(req.query.limit) : 10,
+//   };
 
+//   const result = await service.getOrdersBySellerIdWithFilters(
+//     req.user.id,
+//     filters
+//   );
+
+//   return apiResponse.success(res, {
+//     orders: result.rows,
+//     pagination: {
+//       total: result.count,
+//       page: filters.page,
+//       limit: filters.limit,
+//       totalPages: Math.ceil(result.count / filters.limit),
+//     },
+//   });
+// };
+
+
+
+
+exports.getSellerOrders = async (req, res) => {
+const filters = {
+  status: req.query.status,
+  productName: req.query.productName,
+  skuId: req.query.skuId,
+  startDispatchDate: req.query.startDispatchDate,
+  endDispatchDate: req.query.endDispatchDate,
+  startSlaDate: req.query.startSlaDate,
+  endSlaDate: req.query.endSlaDate,
+  slaStatus: req.query.slaStatus,
+  startOrderDate: req.query.startOrderDate
+    ? new Date(req.query.startOrderDate)
+    : undefined,
+  endOrderDate: req.query.endOrderDate
+    ? new Date(req.query.endOrderDate)
+    : undefined,
+  page: Number.isInteger(Number(req.query.page)) ? Number(req.query.page) : 1,
+  limit: Number.isInteger(Number(req.query.limit)) ? Number(req.query.limit) : 10,
+};
   const result = await service.getOrdersBySellerIdWithFilters(
     req.user.id,
     filters
@@ -31,7 +69,6 @@ exports.getSellerOrders = async (req, res) => {
     },
   });
 };
-
 exports.getSellerOrderById = async (req, res) => {
   const order = await service.getOrderByIdForSeller(req.params.id, req.user.id);
   return apiResponse.success(res, order);

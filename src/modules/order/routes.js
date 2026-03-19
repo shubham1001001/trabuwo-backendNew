@@ -221,6 +221,177 @@ const { authenticate } = require("../../middleware/auth");
 // Apply authentication to all routes
 router.use(authenticate);
 
+// /**
+//  * @swagger
+//  * /api/order/seller/orders:
+//  *   get:
+//  *     summary: Get all orders for seller with filtering and pagination
+//  *     description: Retrieve orders for the authenticated seller with optional status filtering and pagination
+//  *     tags: [Orders]
+//  *     security:
+//  *       - bearerAuth: []
+//  *     parameters:
+//  *       - in: query
+//  *         name: status
+//  *         schema:
+//  *           type: string
+//  *           enum: [pending, ready_to_ship, shipped, cancelled]
+//  *         description: Filter orders by status
+//  *         example: pending
+//  *       - in: query
+//  *         name: page
+//  *         schema:
+//  *           type: integer
+//  *           minimum: 1
+//  *           default: 1
+//  *         description: Page number for pagination
+//  *         example: 1
+//  *       - in: query
+//  *         name: productName
+//  *         schema:
+//  *           type: string
+//  *           minLength: 1
+//  *           maxLength: 100
+//  *         description: Search orders by product name (supports full-text search and fuzzy matching)
+//  *         example: "iPhone"
+//  *       - in: query
+//  *         name: skuId
+//  *         schema:
+//  *           type: string
+//  *           minLength: 1
+//  *           maxLength: 50
+//  *         description: Filter orders by specific SKU ID
+//  *         example: "SKU123456"
+//  *       - in: query
+//  *         name: limit
+//  *         schema:
+//  *           type: integer
+//  *           minimum: 1
+//  *           maximum: 100
+//  *           default: 10
+//  *         description: Number of orders per page
+//  *         example: 10
+//  *       - in: query
+//  *         name: startDispatchDate
+//  *         schema:
+//  *           type: string
+//  *           format: date-time
+//  *         description: Filter orders by dispatch date (start range)
+//  *         example: "2024-01-01T00:00:00.000Z"
+//  *       - in: query
+//  *         name: endDispatchDate
+//  *         schema:
+//  *           type: string
+//  *           format: date-time
+//  *         description: Filter orders by dispatch date (end range)
+//  *         example: "2024-12-31T23:59:59.999Z"
+//  *       - in: query
+//  *         name: startSlaDate
+//  *         schema:
+//  *           type: string
+//  *           format: date-time
+//  *         description: Filter orders by SLA date (start range)
+//  *         example: "2024-01-01T00:00:00.000Z"
+//  *       - in: query
+//  *         name: endSlaDate
+//  *         schema:
+//  *           type: string
+//  *           format: date-time
+//  *         description: Filter orders by SLA date (end range)
+//  *         example: "2024-12-31T23:59:59.999Z"
+//  *       - in: query
+//  *         name: slaStatus
+//  *         schema:
+//  *           type: string
+//  *           enum: [breached, breaching_soon, other]
+//  *         description: Filter orders by SLA status
+//  *         example: "breached"
+//  *     responses:
+//  *       200:
+//  *         description: Orders retrieved successfully
+//  *         content:
+//  *           application/json:
+//  *             schema:
+//  *               allOf:
+//  *                 - $ref: '#/components/schemas/ApiResponse'
+//  *                 - type: object
+//  *                   properties:
+//  *                     data:
+//  *                       $ref: '#/components/schemas/OrdersResponse'
+//  *             example:
+//  *               success: true
+//  *               data:
+//  *                 orders:
+//  *                   - id: "123e4567-e89b-12d3-a456-426614174000"
+//  *                     buyerId: 1
+//  *                     sellerId: 2
+//  *                     status: "pending"
+//  *                     totalAmount: "150.00"
+//  *                     shippingAddressId: 1
+//  *                     createdAt: "2024-01-15T10:30:00.000Z"
+//  *                     updatedAt: "2024-01-15T10:30:00.000Z"
+//  *                     items:
+//  *                       - id: "456e7890-e89b-12d3-a456-426614174001"
+//  *                         orderId: "123e4567-e89b-12d3-a456-426614174000"
+//  *                         productId: "789e0123-e89b-12d3-a456-426614174002"
+//  *                         quantity: 2
+//  *                         price: "75.00"
+//  *                         product:
+//  *                           id: "789e0123-e89b-12d3-a456-426614174002"
+//  *                           name: "Sample Product"
+//  *                           price: "75.00"
+//  *                           images: ["https://example.com/image1.jpg"]
+//  *                     buyer:
+//  *                       id: 1
+//  *                       email: "buyer@example.com"
+//  *                       mobile: "+1234567890"
+//  *                     shippingAddress:
+//  *                       id: 1
+//  *                       addressLine1: "123 Main St"
+//  *                       city: "New York"
+//  *                       state: "NY"
+//  *                       postalCode: "10001"
+//  *                       location:
+//  *                         id: 1
+//  *                         country: "United States"
+//  *                 pagination:
+//  *                   total: 25
+//  *                   page: 1
+//  *                   limit: 10
+//  *                   totalPages: 3
+//  *       400:
+//  *         description: Invalid query parameters
+//  *         content:
+//  *           application/json:
+//  *             schema:
+//  *               $ref: '#/components/schemas/ErrorResponse'
+//  *             example:
+//  *               success: false
+//  *               error:
+//  *                 message: "Status must be one of: pending, ready_to_ship, shipped, cancelled"
+//  *                 code: "VALIDATION_ERROR"
+//  *                 statusCode: 400
+//  *       401:
+//  *         description: Unauthorized - Invalid or missing token
+//  *         content:
+//  *           application/json:
+//  *             schema:
+//  *               $ref: '#/components/schemas/ErrorResponse'
+//  *       500:
+//  *         description: Internal server error
+//  *         content:
+//  *           application/json:
+//  *             schema:
+//  *               $ref: '#/components/schemas/ErrorResponse'
+//  */
+
+// // Get all orders for seller
+// router.get(
+//   "/seller/orders",
+//   validation.orderFiltersValidation,
+//   asyncHandler(controller.getSellerOrders)
+// );
+
 /**
  * @swagger
  * /api/order/seller/orders:
@@ -244,7 +415,6 @@ router.use(authenticate);
  *           type: integer
  *           minimum: 1
  *           default: 1
- *         description: Page number for pagination
  *         example: 1
  *       - in: query
  *         name: productName
@@ -252,7 +422,6 @@ router.use(authenticate);
  *           type: string
  *           minLength: 1
  *           maxLength: 100
- *         description: Search orders by product name (supports full-text search and fuzzy matching)
  *         example: "iPhone"
  *       - in: query
  *         name: skuId
@@ -260,7 +429,6 @@ router.use(authenticate);
  *           type: string
  *           minLength: 1
  *           maxLength: 50
- *         description: Filter orders by specific SKU ID
  *         example: "SKU123456"
  *       - in: query
  *         name: limit
@@ -269,128 +437,55 @@ router.use(authenticate);
  *           minimum: 1
  *           maximum: 100
  *           default: 10
- *         description: Number of orders per page
  *         example: 10
  *       - in: query
  *         name: startDispatchDate
  *         schema:
  *           type: string
  *           format: date-time
- *         description: Filter orders by dispatch date (start range)
- *         example: "2024-01-01T00:00:00.000Z"
  *       - in: query
  *         name: endDispatchDate
  *         schema:
  *           type: string
  *           format: date-time
- *         description: Filter orders by dispatch date (end range)
- *         example: "2024-12-31T23:59:59.999Z"
  *       - in: query
  *         name: startSlaDate
  *         schema:
  *           type: string
  *           format: date-time
- *         description: Filter orders by SLA date (start range)
- *         example: "2024-01-01T00:00:00.000Z"
  *       - in: query
  *         name: endSlaDate
  *         schema:
  *           type: string
  *           format: date-time
- *         description: Filter orders by SLA date (end range)
- *         example: "2024-12-31T23:59:59.999Z"
  *       - in: query
  *         name: slaStatus
  *         schema:
  *           type: string
  *           enum: [breached, breaching_soon, other]
- *         description: Filter orders by SLA status
  *         example: "breached"
- *     responses:
- *       200:
- *         description: Orders retrieved successfully
- *         content:
- *           application/json:
- *             schema:
- *               allOf:
- *                 - $ref: '#/components/schemas/ApiResponse'
- *                 - type: object
- *                   properties:
- *                     data:
- *                       $ref: '#/components/schemas/OrdersResponse'
- *             example:
- *               success: true
- *               data:
- *                 orders:
- *                   - id: "123e4567-e89b-12d3-a456-426614174000"
- *                     buyerId: 1
- *                     sellerId: 2
- *                     status: "pending"
- *                     totalAmount: "150.00"
- *                     shippingAddressId: 1
- *                     createdAt: "2024-01-15T10:30:00.000Z"
- *                     updatedAt: "2024-01-15T10:30:00.000Z"
- *                     items:
- *                       - id: "456e7890-e89b-12d3-a456-426614174001"
- *                         orderId: "123e4567-e89b-12d3-a456-426614174000"
- *                         productId: "789e0123-e89b-12d3-a456-426614174002"
- *                         quantity: 2
- *                         price: "75.00"
- *                         product:
- *                           id: "789e0123-e89b-12d3-a456-426614174002"
- *                           name: "Sample Product"
- *                           price: "75.00"
- *                           images: ["https://example.com/image1.jpg"]
- *                     buyer:
- *                       id: 1
- *                       email: "buyer@example.com"
- *                       mobile: "+1234567890"
- *                     shippingAddress:
- *                       id: 1
- *                       addressLine1: "123 Main St"
- *                       city: "New York"
- *                       state: "NY"
- *                       postalCode: "10001"
- *                       location:
- *                         id: 1
- *                         country: "United States"
- *                 pagination:
- *                   total: 25
- *                   page: 1
- *                   limit: 10
- *                   totalPages: 3
- *       400:
- *         description: Invalid query parameters
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
- *             example:
- *               success: false
- *               error:
- *                 message: "Status must be one of: pending, ready_to_ship, shipped, cancelled"
- *                 code: "VALIDATION_ERROR"
- *                 statusCode: 400
- *       401:
- *         description: Unauthorized - Invalid or missing token
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
- *       500:
- *         description: Internal server error
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
+ *       - in: query
+ *         name: startOrderDate
+ *         schema:
+ *           type: string
+ *           format: date-time
+ *         description: Filter orders by order creation date (start range)
+ *         example: "2024-01-01T00:00:00.000Z"
+ *       - in: query
+ *         name: endOrderDate
+ *         schema:
+ *           type: string
+ *           format: date-time
+ *         description: Filter orders by order creation date (end range)
+ *         example: "2024-12-31T23:59:59.999Z"
  */
-
 // Get all orders for seller
 router.get(
   "/seller/orders",
   validation.orderFiltersValidation,
   asyncHandler(controller.getSellerOrders)
 );
+
 
 /**
  * @swagger

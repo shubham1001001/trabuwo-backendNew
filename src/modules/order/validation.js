@@ -52,6 +52,53 @@ exports.downloadShippingLabelValidation = [
   handleValidationErrors,
 ];
 
+// exports.orderFiltersValidation = [
+//   query("status")
+//     .optional()
+//     .isIn(["on_hold", "pending", "ready_to_ship", "shipped", "cancelled"])
+//     .withMessage("Invalid order status"),
+//   query("productName")
+//     .optional()
+//     .isString()
+//     .trim()
+//     .isLength({ min: 1, max: 100 })
+//     .withMessage("Product name must be between 1 and 100 characters"),
+//   query("skuId")
+//     .optional()
+//     .isString()
+//     .trim()
+//     .isLength({ min: 1, max: 50 })
+//     .withMessage("SKU ID must be between 1 and 50 characters"),
+//   query("startDispatchDate")
+//     .optional()
+//     .isISO8601()
+//     .withMessage("Invalid start dispatch date format"),
+//   query("endDispatchDate")
+//     .optional()
+//     .isISO8601()
+//     .withMessage("Invalid end dispatch date format"),
+//   query("startSlaDate")
+//     .optional()
+//     .isISO8601()
+//     .withMessage("Invalid start SLA date format"),
+//   query("endSlaDate")
+//     .optional()
+//     .isISO8601()
+//     .withMessage("Invalid end SLA date format"),
+//   query("slaStatus")
+//     .optional()
+//     .isIn(["breached", "breaching_soon", "other"])
+//     .withMessage("Invalid SLA status"),
+//   query("page")
+//     .optional()
+//     .isInt({ min: 1 })
+//     .withMessage("Page must be a positive integer"),
+//   query("limit")
+//     .optional()
+//     .isInt({ min: 1, max: 15 })
+//     .withMessage("Limit must be between 1 and 15"),
+//   handleValidationErrors,
+// ];
 exports.orderFiltersValidation = [
   query("status")
     .optional()
@@ -97,6 +144,28 @@ exports.orderFiltersValidation = [
     .optional()
     .isInt({ min: 1, max: 15 })
     .withMessage("Limit must be between 1 and 15"),
+    query("startOrderDate")
+  .optional()
+  .trim()
+  .isISO8601()
+  .withMessage("Invalid start order date format"),
+
+query("endOrderDate")
+  .optional()
+  .trim()
+  .isISO8601()
+  .withMessage("Invalid end order date format")
+  .custom((value, { req }) => {
+    if (req.query.startOrderDate) {
+      const start = new Date(req.query.startOrderDate);
+      const end = new Date(value);
+
+      if (start > end) {
+        throw new Error("endOrderDate must be greater than or equal to startOrderDate");
+      }
+    }
+    return true;
+  }),
   handleValidationErrors,
 ];
 
