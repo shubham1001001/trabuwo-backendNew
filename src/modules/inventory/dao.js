@@ -167,98 +167,213 @@ class InventoryDAO {
     });
   }
 
-  async updateProductStock(productId, newStock, userId) {
-    return await sequelize.transaction(async (t) => {
-      const product = await Product.findOne({
-        where: { publicId: productId, isDeleted: false },
-        include: [
-          {
-            model: Catalogue,
-            where: { userId },
-            as: "catalogue",
-            attributes: ["id", "userId"],
-          },
-        ],
-        transaction: t,
-        lock: t.LOCK.UPDATE,
-      });
+  // async updateProductStock(productId, newStock, userId) {
+  //   return await sequelize.transaction(async (t) => {
+  //     const product = await Product.findOne({
+  //       where: { publicId: productId, isDeleted: false },
+  //       include: [
+  //         {
+  //           model: Catalogue,
+  //           where: { userId },
+  //           as: "catalogue",
+  //           attributes: ["id", "userId"],
+  //         },
+  //       ],
+  //       transaction: t,
+  //       lock: t.LOCK.UPDATE,
+  //     });
 
-      if (!product) {
-        throw new NotFoundError("Product not found");
-      }
+  //     if (!product) {
+  //       throw new NotFoundError("Product not found");
+  //     }
 
-      const variants = await ProductVariant.findAll({
+  //     const variants = await ProductVariant.findAll({
+  //       where: { productId: product.id, isDeleted: false },
+  //       transaction: t,
+  //       lock: t.LOCK.UPDATE,
+  //     });
+
+  //     if (variants.length === 0) {
+  //       throw new NotFoundError("Product has no variants");
+  //     }
+
+  //     const totalInventory = variants.reduce(
+  //       (sum, variant) => sum + (variant.inventory || 0),
+  //       0
+  //     );
+
+  //     // Capture previous inventories before update for notification logic
+  //     const variantsBeforeUpdate = variants.map((v) => ({
+  //       id: v.id,
+  //       inventory: v.inventory || 0,
+  //     }));
+
+  //     if (totalInventory === 0 && product.status === "paused") {
+  //       await ProductVariant.update(
+  //         { inventory: newStock },
+  //         {
+  //           where: { productId: product.id, isDeleted: false },
+  //           transaction: t,
+  //         }
+  //       );
+  //       await product.update({ status: "active" }, { transaction: t });
+  //     } else {
+  //       await ProductVariant.update(
+  //         { inventory: newStock },
+  //         {
+  //           where: { productId: product.id, isDeleted: false },
+  //           transaction: t,
+  //         }
+  //       );
+  //     }
+
+  //     // Any variant that was 0 and now newStock > 0 should enqueue a single dispatcher job
+  //     if (newStock > 0) {
+  //       for (const variantBefore of variantsBeforeUpdate) {
+  //         if (variantBefore.inventory === 0) {
+  //           // Use Graphile Worker's add_job SQL function inside the same transaction.
+  //           await t.sequelize.query(
+  //             `
+  //               SELECT graphile_worker.add_job(
+  //                 $1::text,         -- task_identifier
+  //                 $2::json,         -- payload
+  //                 job_key := $3     -- ensures de-duplication per variant
+  //               );
+  //             `,
+  //             {
+  //               transaction: t,
+  //               bind: [
+  //                 "dispatch-stock-notifications",
+  //                 JSON.stringify({
+  //                   productVariantId: variantBefore.id,
+  //                   newStock,
+  //                 }),
+  //                 `dispatch-stock-notifications-${variantBefore.id}`,
+  //               ],
+  //             }
+  //           );
+  //         }
+  //       }
+  //     }
+
+  //     return product;
+  //   });
+  // }
+
+async updateProductStock(productId, newStock, userId) {
+  return await sequelize.transaction(async (t) => {
+
+    // 1️⃣ Find product with ownership check
+    const product = await Product.findOne({
+      where: { publicId: productId, isDeleted: false },
+      include: [
+        {
+          model: Catalogue,
+          where: { userId },
+          as: "catalogue",
+          attributes: ["id", "userId"],
+        },
+      ],
+      transaction: t,
+      lock: t.LOCK.UPDATE,
+    });
+
+    if (!product) {
+      throw new NotFoundError("Product not found");
+    }
+
+    // 2️⃣ Get all variants
+    const variants = await ProductVariant.findAll({
+      where: { productId: product.id, isDeleted: false },
+      transaction: t,
+      lock: t.LOCK.UPDATE,
+    });
+
+    if (variants.length === 0) {
+      throw new NotFoundError("Product has no variants");
+    }
+
+    // 3️⃣ Total inventory BEFORE update
+    const totalInventoryBefore = variants.reduce(
+      (sum, variant) => sum + (variant.inventory || 0),
+      0
+    );
+
+    // 4️⃣ Capture previous inventories (for notification)
+    const variantsBeforeUpdate = variants.map((v) => ({
+      id: v.id,
+      inventory: v.inventory || 0,
+    }));
+
+    // 5️⃣ Update stock (⚠️ all variants same stock)
+    await ProductVariant.update(
+      { inventory: newStock },
+      {
         where: { productId: product.id, isDeleted: false },
         transaction: t,
-        lock: t.LOCK.UPDATE,
-      });
-
-      if (variants.length === 0) {
-        throw new NotFoundError("Product has no variants");
       }
+    );
 
-      const totalInventory = variants.reduce(
-        (sum, variant) => sum + (variant.inventory || 0),
-        0
-      );
+    // 6️⃣ Activate product if needed
+    if (totalInventoryBefore === 0 && product.status === "paused") {
+      await product.update({ status: "active" }, { transaction: t });
+    }
 
-      // Capture previous inventories before update for notification logic
-      const variantsBeforeUpdate = variants.map((v) => ({
-        id: v.id,
-        inventory: v.inventory || 0,
-      }));
-
-      if (totalInventory === 0 && product.status === "paused") {
-        await ProductVariant.update(
-          { inventory: newStock },
-          {
-            where: { productId: product.id, isDeleted: false },
-            transaction: t,
-          }
-        );
-        await product.update({ status: "active" }, { transaction: t });
-      } else {
-        await ProductVariant.update(
-          { inventory: newStock },
-          {
-            where: { productId: product.id, isDeleted: false },
-            transaction: t,
-          }
-        );
-      }
-
-      // Any variant that was 0 and now newStock > 0 should enqueue a single dispatcher job
-      if (newStock > 0) {
-        for (const variantBefore of variantsBeforeUpdate) {
-          if (variantBefore.inventory === 0) {
-            // Use Graphile Worker's add_job SQL function inside the same transaction.
-            await t.sequelize.query(
-              `
-                SELECT graphile_worker.add_job(
-                  $1::text,         -- task_identifier
-                  $2::json,         -- payload
-                  job_key := $3     -- ensures de-duplication per variant
-                );
-              `,
-              {
-                transaction: t,
-                bind: [
-                  "dispatch-stock-notifications",
-                  JSON.stringify({
-                    productVariantId: variantBefore.id,
-                    newStock,
-                  }),
-                  `dispatch-stock-notifications-${variantBefore.id}`,
-                ],
-              }
-            );
-          }
+    // 7️⃣ Notification job (0 → >0)
+    if (newStock > 0) {
+      for (const variantBefore of variantsBeforeUpdate) {
+        if (variantBefore.inventory === 0) {
+          await t.sequelize.query(
+            `
+              SELECT graphile_worker.add_job(
+                $1::text,
+                $2::json,
+                job_key := $3
+              );
+            `,
+            {
+              transaction: t,
+              bind: [
+                "dispatch-stock-notifications",
+                JSON.stringify({
+                  productVariantId: variantBefore.id,
+                  newStock,
+                }),
+                `dispatch-stock-notifications-${variantBefore.id}`,
+              ],
+            }
+          );
         }
       }
+    }
 
-      return product;
+    // 8️⃣ Fetch UPDATED variants
+    const updatedVariants = await ProductVariant.findAll({
+      where: { productId: product.id, isDeleted: false },
+      attributes: ["inventory"],
+      transaction: t,
     });
-  }
+
+    // 9️⃣ Calculate UPDATED total inventory
+    const updatedTotalInventory = updatedVariants.reduce(
+      (sum, v) => sum + (v.inventory || 0),
+      0
+    );
+
+    // 🔟 Convert Sequelize instance → plain object
+    const productData = product.toJSON();
+
+    // 1️⃣1️⃣ Override dynamicFields.inventory safely
+    productData.dynamicFields = {
+      ...(productData.dynamicFields || {}),
+      inventory: updatedTotalInventory,
+    };
+
+    // 1️⃣2️⃣ Return same structure with updated inventory
+    return productData;
+  });
+}
+
 
   async bulkPauseProducts(catalogueId, productIds, userId, options = {}) {
     const catalogue = await Catalogue.findOne({
@@ -344,6 +459,58 @@ class InventoryDAO {
 
     return buildCategoryTree(categories, null);
   }
+
+
+
+  async getInventoryList(userId) {
+  const products = await Product.findAll({
+    where: {
+      isDeleted: false,
+    },
+    attributes: [
+      "id",
+      "publicId",
+      "name",
+      "description",
+      "createdAt",
+      "updatedAt",
+    ],
+    include: [
+      {
+        model: Catalogue,
+        as: "catalogue",
+        where: {
+          userId,
+          isDeleted: false,
+        },
+        attributes: ["id", "name", "userId"],
+        required: true, // only user data
+        include: [
+          {
+            model: Category,
+            as: "category",
+            attributes: ["id", "name", "parentId"],
+          },
+        ],
+      },
+      {
+  model: ProductVariant,
+  as: "variants",
+  attributes: [
+    "id",
+    "publicId",
+    "trabuwo_price",
+    "mrp",
+    "inventory",
+    "sku_id"
+  ],
+},
+    ],
+    order: [["createdAt", "DESC"]],
+  });
+
+  return products;
+}
 }
 
 module.exports = new InventoryDAO();

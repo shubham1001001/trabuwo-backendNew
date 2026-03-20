@@ -360,4 +360,138 @@ router.put(
  */
 router.get("/category-tree", controller.getUserCategoryTree);
 
+
+/**
+ * @swagger
+ * /api/inventory/list:
+ *   get:
+ *     summary: Get inventory list for logged-in user
+ *     description: Returns all inventory products of the logged-in user including catalogue, category, and variants details
+ *     tags: [Inventory]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           example: 1
+ *         description: Page number for pagination
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           example: 10
+ *         description: Number of records per page
+ *       - in: query
+ *         name: search
+ *         schema:
+ *           type: string
+ *           example: "T-Shirt"
+ *         description: Search by product name
+ *       - in: query
+ *         name: categoryId
+ *         schema:
+ *           type: integer
+ *           example: 2
+ *         description: Filter by category ID
+ *     responses:
+ *       200:
+ *         description: Inventory list fetched successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Inventory list fetched successfully"
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                         example: 1
+ *                       publicId:
+ *                         type: string
+ *                         example: "abc-123"
+ *                       name:
+ *                         type: string
+ *                         example: "T-Shirt"
+ *                       description:
+ *                         type: string
+ *                         example: "Cotton T-Shirt"
+ *                       price:
+ *                         type: number
+ *                         example: 499
+ *                       createdAt:
+ *                         type: string
+ *                         format: date-time
+ *                       updatedAt:
+ *                         type: string
+ *                         format: date-time
+ *                       catalogue:
+ *                         type: object
+ *                         properties:
+ *                           id:
+ *                             type: integer
+ *                             example: 10
+ *                           name:
+ *                             type: string
+ *                             example: "Men Clothing"
+ *                           category:
+ *                             type: object
+ *                             properties:
+ *                               id:
+ *                                 type: integer
+ *                                 example: 2
+ *                               name:
+ *                                 type: string
+ *                                 example: "Clothing"
+ *                               parentId:
+ *                                 type: integer
+ *                                 example: null
+ *                       variants:
+ *                         type: array
+ *                         items:
+ *                           type: object
+ *                           properties:
+ *                             id:
+ *                               type: integer
+ *                               example: 1
+ *                             sku:
+ *                               type: string
+ *                               example: "TS-RED-M"
+ *                             price:
+ *                               type: number
+ *                               example: 499
+ *                             stock:
+ *                               type: integer
+ *                               example: 20
+ *                             createdAt:
+ *                               type: string
+ *                               format: date-time
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Internal server error
+ */
+router.get("/list", controller.getInventoryList);
+
+
+
+
+
+
+
+
+
+
+
+
 module.exports = router;

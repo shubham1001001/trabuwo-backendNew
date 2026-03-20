@@ -82,6 +82,20 @@ class InventoryController {
       "Category tree retrieved successfully"
     );
   });
+
+
+
+  getInventoryList = asyncHandler(async (req, res) => {
+  const userId = req.user.id;
+
+  const result = await service.getInventoryList(userId);
+
+  return apiResponse.success(
+    res,
+    result,
+    "Inventory list fetched successfully"
+  );
+});
 }
 
 module.exports = new InventoryController();

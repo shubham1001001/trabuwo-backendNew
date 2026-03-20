@@ -91,6 +91,12 @@ class InventoryService {
   async getUserCategoryTree(userId) {
     return await dao.getUserCategoryTree(userId);
   }
+
+  async getInventoryList(userId) {
+  return await dao.getInventoryList(userId);
+}
+
+
 }
 
 module.exports = new InventoryService();
