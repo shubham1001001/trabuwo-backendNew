@@ -1,81 +1,140 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("../../config/database");
+const { body, param, query } = require("express-validator");
+const { handleValidationErrors } = require("../../utils/validation");
 
-const Brand = sequelize.define(
-  "Brand",
-  {
-    id: {
-      type: DataTypes.BIGINT,
-      primaryKey: true,
-      autoIncrement: true,
-    },
+/**
+ * CREATE BRAND
+ */
+exports.create = [
+  body("name")
+    .notEmpty()
+    .withMessage("Brand name is required")
+    .isLength({ max: 255 })
+    .withMessage("Name must be less than 255 characters"),
 
-    publicId: {
-      type: DataTypes.UUID,
-      allowNull: false,
-      unique: true,
-      field: "public_id",
-    },
+  body("logoUrl")
+    .optional()
+    .isURL()
+    .withMessage("Logo URL must be a valid URL"),
 
-    name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
+  body("bannerUrl")
+    .optional()
+    .isURL()
+    .withMessage("Banner URL must be a valid URL"),
 
-    slug: {
-      type: DataTypes.STRING,
-    },
+  body("description")
+    .optional()
+    .isString()
+    .withMessage("Description must be a string"),
 
-    logoUrl: {
-      type: DataTypes.TEXT,
-      field: "logo_url",
-    },
+  body("websiteUrl")
+    .optional()
+    .isURL()
+    .withMessage("Website URL must be a valid URL"),
 
-    bannerUrl: {
-      type: DataTypes.TEXT,
-      field: "banner_url",
-    },
+  handleValidationErrors,
+];
 
-    description: {
-      type: DataTypes.TEXT,
-    },
+/**
+ * UPDATE BRAND
+ */
+exports.update = [
+  param("publicId")
+    .isUUID()
+    .withMessage("Invalid publicId"),
 
-    websiteUrl: {
-      type: DataTypes.TEXT,
-      field: "website_url",
-    },
+  body("name")
+    .optional()
+    .isLength({ max: 255 })
+    .withMessage("Name must be less than 255 characters"),
 
-    status: {
-      type: DataTypes.ENUM("pending", "approved", "rejected"),
-      defaultValue: "pending",
-    },
+  body("logoUrl")
+    .optional()
+    .isURL()
+    .withMessage("Logo URL must be a valid URL"),
 
-    isVerified: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: false,
-      field: "is_verified",
-    },
+  body("bannerUrl")
+    .optional()
+    .isURL()
+    .withMessage("Banner URL must be a valid URL"),
 
-    isActive: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: true,
-      field: "is_active",
-    },
+  body("description")
+    .optional()
+    .isString()
+    .withMessage("Description must be a string"),
 
-    createdBy: {
-      type: DataTypes.BIGINT,
-      field: "created_by",
-    },
+  body("websiteUrl")
+    .optional()
+    .isURL()
+    .withMessage("Website URL must be a valid URL"),
 
-    updatedBy: {
-      type: DataTypes.BIGINT,
-      field: "updated_by",
-    },
-  },
-  {
-    tableName: "brands",
-    underscored: true,
-  }
-);
+  body("status")
+    .optional()
+    .isIn(["pending", "approved", "rejected"])
+    .withMessage("Invalid status"),
 
-module.exports = Brand;
+  body("isActive")
+    .optional()
+    .isBoolean()
+    .withMessage("isActive must be boolean"),
+
+  body("isVerified")
+    .optional()
+    .isBoolean()
+    .withMessage("isVerified must be boolean"),
+
+  handleValidationErrors,
+];
+
+/**
+ * GET BRAND BY PUBLIC ID
+ */
+exports.getByPublicId = [
+  param("publicId")
+    .isUUID()
+    .withMessage("Invalid publicId"),
+
+  handleValidationErrors,
+];
+
+/**
+ * DELETE BRAND
+ */
+exports.deleteBrand = [
+  param("publicId")
+    .isUUID()
+    .withMessage("Invalid publicId"),
+
+  handleValidationErrors,
+];
+
+/**
+ * LIST BRANDS (Pagination + Filters)
+ */
+exports.list = [
+  query("limit")
+    .optional()
+    .isInt({ min: 1, max: 100 })
+    .withMessage("Limit must be between 1 and 100"),
+
+  query("offset")
+    .optional()
+    .isInt({ min: 0 })
+    .withMessage("Offset must be >= 0"),
+
+  query("status")
+    .optional()
+    .isIn(["pending", "approved", "rejected"])
+    .withMessage("Invalid status"),
+
+  query("isActive")
+    .optional()
+    .isBoolean()
+    .withMessage("isActive must be boolean"),
+
+  query("search")
+    .optional()
+    .isString()
+    .withMessage("Search must be string"),
+
+  handleValidationErrors,
+];

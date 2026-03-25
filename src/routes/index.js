@@ -58,5 +58,5 @@ router.use(
   "/product-stock-notifications",
   require("../modules/productStockNotification/routes")
 );
-
+router.use("/brands", require("../modules/brand/routes"))
 module.exports = router;
