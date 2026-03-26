@@ -4,6 +4,7 @@ const crypto = require("crypto");
 const config = require("config");
 const dao = require("./dao");
 const axios = require("axios");
+const s3Service = require("../../services/s3");
 const { v4: uuidv4 } = require("uuid");
 const {
   Msg91Error,
@@ -502,4 +503,43 @@ exports.deleteAccount = async (userId) => {
   await dao.softDeleteUser(userId);
 
   return true;
+};
+
+
+
+exports.updateProfileImage = async (userId, file) => {
+  if (!file) {
+    throw new ValidationError("Profile image is required");
+  }
+
+  const user = await dao.findUserById(userId);
+
+  if (!user) {
+    throw new NotFoundError("User not found");
+  }
+
+  const key = s3Service.generateFileName(file.originalname, userId, "profile");
+
+  await s3Service.uploadProfileBuffer(
+    file.buffer,
+    key,
+    file.mimetype,
+    {
+      "uploaded-by": userId.toString(),
+      "upload-type": "profile",
+    }
+  );
+
+  const imageUrl = s3Service.getFileUrl(key);
+
+  // delete old image
+  if (user.profileImage) {
+    const oldKey = user.profileImage.split(".amazonaws.com/")[1];
+    await s3Service.deleteObject(oldKey);
+  }
+
+  //correct DAO use
+  await dao.updateUser(userId, { profileImage: imageUrl });
+
+  return { profileImage: imageUrl };
 };

@@ -5,7 +5,11 @@ const apiResponse = require("../../utils/apiResponse");
  * CREATE BRAND
  */
 exports.create = async (req, res) => {
-  const brand = await brandService.createBrand(req.body, req.user);
+  const brand = await brandService.createBrand(
+    req.body,
+    req.user,
+    req.files
+  );
 
   return apiResponse.success(
     res,
@@ -14,7 +18,6 @@ exports.create = async (req, res) => {
     201
   );
 };
-
 /**
  * GET BRAND BY PUBLIC ID
  */

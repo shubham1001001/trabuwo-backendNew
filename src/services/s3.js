@@ -168,6 +168,34 @@ const generatePresignedUrlBulk = async (images, userId) => {
   return results;
 };
 
+
+// profile image upload
+
+const uploadProfileBuffer = async (buffer, key, contentType, metadata = {}) => {
+  try {
+    const command = new PutObjectCommand({
+      Bucket: config.get("aws.s3.bucketName"),
+      Key: key,
+      Body: buffer,
+      ContentType: contentType,
+        // ACL: "public-read",
+      Metadata: {
+        ...metadata, //now defined
+      },
+    });
+
+    await s3Client.send(command);
+
+    return key;
+  } catch (error) {
+    throw new ApiError(
+      500,
+      `Failed to upload buffer to S3: ${error.message}`,
+      "S3_UPLOAD_ERROR"
+    );
+  }
+};
+
 module.exports = {
   generatePresignedUrl,
   generatePresignedUrlBulk,
@@ -175,4 +203,6 @@ module.exports = {
   generateSignedDownloadUrl,
   deleteObject,
   uploadBuffer,
+  uploadProfileBuffer,
+  generateFileName
 };

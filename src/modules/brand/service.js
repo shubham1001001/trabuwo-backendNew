@@ -1,7 +1,8 @@
 const dao = require("./dao");
 const slugify = require("slugify");
 const { v4: uuidv4 } = require("uuid");
-
+const axios = require("axios");
+const s3Service = require("../../services/s3");
 const {
   NotFoundError,
   ConflictError,
@@ -10,28 +11,76 @@ const {
 /**
  * CREATE BRAND
  */
-exports.createBrand = async (payload, user) => {
+exports.createBrand = async (payload, user, files) => {
   const { name } = payload;
 
-  // slug generate
   const slug = slugify(name, { lower: true, strict: true });
 
-  // duplicate check
   const existing = await dao.findBySlug(slug);
   if (existing) {
     throw new ConflictError("Brand already exists");
   }
 
+  let logoUrl = null;
+  let bannerUrl = null;
+
+  //Upload LOGO
+  if (files?.logo?.[0]) {
+    const file = files.logo[0];
+
+    const key = s3Service.generateFileName(
+      file.originalname,
+      user.id,
+      "brand/logo"
+    );
+
+    await s3Service.uploadProfileBuffer(
+      file.buffer,
+      key,
+      file.mimetype,
+      {
+        "uploaded-by": user.id.toString(),
+        "upload-type": "brand-logo",
+      }
+    );
+
+    logoUrl = s3Service.getFileUrl(key);
+  }
+
+  //Upload BANNER
+  if (files?.banner?.[0]) {
+    const file = files.banner[0];
+
+    const key = s3Service.generateFileName(
+      file.originalname,
+      user.id,
+      "brand/banner"
+    );
+
+    await s3Service.uploadProfileBuffer(
+      file.buffer,
+      key,
+      file.mimetype,
+      {
+        "uploaded-by": user.id.toString(),
+        "upload-type": "brand-banner",
+      }
+    );
+
+    bannerUrl = s3Service.getFileUrl(key);
+  }
+
   const brand = await dao.create({
     ...payload,
     slug,
-     publicId: uuidv4(),
+    logoUrl,
+    bannerUrl,
+    publicId: uuidv4(),
     createdBy: user?.id,
   });
 
   return brand;
 };
-
 /**
  * GET BRAND BY PUBLIC ID
  */

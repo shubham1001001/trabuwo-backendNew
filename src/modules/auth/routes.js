@@ -1,4 +1,5 @@
 const express = require("express");
+const multer = require("multer");
 const router = express.Router();
 const authController = require("./controller");
 const {
@@ -19,6 +20,15 @@ const {
 } = require("./validation");
 const asyncHandler = require("../../utils/asyncHandler");
 const { authenticate } = require("../../middleware/auth");
+
+
+
+
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 5 * 1024 * 1024 },
+});
+
 
 /**
  * @swagger
@@ -1108,5 +1118,35 @@ router.delete(
   "/delete-account",
   authenticate,
   asyncHandler(authController.deleteAccount)
+);
+
+
+/**
+ * @swagger
+ * /api/auth/profile-image:
+ *   patch:
+ *     summary: Upload/Update profile image
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               profileImage:
+ *                 type: string
+ *                 format: binary
+ *     responses:
+ *       200:
+ *         description: Profile image updated successfully
+ */
+router.patch(
+  "/profile-image",
+  authenticate,
+  upload.single("profileImage"),
+  asyncHandler(authController.updateProfileImage)
 );
 module.exports = router;

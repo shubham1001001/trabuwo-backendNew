@@ -1,11 +1,15 @@
 const express = require("express");
 const router = express.Router();
-
+const multer = require("multer");
 const controller = require("./controller");
 const validation = require("./validation");
 
 const asyncHandler = require("../../utils/asyncHandler");
 const { authenticate, requireRole } = require("../../middleware/auth");
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 5 * 1024 * 1024 },
+});
 
 /**
  * @swagger
@@ -18,7 +22,7 @@ const { authenticate, requireRole } = require("../../middleware/auth");
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             required:
@@ -27,12 +31,12 @@ const { authenticate, requireRole } = require("../../middleware/auth");
  *               name:
  *                 type: string
  *                 example: Nike
- *               logoUrl:
+ *               logo:
  *                 type: string
- *                 example: https://example.com/logo.png
- *               bannerUrl:
+ *                 format: binary
+ *               banner:
  *                 type: string
- *                 example: https://example.com/banner.png
+ *                 format: binary
  *               description:
  *                 type: string
  *                 example: Sports brand
@@ -47,13 +51,19 @@ const { authenticate, requireRole } = require("../../middleware/auth");
  *       409:
  *         $ref: '#/components/responses/Conflict'
  */
+
 router.post(
   "/",
   authenticate,
   requireRole("admin"),
+  upload.fields([
+    { name: "logo", maxCount: 1 },
+    { name: "banner", maxCount: 1 },
+  ]),
   validation.create,
   asyncHandler(controller.create)
 );
+
 
 /**
  * @swagger

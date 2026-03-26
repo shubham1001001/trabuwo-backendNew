@@ -237,3 +237,11 @@ console.log("id>>>>",userId)
     "Account deleted successfully"
   );
 };
+
+exports.updateProfileImage = async (req, res) => {
+  const userId = req.user.id;
+
+  const data = await authService.updateProfileImage(userId, req.file);
+
+  return apiResponse.success(res, data, "Profile image updated");
+};

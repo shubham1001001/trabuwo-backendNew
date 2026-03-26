@@ -23,7 +23,7 @@ exports.findUserById = (id, options = {}) => User.findByPk(id, options);
 exports.findUserByPublicId = (publicId, options = {}) =>
   User.findOne({ where: { publicId }, ...options });
 exports.updateUser = (id, data) =>
-  User.update(data, { where: { id }, returning: true });
+  User.update(data, { where: { id }, returning: true , validate: false,});
 
 exports.createRefreshToken = (data) => RefreshToken.create(data);
 exports.findRefreshToken = (token) =>
