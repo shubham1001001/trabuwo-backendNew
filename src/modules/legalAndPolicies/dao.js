@@ -175,3 +175,14 @@ exports.listAgreementsForUser = (userId, options = {}) => {
   });
 };
 
+exports.listPolicyTypes = (options = {}) => {
+  const { limit, offset } = options;
+
+  return PolicyType.findAndCountAll({
+    where: { is_active: true },
+    attributes: ["id", "code", "displayName"],
+    order: [["createdAt", "ASC"]],
+    limit,
+    offset,
+  });
+};

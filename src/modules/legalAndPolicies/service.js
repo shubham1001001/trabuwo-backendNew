@@ -282,3 +282,27 @@ exports.listUserAgreements = async (userId, { page = 1, limit = 20 }) => {
   };
 };
 
+
+const toPolicyTypeDto = (data) => ({
+  id: data.id,
+  code: data.code,
+  displayName: data.displayName,
+});
+exports.listPolicyTypes = async ({ page = 1, limit = 20 }) => {
+  const offset = (page - 1) * limit;
+
+  const { rows, count } = await dao.listPolicyTypes({
+    limit,
+    offset,
+  });
+
+  return {
+    policyTypes: rows.map(toPolicyTypeDto),
+    pagination: {
+      currentPage: page,
+      total: count,
+      limit,
+      totalPages: Math.ceil(count / limit),
+    },
+  };
+};

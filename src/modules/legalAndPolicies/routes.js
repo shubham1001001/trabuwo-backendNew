@@ -312,4 +312,42 @@ router.get(
   asyncHandler(controller.listUserAgreements),
 );
 
+
+/**
+ * @swagger
+ * /api/legal-and-policies/policy-types:
+ *   get:
+ *     summary: Get all active policy types (Buyer App)
+ *     tags: [LegalAndPolicies]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Policy types fetched successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                       code:
+ *                         type: string
+ *                       displayName:
+ *                         type: string
+ *       401:
+ *         $ref: '#/components/responses/Unauthorized'
+ */
+router.get(
+  "/policy-types",
+  asyncHandler(controller.getPolicyTypes)
+);
+
 module.exports = router;

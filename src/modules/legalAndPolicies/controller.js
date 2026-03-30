@@ -119,3 +119,18 @@ exports.listUserAgreements = async (req, res) => {
   );
 };
 
+exports.getPolicyTypes = async (req, res) => {
+  const { page = 1, limit = 20 } = req.query;
+
+  const result = await service.listPolicyTypes({
+    page: Number(page),
+    limit: Number(limit),
+  });
+
+  return apiResponse.success(
+    res,
+    result,
+    "Policy types fetched successfully"
+  );
+};
+
