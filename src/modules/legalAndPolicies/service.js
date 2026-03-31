@@ -306,3 +306,12 @@ exports.listPolicyTypes = async ({ page = 1, limit = 20 }) => {
     },
   };
 };
+
+
+
+
+
+
+exports.getActivePolicyByType = async (code) => {
+  return await dao.findActivePolicyByTypeCode(code);
+};

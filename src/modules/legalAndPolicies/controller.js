@@ -134,3 +134,61 @@ exports.getPolicyTypes = async (req, res) => {
   );
 };
 
+// exports.getActivePolicyByType = async (req, res) => {
+//   const { type } = req.query;
+
+//   if (!type) {
+//     return apiResponse.error(res, "Policy type is required", 400);
+//   }
+
+//   const result = await service.getActivePolicyByType(type);
+
+//   return apiResponse.success(
+//     res,
+//     result,
+//     "Active policy fetched successfully"
+//   );
+// };
+
+const toPolicyByTypeDto = (data) => {
+  const version = data.versions?.[0];
+
+  return {
+    id: data.id,
+    slug: data.slug,
+    displayName: data.displayName,
+    policyType: {
+      id: data.policyType.id,
+      code: data.policyType.code,
+      displayName: data.policyType.displayName,
+    },
+    version: {
+      versionNumber: version.versionNumber,
+      contentMarkdown: version.contentMarkdown,
+      createdAt: version.createdAt,
+    },
+  };
+};
+exports.getActivePolicyByType = async (req, res) => {
+  const { type } = req.query;
+
+  if (!type) {
+    return apiResponse.error(res, "Policy type is required", 400);
+  }
+
+  const policy = await service.getActivePolicyByType(type);
+
+  if (!policy) {
+    return apiResponse.error(
+      res,
+      "There is no active policy for this policy type",
+      404
+    );
+  }
+
+  return apiResponse.success(
+    res,
+    toPolicyByTypeDto(policy),
+    "Active policy fetched successfully"
+  );
+};

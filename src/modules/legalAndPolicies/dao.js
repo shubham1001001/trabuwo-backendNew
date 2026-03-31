@@ -186,3 +186,31 @@ exports.listPolicyTypes = (options = {}) => {
     offset,
   });
 };
+
+
+exports.findActivePolicyByTypeCode = (code) => {
+  return Policy.findOne({
+    attributes: ["id", "publicId", "slug", "displayName"],
+    include: [
+      {
+        model: PolicyType,
+        as: "policyType",
+        where: { code }, 
+        attributes: ["id", "code", "displayName"],
+      },
+      {
+        model: PolicyVersion,
+        as: "versions",
+        where: { isActive: true },
+        required: true, 
+        attributes: [
+          "id",
+          "publicId",
+          "versionNumber",
+          "contentMarkdown",
+          "createdAt",
+        ],
+      },
+    ],
+  });
+};

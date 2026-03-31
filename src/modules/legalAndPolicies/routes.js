@@ -107,6 +107,97 @@ router.get(
   asyncHandler(controller.listPolicies),
 );
 
+
+
+
+
+
+
+
+/**
+ * @swagger
+ * /api/legal-and-policies/policies/active-by-type:
+ *   get:
+ *     summary: Get active policy content by policy type (Buyer App)
+ *     description: Fetch the active policy along with its latest version content using policy type code (e.g., privacy_policy, terms_of_service)
+ *     tags: [LegalAndPolicies]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: type
+ *         required: true
+ *         schema:
+ *           type: string
+ *           example: privacy_policy
+ *         description: Policy type code (from policy-types API)
+ *     responses:
+ *       200:
+ *         description: Active policy fetched successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Active policy fetched successfully
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                       example: 2
+ *                     slug:
+ *                       type: string
+ *                       example: privacy-policy
+ *                     displayName:
+ *                       type: string
+ *                       example: Privacy Policy
+ *                     policyType:
+ *                       type: object
+ *                       properties:
+ *                         id:
+ *                           type: integer
+ *                           example: 2
+ *                         code:
+ *                           type: string
+ *                           example: privacy_policy
+ *                         displayName:
+ *                           type: string
+ *                           example: Privacy Policy
+ *                     version:
+ *                       type: object
+ *                       properties:
+ *                         versionNumber:
+ *                           type: integer
+ *                           example: 1
+ *                         contentMarkdown:
+ *                           type: string
+ *                           example: "# Privacy Policy\nYour data is safe..."
+ *                         createdAt:
+ *                           type: string
+ *                           format: date-time
+ *                           example: 2026-03-01T10:00:00Z
+ *       400:
+ *         description: Policy type is required
+ *       401:
+ *         $ref: '#/components/responses/Unauthorized'
+ *       404:
+ *         description: No active policy found for this type
+ */
+
+router.get(
+  "/policies/active-by-type",
+  asyncHandler(controller.getActivePolicyByType)
+);
+
+
+
+
 /**
  * @swagger
  * /api/legal-and-policies/policies/{publicId}:
@@ -349,5 +440,62 @@ router.get(
   "/policy-types",
   asyncHandler(controller.getPolicyTypes)
 );
+
+
+
+/**
+ * @swagger
+ * /api/legal-and-policies/policies/active:
+ *   get:
+ *     summary: Get all active policies with latest version (Buyer App)
+ *     tags: [LegalAndPolicies]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Active policies fetched successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     policies:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           id:
+ *                             type: integer
+ *                           slug:
+ *                             type: string
+ *                           displayName:
+ *                             type: string
+ *                           policyType:
+ *                             type: object
+ *                           version:
+ *                             type: object
+ *       401:
+ *         $ref: '#/components/responses/Unauthorized'
+ */
+router.get(
+  "/policies/active",
+  asyncHandler(controller.getActivePolicies)
+);
+
+
+
+
+
+
+
+
+
+
+
 
 module.exports = router;
