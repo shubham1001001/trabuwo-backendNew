@@ -1,4 +1,5 @@
 const service = require("./service");
+const categoryService = require("../category/service");
 const apiResponse = require("../../utils/apiResponse");
 const asyncHandler = require("../../utils/asyncHandler");
 
@@ -58,6 +59,27 @@ const sanitizePayload = (payload) => {
   return sanitized;
 };
 
+const formatCategoryResponse = (category) => {
+  if (!category) return null;
+
+  const data = category.toJSON ? category.toJSON() : category;
+
+  const formatted = {
+    ...data,
+    imageUrl: data.imageUrl
+      ? data.imageUrl.startsWith("http")
+        ? data.imageUrl
+        : `https://${data.imageUrl}`
+      : null,
+  };
+
+  if (data.children && Array.isArray(data.children)) {
+    formatted.children = data.children.map(formatCategoryResponse);
+  }
+
+  return formatted;
+};
+
 const formatHomeCategoryResponse = (homeCategory) => {
   if (!homeCategory) return null;
 
@@ -83,11 +105,11 @@ const formatHomeCategoryResponse = (homeCategory) => {
     parent: data.parent ? formatHomeCategoryResponse(data.parent) : null,
     redirectCategory: data.redirectCategory
       ? {
-          id: data.redirectCategory.id,
-          publicId: data.redirectCategory.publicId,
-          name: data.redirectCategory.name,
-          slug: data.redirectCategory.slug,
-        }
+        id: data.redirectCategory.id,
+        publicId: data.redirectCategory.publicId,
+        name: data.redirectCategory.name,
+        slug: data.redirectCategory.slug,
+      }
       : null,
     children: data.children
       ? Array.isArray(data.children)
@@ -235,5 +257,24 @@ exports.getHomeCategoriesForHomePage = asyncHandler(async (req, res) => {
     res,
     formatted,
     "Home categories retrieved successfully"
+  );
+});
+
+exports.getMobileHomePageData = asyncHandler(async (req, res) => {
+  const categoryTree = await categoryService.getCategoryTree();
+  const homeCategories = await service.getHomeCategoriesForHomePage("mobile");
+
+  const formattedCategoryTree = categoryTree.map(formatCategoryResponse);
+  const formattedHomeCategories = homeCategories.map(formatHomeCategoryResponse);
+
+  const responseData = [
+    formattedCategoryTree,
+    formattedHomeCategories
+  ];
+
+  return apiResponse.success(
+    res,
+    responseData,
+    "Mobile home page data retrieved successfully"
   );
 });

@@ -41,6 +41,7 @@ const Category = sequelize.define(
     isGold: { type: DataTypes.BOOLEAN, defaultValue: false },
     displayOrderWeb: { type: DataTypes.INTEGER, defaultValue: 1 },
     showOnWeb: { type: DataTypes.BOOLEAN, defaultValue: false },
+    imageUrl: { type: DataTypes.STRING, allowNull: true },
     attributes_schema: { type: DataTypes.JSON, allowNull: true, comment: 'Dynamic attribute definitions for category' },
   },
   {

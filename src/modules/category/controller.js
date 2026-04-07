@@ -2,11 +2,35 @@ const service = require("./service");
 const apiResponse = require("../../utils/apiResponse");
 const { ValidationError, NotFoundError } = require("../../utils/errors");
 
+const formatCategoryResponse = (category) => {
+  if (!category) return null;
+
+  const data = category.toJSON ? category.toJSON() : category;
+
+  return {
+    ...data,
+    imageUrl: data.imageUrl
+      ? data.imageUrl.startsWith("http")
+        ? data.imageUrl
+        : `https://${data.imageUrl}`
+      : null,
+  };
+};
+
 exports.createCategory = async (req, res) => {
-  const category = await service.createCategory(req.body);
+  const imageBuffer = req.file ? req.file.buffer : null;
+  const mimeType = req.file ? req.file.mimetype : null;
+  const imageName = req.file ? req.file.originalname : null;
+
+  const category = await service.createCategory(
+    req.body,
+    imageBuffer,
+    mimeType,
+    imageName
+  );
   return apiResponse.success(
     res,
-    category,
+    formatCategoryResponse(category),
     "Category created successfully",
     201
   );
@@ -14,7 +38,11 @@ exports.createCategory = async (req, res) => {
 
 exports.getCategoryById = async (req, res) => {
   const category = await service.getCategoryById(req.params.id);
-  return apiResponse.success(res, category, "Category retrieved successfully");
+  return apiResponse.success(
+    res,
+    formatCategoryResponse(category),
+    "Category retrieved successfully"
+  );
 };
 
 exports.getAllCategories = async (req, res) => {
@@ -29,9 +57,10 @@ exports.getAllCategories = async (req, res) => {
   }
 
   const categories = await service.getAllCategories(filters);
+  const formattedCategories = categories.map(formatCategoryResponse);
   return apiResponse.success(
     res,
-    categories,
+    formattedCategories,
     "Categories retrieved successfully"
   );
 };
@@ -41,10 +70,21 @@ exports.updateCategory = async (req, res) => {
   if (isNaN(id)) {
     throw new ValidationError("Invalid category ID");
   }
-  const updatedCategory = await service.updateCategoryById(id, req.body);
+
+  const imageBuffer = req.file ? req.file.buffer : null;
+  const mimeType = req.file ? req.file.mimetype : null;
+  const imageName = req.file ? req.file.originalname : null;
+
+  const updatedCategory = await service.updateCategoryById(
+    id,
+    req.body,
+    imageBuffer,
+    mimeType,
+    imageName
+  );
   return apiResponse.success(
     res,
-    updatedCategory,
+    formatCategoryResponse(updatedCategory),
     "Category updated successfully"
   );
 };
@@ -57,7 +97,7 @@ exports.hideUnhideCategory = async (req, res) => {
   const action = req.body.isVisible ? "shown" : "hidden";
   return apiResponse.success(
     res,
-    updatedCategory,
+    formatCategoryResponse(updatedCategory),
     `Category ${action} successfully`
   );
 };
@@ -74,9 +114,10 @@ exports.getCategoriesByParentId = async (req, res) => {
   }
 
   const categories = await service.getCategoriesByParentId(parentId);
+  const formattedCategories = categories.map(formatCategoryResponse);
   return apiResponse.success(
     res,
-    categories,
+    formattedCategories,
     "Child categories retrieved successfully"
   );
 };
@@ -91,7 +132,7 @@ exports.getCategoryWithChildren = async (req, res) => {
   const category = await service.getCategoryWithChildren(req.params.id);
   return apiResponse.success(
     res,
-    category,
+    formatCategoryResponse(category),
     "Category with children retrieved successfully"
   );
 };
@@ -100,7 +141,7 @@ exports.getCategoryWithParent = async (req, res) => {
   const category = await service.getCategoryWithParent(req.params.id);
   return apiResponse.success(
     res,
-    category,
+    formatCategoryResponse(category),
     "Category with parent retrieved successfully"
   );
 };
@@ -195,5 +236,5 @@ exports.getCategoryDetailsById = async (req, res) => {
     throw new NotFoundError("Category not found");
   }
 
-  return apiResponse.success(res, category);
+  return apiResponse.success(res, formatCategoryResponse(category));
 };

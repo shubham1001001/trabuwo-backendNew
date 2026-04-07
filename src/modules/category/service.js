@@ -8,6 +8,15 @@ const {
 } = require("./helper");
 const catalogueDao = require("../catalogue/dao");
 const categorySchemaService = require("../categorySchema/service");
+const s3Service = require("../../services/s3");
+const config = require("config");
+const { v7: uuidv7 } = require("uuid");
+const {
+  convertToWebP,
+  sanitizeFileName,
+  DEFAULT_QUALITY,
+} = require("../../utils/imageProcessor");
+const logger = require("../../config/logger");
 
 exports.rebuildAllBreadcrumbs = async () => {
   const allCategories = await dao.getAllCategories({ isDeleted: false });
@@ -36,7 +45,12 @@ exports.rebuildAllBreadcrumbs = async () => {
   return true;
 };
 
-exports.createCategory = async (data) => {
+exports.createCategory = async (
+  data,
+  imageBuffer = null,
+  mimeType = null,
+  imageName = null
+) => {
   const existing = await dao.getAllCategories({
     name: data.name,
     parentId: data.parentId || null,
@@ -55,6 +69,28 @@ exports.createCategory = async (data) => {
   }
 
   const created = await dao.createCategory(data);
+
+  if (imageBuffer && mimeType) {
+    try {
+      const webpBuffer = await convertToWebP(
+        imageBuffer,
+        DEFAULT_QUALITY,
+        mimeType,
+        256,
+        256
+      );
+      const sanitizedName = sanitizeFileName(imageName);
+      const key = `category-images/${created.id}/${sanitizedName}-${uuidv7()}.webp`;
+      await s3Service.uploadBuffer(webpBuffer, key, "image/webp");
+      const imageUrl = `${config.get("aws.cloudfront.domain")}/${key}`;
+      await dao.updateCategoryById(created.id, { imageUrl });
+    } catch (err) {
+      logger.error("Failed to upload category image during creation", {
+        categoryId: created.id,
+        error: err,
+      });
+    }
+  }
 
   // Regenerate slug after creation to ensure it's hierarchical
   // This includes the newly created category in allCategories for proper hierarchical slug generation
@@ -101,7 +137,13 @@ exports.getAllCategories = async (filters = {}) => {
   return await dao.getAllCategories(filters);
 };
 
-exports.updateCategoryById = async (id, data) => {
+exports.updateCategoryById = async (
+  id,
+  data,
+  imageBuffer = null,
+  mimeType = null,
+  imageName = null
+) => {
   const category = await dao.getCategoryById(id);
   if (!category || category.isDeleted) {
     throw new NotFoundError("Category not found");
@@ -132,10 +174,12 @@ exports.updateCategoryById = async (id, data) => {
         throw new ValidationError("Parent category does not exist");
       }
 
-      const allCategories = await dao.getAllCategoriesPlain({ isDeleted: false });
+      const allCategories = await dao.getAllCategoriesPlain({
+        isDeleted: false,
+      });
       if (wouldCreateCycle(allCategories, parseInt(id), data.parentId)) {
         throw new ValidationError(
-          "Setting this parent would create a circular dependency in the category hierarchy.",
+          "Setting this parent would create a circular dependency in the category hierarchy."
         );
       }
     }
@@ -149,16 +193,55 @@ exports.updateCategoryById = async (id, data) => {
     dataToUpdate.parentId = data.parentId;
   }
   if (data.isVisible !== undefined) {
-    dataToUpdate.isVisible = data.isVisible;
+    dataToUpdate.isVisible =
+      data.isVisible === "true" || data.isVisible === true;
   }
   if (data.showOnWeb !== undefined) {
-    dataToUpdate.showOnWeb = data.showOnWeb;
+    dataToUpdate.showOnWeb =
+      data.showOnWeb === "true" || data.showOnWeb === true;
   }
   if (data.isGold !== undefined) {
-    dataToUpdate.isGold = data.isGold;
+    dataToUpdate.isGold = data.isGold === "true" || data.isGold === true;
   }
   if (data.displayOrderWeb !== undefined) {
-    dataToUpdate.displayOrderWeb = data.displayOrderWeb;
+    dataToUpdate.displayOrderWeb = parseInt(data.displayOrderWeb, 10);
+  }
+
+  if (imageBuffer && mimeType) {
+    try {
+      const webpBuffer = await convertToWebP(
+        imageBuffer,
+        DEFAULT_QUALITY,
+        mimeType,
+        256,
+        256
+      );
+      const sanitizedName = sanitizeFileName(imageName);
+      const key = `category-images/${id}/${sanitizedName}-${uuidv7()}.webp`;
+      await s3Service.uploadBuffer(webpBuffer, key, "image/webp");
+      dataToUpdate.imageUrl = `${config.get("aws.cloudfront.domain")}/${key}`;
+
+      // Delete old image if exists
+      if (category.imageUrl) {
+        const oldKey = category.imageUrl.replace(
+          `${config.get("aws.cloudfront.domain")}/`,
+          ""
+        );
+        try {
+          await s3Service.deleteObject(oldKey);
+        } catch (s3err) {
+          logger.warn("Failed to delete old category image from S3", {
+            oldKey,
+            error: s3err,
+          });
+        }
+      }
+    } catch (err) {
+      logger.error("Failed to upload category image during update", {
+        categoryId: id,
+        error: err,
+      });
+    }
   }
 
   const needsSlugRegeneration =

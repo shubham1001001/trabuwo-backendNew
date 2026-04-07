@@ -126,6 +126,34 @@ router.get(
 
 /**
  * @swagger
+ * /api/home-categories/home-page/mobile:
+ *   get:
+ *     summary: Get all category tree and mobile home categories for mobile app
+ *     tags: [HomeCategories]
+ *     responses:
+ *       200:
+ *         description: Mobile home page data retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: array
+ *       500:
+ *         $ref: '#/components/responses/InternalError'
+ */
+router.get(
+  "/home-page/mobile",
+  asyncHandler(controller.getMobileHomePageData)
+);
+
+/**
+ * @swagger
  * /api/home-categories/section/{sectionId}:
  *   get:
  *     summary: Get home categories by section (public endpoint)
