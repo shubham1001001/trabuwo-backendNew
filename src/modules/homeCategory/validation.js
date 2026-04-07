@@ -249,7 +249,21 @@ exports.deleteHomeCategoryValidation = [
   handleValidationErrors,
 ];
 
-exports.getHomeCategoriesForHomePageValidation = [handleValidationErrors];
+exports.getHomeCategoriesForHomePageValidation = [
+  query("deviceType")
+    .optional({ checkFalsy: true })
+    .isIn(["mobile", "web", "both"])
+    .withMessage("deviceType must be one of: mobile, web, both"),
+  handleValidationErrors,
+];
+
+exports.getHomeCategoryTreeValidation = [
+  query("deviceType")
+    .optional({ checkFalsy: true })
+    .isIn(["mobile", "web", "both"])
+    .withMessage("deviceType must be one of: mobile, web, both"),
+  handleValidationErrors,
+];
 
 exports.getHomeCategoriesBySectionValidation = [
   param("sectionId")

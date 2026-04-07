@@ -38,8 +38,10 @@ const Category = sequelize.define(
     },
     isVisible: { type: DataTypes.BOOLEAN, defaultValue: true },
     isDeleted: { type: DataTypes.BOOLEAN, defaultValue: false },
+    isGold: { type: DataTypes.BOOLEAN, defaultValue: false },
     displayOrderWeb: { type: DataTypes.INTEGER, defaultValue: 1 },
     showOnWeb: { type: DataTypes.BOOLEAN, defaultValue: false },
+    attributes_schema: { type: DataTypes.JSON, allowNull: true, comment: 'Dynamic attribute definitions for category' },
   },
   {
     timestamps: true,

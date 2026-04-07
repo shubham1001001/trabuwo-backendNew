@@ -13,11 +13,13 @@ const HomeCategory = sequelize.define(
       defaultValue: () => uuidv7(),
       allowNull: false,
       unique: true,
+      field: "public_id",
     },
     name: { type: DataTypes.STRING, allowNull: false },
     parentId: {
       type: DataTypes.INTEGER,
       allowNull: true,
+      field: "parent_id",
       references: {
         model: "home_categories",
         key: "id",
@@ -26,42 +28,49 @@ const HomeCategory = sequelize.define(
     sectionId: {
       type: DataTypes.INTEGER,
       allowNull: true,
+      field: "section_id",
       references: {
-        model: CategorySection,
+        model: "category_sections",
         key: "id",
       },
     },
     redirectCategoryId: {
       type: DataTypes.INTEGER,
       allowNull: true,
+      field: "redirect_category_id",
       references: {
-        model: Category,
+        model: "categories",
         key: "id",
       },
     },
     imgUrl: {
       type: DataTypes.STRING(500),
       allowNull: true,
+      field: "img_url",
     },
     displayOrder: {
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 1,
+      field: "display_order",
     },
     isActive: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: true,
+      field: "is_active",
     },
     isDeleted: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: false,
+      field: "is_deleted",
     },
     deviceType: {
       type: DataTypes.ENUM("mobile", "web", "both"),
       allowNull: false,
       defaultValue: "both",
+      field: "device_type",
     },
     filters: {
       type: DataTypes.JSONB,
@@ -72,6 +81,7 @@ const HomeCategory = sequelize.define(
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: false,
+      field: "show_on_home_page",
     },
   },
   {

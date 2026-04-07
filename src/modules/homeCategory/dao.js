@@ -2,12 +2,35 @@ const HomeCategory = require("./model");
 const { buildHomeCategoryTree } = require("./helper");
 const { Op } = require("sequelize");
 
+exports.countActiveHomeCategories = async (deviceType = null) => {
+  const where = {
+    isActive: true,
+    isDeleted: false,
+    parentId: null
+  };
+
+  if (deviceType && deviceType !== "both") {
+    where.deviceType = {
+      [Op.in]: ["both", deviceType]
+    };
+  }
+
+  return await HomeCategory.count({ where });
+};
+
+
 exports.createHomeCategory = async (data) => {
   return await HomeCategory.create(data);
 };
 
 exports.getHomeCategoryById = async (id) => {
   return await HomeCategory.findByPk(id);
+};
+
+exports.getHomeCategoryByName = async (name) => {
+  return await HomeCategory.findOne({
+    where: { name, isDeleted: false },
+  });
 };
 
 exports.getAllHomeCategories = async (filters = {}) => {
@@ -81,13 +104,21 @@ exports.getHomeCategoriesBySectionId = async (sectionId, deviceType = null) => {
   });
 };
 
-exports.getHomeCategoryTree = async () => {
+exports.getHomeCategoryTree = async (deviceType = null) => {
   const CategorySection = require("../categorySection/model");
+  const where = {
+    isDeleted: false,
+    isActive: true,
+  };
+
+  if (deviceType && deviceType !== "both") {
+    where.deviceType = {
+      [Op.in]: ["both", deviceType],
+    };
+  }
+
   const homeCategories = await HomeCategory.findAll({
-    where: {
-      isDeleted: false,
-      isActive: true,
-    },
+    where,
     include: [
       {
         model: CategorySection,
@@ -146,14 +177,22 @@ exports.getHomeCategoryByPublicId = async (publicId) => {
   });
 };
 
-exports.getHomeCategoriesForHomePage = async () => {
+exports.getHomeCategoriesForHomePage = async (deviceType = null) => {
+  const where = {
+    parentId: null,
+    showOnHomePage: true,
+    isDeleted: false,
+    isActive: true,
+  };
+
+  if (deviceType && deviceType !== "both") {
+    where.deviceType = {
+      [Op.in]: ["both", deviceType],
+    };
+  }
+
   return await HomeCategory.findAll({
-    where: {
-      parentId: null,
-      showOnHomePage: true,
-      isDeleted: false,
-      isActive: false,
-    },
+    where,
     include: [
       {
         model: HomeCategory,
@@ -162,7 +201,7 @@ exports.getHomeCategoriesForHomePage = async () => {
         separate: true,
         where: {
           isDeleted: false,
-          isActive: false,
+          isActive: true,
         },
         attributes: [
           "id",

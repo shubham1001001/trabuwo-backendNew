@@ -20,6 +20,26 @@ exports.createHomeCategory = async (
   mimeType = null,
   imageName = null
 ) => {
+  // Check name uniqueness
+  if (payload.name) {
+    const existingName = await dao.getHomeCategoryByName(payload.name);
+    if (existingName) {
+      throw new ValidationError("A home category with this name already exists. Please choose a unique name.");
+    }
+  }
+
+  // Check active limit if new category is being set to active
+  const deviceType = payload.deviceType || "both";
+  if (payload.isActive === true && payload.parentId === null) {
+    if (deviceType === "web" || deviceType === "both") {
+      const activeWebCount = await dao.countActiveHomeCategories("web");
+      if (activeWebCount >= 8) {
+        throw new ValidationError("Maximum of 8 home categories can be active for Web at a time. Please deactivate an existing one first.");
+      }
+    }
+    // Mobile limit can be added here if needed in the future
+  }
+
   if (payload.parentId) {
     const parent = await dao.getHomeCategoryById(payload.parentId);
     if (!parent || parent.isDeleted) {
@@ -92,6 +112,14 @@ exports.getAllHomeCategories = async (filters = {}) => {
   return await dao.getAllHomeCategories(where);
 };
 
+exports.getHomeCategoryByPublicId = async (publicId) => {
+  const existing = await dao.getHomeCategoryByPublicId(publicId);
+  if (!existing || existing.isDeleted) {
+    throw new NotFoundError("Home category not found");
+  }
+  return existing;
+};
+
 exports.updateHomeCategory = async (
   publicId,
   payload,
@@ -102,6 +130,13 @@ exports.updateHomeCategory = async (
   const existing = await dao.getHomeCategoryByPublicId(publicId);
   if (!existing || existing.isDeleted) {
     throw new NotFoundError("Home category not found");
+  }
+
+  if (payload.name && payload.name !== existing.name) {
+    const existingName = await dao.getHomeCategoryByName(payload.name);
+    if (existingName) {
+      throw new ValidationError("A home category with this name already exists. Please choose a unique name.");
+    }
   }
 
   if (payload.parentId !== undefined && payload.parentId === existing.id) {
@@ -190,7 +225,18 @@ exports.updateHomeCategory = async (
       if (payload.displayOrder !== undefined) {
         updateData.displayOrder = payload.displayOrder;
       }
-      if (payload.isActive !== undefined) {
+      if (payload.isActive !== undefined && payload.parentId === null) {
+        if (payload.isActive === true && (existing.isActive !== true || payload.deviceType !== undefined)) {
+          const targetDevice = payload.deviceType || existing.deviceType;
+          if (targetDevice === "web" || targetDevice === "both") {
+             const activeWebCount = await dao.countActiveHomeCategories("web");
+             // If we're already part of the web count, we don't increment the check
+             const isAlreadyWeb = existing.isActive && (existing.deviceType === "web" || existing.deviceType === "both");
+             if (activeWebCount >= 8 && !isAlreadyWeb) {
+               throw new ValidationError("Maximum of 8 home categories can be active for Web at a time. Please deactivate an existing one first.");
+             }
+          }
+        }
         updateData.isActive = payload.isActive;
       }
       if (payload.showOnHomePage !== undefined) {
@@ -227,19 +273,20 @@ exports.updateHomeCategory = async (
 
     const fresh = await dao.getHomeCategoryById(existing.id);
     return fresh;
-  } catch (error) {
-    if (imageBuffer && mimeType && newImgKey) {
-      try {
-        await s3Service.deleteObject(newImgKey);
-      } catch (err) {
-        logger.error("Failed to delete new image after update error", {
-          newImgKey,
-          error: err,
-        });
+    } catch (err) {
+      if (imageBuffer && mimeType && newImgKey) {
+        try {
+          await s3Service.deleteObject(newImgKey);
+        } catch (s3err) {
+          logger.error("Failed to delete new image after update error", {
+            newImgKey,
+            error: s3err,
+          });
+        }
       }
+      require('fs').writeFileSync('tmp_err.txt', err.stack || err.toString());
+      throw err;
     }
-    throw error;
-  }
 };
 
 exports.deleteHomeCategory = async (publicId) => {
@@ -252,8 +299,8 @@ exports.deleteHomeCategory = async (publicId) => {
   return true;
 };
 
-exports.getHomeCategoryTree = async () => {
-  return await dao.getHomeCategoryTree();
+exports.getHomeCategoryTree = async (deviceType = null) => {
+  return await dao.getHomeCategoryTree(deviceType);
 };
 
 exports.getHomeCategoriesBySection = async (sectionId, deviceType = null) => {
@@ -265,6 +312,6 @@ exports.getHomeCategoriesBySection = async (sectionId, deviceType = null) => {
   return await dao.getHomeCategoriesBySectionId(sectionId, deviceType);
 };
 
-exports.getHomeCategoriesForHomePage = async () => {
-  return await dao.getHomeCategoriesForHomePage();
+exports.getHomeCategoriesForHomePage = async (deviceType = null) => {
+  return await dao.getHomeCategoriesForHomePage(deviceType);
 };

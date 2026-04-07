@@ -107,6 +107,7 @@ module.exports = (err, req, res, next) => {
   }
 
   if (err instanceof SequelizeDatabaseError) {
+    console.error('DATABASE_ERROR_DETAILS:', err.parent || err);
     return ApiError.send(
       res,
       new ApiError(500, "Database error", "DATABASE_ERROR", err.message)

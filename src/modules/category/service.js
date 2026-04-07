@@ -154,6 +154,9 @@ exports.updateCategoryById = async (id, data) => {
   if (data.showOnWeb !== undefined) {
     dataToUpdate.showOnWeb = data.showOnWeb;
   }
+  if (data.isGold !== undefined) {
+    dataToUpdate.isGold = data.isGold;
+  }
   if (data.displayOrderWeb !== undefined) {
     dataToUpdate.displayOrderWeb = data.displayOrderWeb;
   }

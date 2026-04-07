@@ -147,6 +147,40 @@ router.get(
  */
 router.get("/leaves", asyncHandler(controller.getLeafCategories));
 
+/**
+ * @swagger
+ * /api/category/tree:
+ *   get:
+ *     summary: Get category tree structure
+ *     tags: [Category]
+ *     responses:
+ *       200:
+ *         description: Category tree retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Success'
+ *             example:
+ *               success: true
+ *               message: "Category tree fetched"
+ *               data: [
+ *                 {
+ *                   id: 1,
+ *                   name: "Electronics",
+ *                   children: [
+ *                     {
+ *                       id: 2,
+ *                       name: "Smartphones",
+ *                       children: []
+ *                     }
+ *                   ]
+ *                 }
+ *               ]
+ *       500:
+ *         $ref: '#/components/responses/InternalError'
+ */
+router.get("/tree", asyncHandler(controller.getCategoryTree));
+
 // Apply authentication and seller role requirement to all routes
 router.use(authenticate);
 // router.use(requireRole("seller"));
@@ -219,45 +253,6 @@ router.post(
   asyncHandler(controller.createCategory)
 );
 
-/**
- * @swagger
- * /api/category/tree:
- *   get:
- *     summary: Get category tree structure
- *     tags: [Category]
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: Category tree retrieved successfully
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Success'
- *             example:
- *               success: true
- *               message: "Category tree fetched"
- *               data: [
- *                 {
- *                   id: 1,
- *                   name: "Electronics",
- *                   children: [
- *                     {
- *                       id: 2,
- *                       name: "Smartphones",
- *                       children: []
- *                     }
- *                   ]
- *                 }
- *               ]
- *       401:
- *         $ref: '#/components/responses/Unauthorized'
- *       403:
- *         $ref: '#/components/responses/Forbidden'
- *       500:
- *         $ref: '#/components/responses/InternalError'
- */
-router.get("/tree", asyncHandler(controller.getCategoryTree));
 
 /**
  * @swagger

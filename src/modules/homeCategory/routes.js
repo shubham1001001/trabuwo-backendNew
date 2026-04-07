@@ -51,7 +51,11 @@ const upload = multer({
  *       500:
  *         $ref: '#/components/responses/InternalError'
  */
-router.get("/tree", asyncHandler(controller.getHomeCategoryTree));
+router.get(
+  "/tree",
+  validation.getHomeCategoryTreeValidation,
+  asyncHandler(controller.getHomeCategoryTree)
+);
 
 /**
  * @swagger
@@ -174,9 +178,6 @@ router.get(
   asyncHandler(controller.getHomeCategoriesBySection)
 );
 
-// Apply authentication to all routes below
-router.use(authenticate);
-
 /**
  * @swagger
  * /api/home-categories:
@@ -225,6 +226,35 @@ router.get(
   validation.getAllHomeCategoriesValidation,
   asyncHandler(controller.getAllHomeCategories)
 );
+
+/**
+ * @swagger
+ * /api/home-categories/{publicId}:
+ *   get:
+ *     summary: Get home category by public ID
+ *     tags: [HomeCategories]
+ *     parameters:
+ *       - in: path
+ *         name: publicId
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: Home category public ID
+ *     responses:
+ *       200:
+ *         description: Home category retrieved successfully
+ *       404:
+ *         description: Home category not found
+ *       500:
+ *         $ref: '#/components/responses/InternalError'
+ */
+router.get("/:publicId", asyncHandler(controller.getHomeCategoryByPublicId));
+
+// Apply authentication to all routes below
+router.use(authenticate);
+
+
 
 /**
  * @swagger

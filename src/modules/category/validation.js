@@ -50,6 +50,11 @@ exports.createCategoryValidation = [
     })
     .isInt({ min: 0 })
     .withMessage("displayOrderWeb must be a non-negative integer"),
+  body("isGold")
+    .optional({ checkFalsy: true })
+    .toBoolean()
+    .isBoolean()
+    .withMessage("isGold must be a boolean value"),
   handleValidationErrors,
 ];
 
@@ -106,6 +111,11 @@ exports.updateCategoryValidation = [
     })
     .isInt({ min: 0 })
     .withMessage("displayOrderWeb must be a non-negative integer"),
+  body("isGold")
+    .optional({ checkFalsy: true })
+    .toBoolean()
+    .isBoolean()
+    .withMessage("isGold must be a boolean value"),
   handleValidationErrors,
 ];
 

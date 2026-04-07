@@ -8,24 +8,24 @@ const sanitizePayload = (payload) => {
   // Convert empty strings to null, parse integers, leave undefined as undefined
   if (sanitized.parentId !== undefined) {
     sanitized.parentId =
-      sanitized.parentId === "" ? null : parseInt(sanitized.parentId, 10);
+      sanitized.parentId === "" || sanitized.parentId === null ? null : parseInt(sanitized.parentId, 10);
   }
 
   if (sanitized.sectionId !== undefined) {
     sanitized.sectionId =
-      sanitized.sectionId === "" ? null : parseInt(sanitized.sectionId, 10);
+      sanitized.sectionId === "" || sanitized.sectionId === null ? null : parseInt(sanitized.sectionId, 10);
   }
 
   if (sanitized.redirectCategoryId !== undefined) {
     sanitized.redirectCategoryId =
-      sanitized.redirectCategoryId === ""
+      sanitized.redirectCategoryId === "" || sanitized.redirectCategoryId === null
         ? null
         : parseInt(sanitized.redirectCategoryId, 10);
   }
 
   if (sanitized.displayOrder !== undefined) {
     sanitized.displayOrder =
-      sanitized.displayOrder === ""
+      sanitized.displayOrder === "" || sanitized.displayOrder === null
         ? null
         : parseInt(sanitized.displayOrder, 10);
   }
@@ -64,12 +64,17 @@ const formatHomeCategoryResponse = (homeCategory) => {
   const data = homeCategory.toJSON ? homeCategory.toJSON() : homeCategory;
 
   return {
+    id: data.id,
     publicId: data.publicId,
     name: data.name,
     parentId: data.parentId,
     sectionId: data.sectionId,
     redirectCategoryId: data.redirectCategoryId,
-    imgUrl: data.imgUrl,
+    imgUrl: data.imgUrl
+      ? data.imgUrl.startsWith("http")
+        ? data.imgUrl
+        : `https://${data.imgUrl}`
+      : null,
     displayOrder: data.displayOrder,
     isActive: data.isActive,
     deviceType: data.deviceType,
@@ -143,6 +148,15 @@ exports.getAllHomeCategories = asyncHandler(async (req, res) => {
   );
 });
 
+exports.getHomeCategoryByPublicId = asyncHandler(async (req, res) => {
+  const homeCategory = await service.getHomeCategoryByPublicId(req.params.publicId);
+  return apiResponse.success(
+    res,
+    formatHomeCategoryResponse(homeCategory),
+    "Home category retrieved successfully"
+  );
+});
+
 exports.updateHomeCategory = asyncHandler(async (req, res) => {
   const imageBuffer = req.file ? req.file.buffer : null;
   const mimeType = req.file ? req.file.mimetype : null;
@@ -168,7 +182,8 @@ exports.deleteHomeCategory = asyncHandler(async (req, res) => {
 });
 
 exports.getHomeCategoryTree = asyncHandler(async (req, res) => {
-  const tree = await service.getHomeCategoryTree();
+  const deviceType = req.query.deviceType || null;
+  const tree = await service.getHomeCategoryTree(deviceType);
   const formatTree = (nodes) => {
     if (!Array.isArray(nodes)) return [];
     return nodes.map((node) => {
@@ -213,7 +228,8 @@ exports.getHomeCategoriesBySection = asyncHandler(async (req, res) => {
 });
 
 exports.getHomeCategoriesForHomePage = asyncHandler(async (req, res) => {
-  const homeCategories = await service.getHomeCategoriesForHomePage();
+  const deviceType = req.query.deviceType || null;
+  const homeCategories = await service.getHomeCategoriesForHomePage(deviceType);
   const formatted = homeCategories.map((hc) => formatHomeCategoryResponse(hc));
   return apiResponse.success(
     res,
