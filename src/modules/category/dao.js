@@ -43,7 +43,10 @@ exports.getCategoryByPublicId = async (publicId) => {
 exports.getAllCategories = async (filters = {}) => {
   return await Category.findAll({
     where: filters,
-    order: [["name", "ASC"]],
+    order: [
+      [literal('"display_order_web" ASC NULLS LAST')],
+      ["name", "ASC"],
+    ],
   });
 };
 
@@ -57,7 +60,7 @@ exports.getAllCategoriesPlain = async (filters = {}) => {
 exports.getSelectedCategoriesForWeb = async (filters = {}) => {
   return await Category.findAll({
     where: filters,
-    order: [["displayOrderWeb", "ASC"]],
+    order: [[literal('"display_order_web" ASC NULLS LAST')]],
   });
 };
 
@@ -116,7 +119,10 @@ exports.getCategoriesByParentId = async (parentId) => {
       parentId,
       isDeleted: false,
     },
-    order: [["name", "ASC"]],
+    order: [
+      [literal('"display_order_web" ASC NULLS LAST')],
+      ["name", "ASC"],
+    ],
   });
 };
 
@@ -126,7 +132,10 @@ exports.getCategoryTree = async () => {
       isDeleted: false,
       isVisible: true,
     },
-    order: [["displayOrderWeb", "ASC"]],
+    order: [
+      [literal('"display_order_web" ASC NULLS LAST')],
+      ["name", "ASC"],
+    ],
   });
   return buildCategoryTree(categories, null);
 };
@@ -139,7 +148,7 @@ exports.getCategoryWithChildren = async (id) => {
         as: "children",
         where: { isDeleted: false },
         required: false,
-        order: [["displayOrderWeb", "ASC"]],
+        order: [[literal('"display_order_web" ASC NULLS LAST')]],
       },
     ],
   });
@@ -214,7 +223,7 @@ exports.getAllCategoriesForLeafFilter = async () => {
       isDeleted: false,
     },
     order: [
-      ["displayOrderWeb", "ASC"],
+      [literal('"display_order_web" ASC NULLS LAST')],
       ["name", "ASC"],
     ],
   });
@@ -258,8 +267,10 @@ exports.getCategoryChildrenOrSiblings = async (categoryId) => {
     // Return all leaf descendants
     const leafDescendants = getAllLeafDescendants(allCategories, categoryId);
     return leafDescendants.sort((a, b) => {
-      if (a.displayOrderWeb !== b.displayOrderWeb) {
-        return (a.displayOrderWeb || 1) - (b.displayOrderWeb || 1);
+      const orderA = a.displayOrderWeb != null ? a.displayOrderWeb : 999999;
+      const orderB = b.displayOrderWeb != null ? b.displayOrderWeb : 999999;
+      if (orderA !== orderB) {
+        return orderA - orderB;
       }
       return a.name.localeCompare(b.name);
     });
@@ -271,8 +282,10 @@ exports.getCategoryChildrenOrSiblings = async (categoryId) => {
         !categoriesWithChildren.has(cat.id),
     );
     return siblings.sort((a, b) => {
-      if (a.displayOrderWeb !== b.displayOrderWeb) {
-        return (a.displayOrderWeb || 1) - (b.displayOrderWeb || 1);
+      const orderA = a.displayOrderWeb != null ? a.displayOrderWeb : 999999;
+      const orderB = b.displayOrderWeb != null ? b.displayOrderWeb : 999999;
+      if (orderA !== orderB) {
+        return orderA - orderB;
       }
       return a.name.localeCompare(b.name);
     });

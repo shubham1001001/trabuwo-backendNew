@@ -61,6 +61,24 @@ exports.createCategory = async (
     throw new ValidationError("Category name already exists under this parent");
   }
 
+  // Remove displayOrderWeb if it's a subcategory (set to null)
+  if (data.parentId && data.parentId !== 0) {
+    data.displayOrderWeb = null;
+  }
+
+  if (data.displayOrderWeb !== undefined && data.displayOrderWeb !== null && parseInt(data.displayOrderWeb, 10) > 0) {
+    const orderConflict = await dao.getAllCategories({
+      displayOrderWeb: parseInt(data.displayOrderWeb, 10),
+      parentId: data.parentId || null,
+      isDeleted: false,
+    });
+    if (orderConflict.length > 0) {
+      throw new ValidationError(
+        `Display order ${data.displayOrderWeb} is already taken by '${orderConflict[0].name}'`
+      );
+    }
+  }
+
   if (data.parentId) {
     const parent = await dao.getCategoryById(data.parentId);
     if (!parent || parent.isDeleted) {
@@ -185,6 +203,25 @@ exports.updateCategoryById = async (
     }
   }
 
+  // Remove displayOrderWeb if it's a subcategory (set to null)
+  const currentParentId = data.parentId !== undefined ? data.parentId : category.parentId;
+  if (currentParentId && currentParentId !== 0) {
+    data.displayOrderWeb = null;
+  }
+
+  if (data.displayOrderWeb !== undefined && data.displayOrderWeb !== null && parseInt(data.displayOrderWeb, 10) > 0) {
+    const orderConflict = await dao.getAllCategories({
+      displayOrderWeb: parseInt(data.displayOrderWeb, 10),
+      parentId: currentParentId || null,
+      isDeleted: false,
+    });
+    if (orderConflict.length > 0 && orderConflict[0].id !== parseInt(id)) {
+      throw new ValidationError(
+        `Display order ${data.displayOrderWeb} is already taken by '${orderConflict[0].name}'`
+      );
+    }
+  }
+
   const dataToUpdate = {};
   if (data.name) {
     dataToUpdate.name = data.name;
@@ -204,7 +241,8 @@ exports.updateCategoryById = async (
     dataToUpdate.isGold = data.isGold === "true" || data.isGold === true;
   }
   if (data.displayOrderWeb !== undefined) {
-    dataToUpdate.displayOrderWeb = parseInt(data.displayOrderWeb, 10);
+    const parsed = parseInt(data.displayOrderWeb, 10);
+    dataToUpdate.displayOrderWeb = !isNaN(parsed) && parsed !== 0 ? parsed : null;
   }
 
   if (imageBuffer && mimeType) {

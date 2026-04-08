@@ -57,7 +57,19 @@ function buildCategoryTree(categories, parentId = null, _pathFromRoot = new Set(
   }
 
   const sortByDisplayOrder = (nodes) =>
-    nodes.sort((a, b) => (a.displayOrderWeb || 0) - (b.displayOrderWeb || 0));
+    nodes.sort((a, b) => {
+      const orderA = (a.displayOrderWeb !== null && a.displayOrderWeb !== undefined) 
+        ? Number(a.displayOrderWeb) 
+        : 999999;
+      const orderB = (b.displayOrderWeb !== null && b.displayOrderWeb !== undefined) 
+        ? Number(b.displayOrderWeb) 
+        : 999999;
+
+      if (orderA !== orderB) {
+        return orderA - orderB;
+      }
+      return (a.name || "").localeCompare(b.name || "");
+    });
   function sortTree(nodes) {
     sortByDisplayOrder(nodes);
     nodes.forEach((n) => {
@@ -65,6 +77,8 @@ function buildCategoryTree(categories, parentId = null, _pathFromRoot = new Set(
     });
   }
   sortTree(roots);
+  console.log('--- ROOT CATEGORIES SORTED ---');
+  roots.forEach(r => console.log(`[Root] ${r.name} - Order: ${r.displayOrderWeb}`));
 
   if (parentId != null && parentId !== 0) {
     const parentNode = idToNode.get(parentId);
