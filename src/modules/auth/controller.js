@@ -5,12 +5,20 @@ const { generateTokenPair } = require("./service");
 
 exports.setEmailAndPassword = async (req, res) => {
   const { email, password } = req.body;
-  const user = await authService.setEmailAndPassword(
-    req.user.id,
-    email,
-    password
-  );
-  return apiResponse.success(res, user, "User registered successfully.", 201);
+  
+  // If user is already logged in (via OTP), update their email/password
+  if (req.user && req.user.id) {
+    const user = await authService.setEmailAndPassword(
+      req.user.id,
+      email,
+      password
+    );
+    return apiResponse.success(res, user, "User registered successfully.", 201);
+  }
+
+  // Otherwise, create a new user account (Public Signup)
+  const user = await authService.createUser(email, password);
+  return apiResponse.success(res, { id: user.id, email: user.email }, "Account created successfully.", 201);
 };
 
 exports.loginUserWithPassword = async (req, res) => {

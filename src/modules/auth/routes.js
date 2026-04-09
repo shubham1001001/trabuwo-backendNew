@@ -79,7 +79,6 @@ const upload = multer({
  */
 router.post(
   "/register",
-  authenticate,
   registerValidation,
   asyncHandler(authController.setEmailAndPassword)
 );

@@ -40,6 +40,15 @@ exports.getCategoryByPublicId = async (publicId) => {
   });
 };
 
+exports.findCategoryBySlugOrName = async (value) => {
+  return await Category.findOne({
+    where: {
+      isDeleted: false,
+      [Op.or]: [{ slug: value }, { name: value }],
+    },
+  });
+};
+
 exports.getAllCategories = async (filters = {}) => {
   return await Category.findAll({
     where: filters,

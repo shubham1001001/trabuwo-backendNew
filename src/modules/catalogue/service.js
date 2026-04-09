@@ -31,9 +31,56 @@ const {
 } = require("../../utils/errors");
 
 exports.createCatalogue = async (data, userId, options = {}) => {
+  let categoryId = data.categoryId;
+
+  // Resolve publicId (UUID) to internal ID if necessary
+  if (typeof categoryId === "string" && categoryId.length > 10) {
+    const category = await getCategoryByPublicId(categoryId);
+    if (!category) {
+      throw new NotFoundError("Category not found");
+    }
+    categoryId = category.id;
+  }
+
+  let thumbnailUrl = data.thumbnailUrl || null;
+
+  // Auto-set thumbnailUrl if products and images are present
+  if (!thumbnailUrl && data.products && data.products.length > 0) {
+    const firstProduct = data.products[0];
+    if (firstProduct.images && firstProduct.images.length > 0) {
+      // Find primary image or just take the first one
+      const primaryImage = firstProduct.images.find(img => img.isPrimary) || firstProduct.images[0];
+      thumbnailUrl = primaryImage.imageUrl;
+    }
+  }
+
+  // Calculate price ranges from variants
+  let minPrice = Infinity;
+  let maxPrice = -Infinity;
+  let hasPrices = false;
+
+  if (data.products) {
+    data.products.forEach(prd => {
+      if (prd.variants) {
+        prd.variants.forEach(v => {
+          const price = parseFloat(v.trabuwoPrice);
+          if (!isNaN(price)) {
+            if (price < minPrice) minPrice = price;
+            if (price > maxPrice) maxPrice = price;
+            hasPrices = true;
+          }
+        });
+      }
+    });
+  }
+
   const catalogueData = {
     ...data,
+    categoryId,
     userId,
+    thumbnailUrl,
+    minPrice: hasPrices ? minPrice : 0,
+    maxPrice: hasPrices ? maxPrice : 0,
   };
 
   const catalogue = await createCatalogue(catalogueData, options);
@@ -161,8 +208,14 @@ exports.updateQCStatus = async (publicId, status, qcNotes = null) => {
     );
   }
 
+  // Automaticaly transition qc_passed to live for buyer visibility
+  let finalStatus = status;
+  if (status === "qc_passed") {
+    finalStatus = "live";
+  }
+
   const updateData = {
-    status,
+    status: finalStatus,
     qcNotes,
     qcReviewedAt: new Date(),
   };
@@ -226,10 +279,23 @@ exports.getAllCataloguesWithKeysetPagination = async (options) => {
     normalizedFilters.discount = Math.min(...discountValues);
   }
 
+  // Handle 'category' string filter (name or slug) from buyer frontend
+  let resolvedCategoryId = categoryId;
+  const categoryFilter = normalizedFilters.category;
+  delete normalizedFilters.category;
+
+  if (!resolvedCategoryId && categoryFilter) {
+    const { findCategoryBySlugOrName } = require("../category/dao");
+    const foundCategory = await findCategoryBySlugOrName(categoryFilter);
+    if (foundCategory) {
+      resolvedCategoryId = foundCategory.id;
+    }
+  }
+
   let categoryIds = null;
 
-  if (categoryId) {
-    const parsedCategoryId = parseInt(categoryId, 10);
+  if (resolvedCategoryId) {
+    const parsedCategoryId = parseInt(resolvedCategoryId, 10);
     if (isNaN(parsedCategoryId)) {
       throw new ValidationError("Category ID must be a valid integer");
     }

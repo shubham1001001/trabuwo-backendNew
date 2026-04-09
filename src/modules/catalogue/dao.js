@@ -9,9 +9,22 @@ const WishlistItem = require("../wishlist/model");
 const CursorHelper = require("../../utils/cursorHelper");
 const sellerOnboardingDao = require("../sellerOnboarding/dao");
 const storeFollowDao = require("../storeFollow/dao");
+const { User } = require("../auth/model");
 
 exports.createCatalogue = async (data, options = {}) => {
-  return await Catalogue.create(data, options);
+  return await Catalogue.create(data, {
+    ...options,
+    include: [
+      {
+        model: Product,
+        as: "products",
+        include: [
+          { model: ProductImage, as: "images" },
+          { model: ProductVariant, as: "variants" },
+        ],
+      },
+    ],
+  });
 };
 
 exports.getCatalogueById = async (id) => {
@@ -238,6 +251,8 @@ exports.getCataloguesByStatus = async (status, options = {}) => {
       "averageRating",
       "reviewsCount",
       "thumbnailUrl",
+      "minPrice",
+      "maxPrice",
       "createdAt",
       "updatedAt",
     ],
@@ -246,6 +261,44 @@ exports.getCataloguesByStatus = async (status, options = {}) => {
         model: Category,
         as: "category",
         attributes: ["id", "name", "slug"],
+      },
+      {
+        model: User,
+        as: "seller",
+        attributes: ["id", "publicId"],
+        include: [
+          {
+            model: require("../sellerOnboarding/model").SellerOnboarding,
+            as: "sellerOnboarding",
+            attributes: ["id"],
+            include: [
+              {
+                model: require("../sellerOnboarding/model").Store,
+                as: "store",
+                attributes: ["name", "ownerFullName"],
+              },
+            ],
+          },
+        ],
+      },
+      {
+        model: Product,
+        as: "products",
+        attributes: ["id", "publicId", "name"],
+        include: [
+          {
+            model: ProductImage,
+            as: "images",
+            attributes: ["imageUrl", "isPrimary", "sortOrder"],
+            required: false,
+          },
+          {
+            model: ProductVariant,
+            as: "variants",
+            attributes: ["id", "trabuwoPrice", "mrp", "inventory"],
+            required: false,
+          },
+        ],
       },
     ],
     order: [["createdAt", "DESC"]],
@@ -456,7 +509,7 @@ exports.getAllCataloguesWithKeysetPagination = async (options) => {
     userId = null,
   } = options;
 
-  const whereClause = { isDeleted: false };
+  const whereClause = { isDeleted: false, status: "live" };
 
   if (!sortBy && cursor) {
     const decodedCursor = CursorHelper.decodeCursor(cursor);
