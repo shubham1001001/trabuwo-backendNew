@@ -30,6 +30,45 @@ const {
   ResourceCreationError,
 } = require("../../utils/errors");
 
+exports.calculateCatalogueSummary = (products) => {
+  let thumbnailUrl = null;
+  let minPrice = Infinity;
+  let maxPrice = -Infinity;
+  let hasPrices = false;
+
+  if (products && products.length > 0) {
+    // Set thumbnailUrl from first product's primary image
+    const firstProduct = products[0];
+    if (firstProduct.images && firstProduct.images.length > 0) {
+      const primaryImage =
+        firstProduct.images.find((img) => img.isPrimary) ||
+        firstProduct.images[0];
+      thumbnailUrl = primaryImage.imageUrl;
+    }
+
+    // Calculate price ranges
+    products.forEach((prd) => {
+      if (prd.variants) {
+        prd.variants.forEach((v) => {
+          const price = parseFloat(v.trabuwoPrice);
+          if (!isNaN(price)) {
+            if (price < minPrice) minPrice = price;
+            if (price > maxPrice) maxPrice = price;
+            hasPrices = true;
+          }
+        });
+      }
+    });
+  }
+
+  return {
+    thumbnailUrl,
+    minPrice: hasPrices ? minPrice : 0,
+    maxPrice: hasPrices ? maxPrice : 0,
+  };
+};
+
+
 exports.createCatalogue = async (data, userId, options = {}) => {
   let categoryId = data.categoryId;
 
@@ -42,46 +81,17 @@ exports.createCatalogue = async (data, userId, options = {}) => {
     categoryId = category.id;
   }
 
-  let thumbnailUrl = data.thumbnailUrl || null;
-
-  // Auto-set thumbnailUrl if products and images are present
-  if (!thumbnailUrl && data.products && data.products.length > 0) {
-    const firstProduct = data.products[0];
-    if (firstProduct.images && firstProduct.images.length > 0) {
-      // Find primary image or just take the first one
-      const primaryImage = firstProduct.images.find(img => img.isPrimary) || firstProduct.images[0];
-      thumbnailUrl = primaryImage.imageUrl;
-    }
-  }
-
-  // Calculate price ranges from variants
-  let minPrice = Infinity;
-  let maxPrice = -Infinity;
-  let hasPrices = false;
-
-  if (data.products) {
-    data.products.forEach(prd => {
-      if (prd.variants) {
-        prd.variants.forEach(v => {
-          const price = parseFloat(v.trabuwoPrice);
-          if (!isNaN(price)) {
-            if (price < minPrice) minPrice = price;
-            if (price > maxPrice) maxPrice = price;
-            hasPrices = true;
-          }
-        });
-      }
-    });
-  }
+  const summary = exports.calculateCatalogueSummary(data.products);
 
   const catalogueData = {
     ...data,
     categoryId,
     userId,
-    thumbnailUrl,
-    minPrice: hasPrices ? minPrice : 0,
-    maxPrice: hasPrices ? maxPrice : 0,
+    thumbnailUrl: data.thumbnailUrl || summary.thumbnailUrl,
+    minPrice: summary.minPrice,
+    maxPrice: summary.maxPrice,
   };
+
 
   const catalogue = await createCatalogue(catalogueData, options);
   return catalogue;
@@ -208,17 +218,24 @@ exports.updateQCStatus = async (publicId, status, qcNotes = null) => {
     );
   }
 
-  // Automaticaly transition qc_passed to live for buyer visibility
+  // Automatically transition qc_passed to live for buyer visibility
   let finalStatus = status;
   if (status === "qc_passed") {
     finalStatus = "live";
   }
 
+  // Recalculate summary fields (price, thumbnail) before going live
+  // We need to fetch the catalogue with products and variants to get the latest data
+  const fullCatalogue = await getCatalogueById(catalogue.id);
+  const summary = exports.calculateCatalogueSummary(fullCatalogue.products);
+
   const updateData = {
     status: finalStatus,
     qcNotes,
     qcReviewedAt: new Date(),
+    ...summary,
   };
+
 
   const updatedCatalogue = await updateCatalogueById(catalogue.id, updateData);
   if (!updatedCatalogue) {
@@ -280,71 +297,66 @@ exports.getAllCataloguesWithKeysetPagination = async (options) => {
   }
 
   // Handle 'category' string filter (name or slug) from buyer frontend
-  let resolvedCategoryId = categoryId;
+  let resolvedCategoryIds = [];
+  if (categoryId) {
+    resolvedCategoryIds = Array.isArray(categoryId) ? categoryId : [categoryId];
+  }
+
   const categoryFilter = normalizedFilters.category;
   delete normalizedFilters.category;
 
-  if (!resolvedCategoryId && categoryFilter) {
+  if (resolvedCategoryIds.length === 0 && categoryFilter) {
     const { findCategoryBySlugOrName } = require("../category/dao");
     const foundCategory = await findCategoryBySlugOrName(categoryFilter);
     if (foundCategory) {
-      resolvedCategoryId = foundCategory.id;
+      resolvedCategoryIds = [foundCategory.id];
     }
   }
 
-  let categoryIds = null;
+  let finalCategoryIds = null;
 
-  if (resolvedCategoryId) {
-    const parsedCategoryId = parseInt(resolvedCategoryId, 10);
-    if (isNaN(parsedCategoryId)) {
-      throw new ValidationError("Category ID must be a valid integer");
-    }
+  if (resolvedCategoryIds.length > 0) {
+    const allCategoriesPlain = await getAllCategoriesPlain({ isDeleted: false });
 
-    const category = await getCategoryById(parsedCategoryId);
-    if (!category || category.isDeleted) {
-      throw new NotFoundError("Category not found");
-    }
-
-    const categoriesPlain = await getAllCategoriesPlain({ isDeleted: false });
-
-    // Build children map to check if category has children
+    // Build children map and set of categories with children (not leaves)
     const childrenMap = new Map();
-    categoriesPlain.forEach((cat) => {
+    const categoriesWithChildren = new Set();
+    allCategoriesPlain.forEach((cat) => {
       if (cat.parentId != null && cat.parentId !== 0) {
         if (!childrenMap.has(cat.parentId)) {
           childrenMap.set(cat.parentId, []);
         }
         childrenMap.get(cat.parentId).push(cat);
+        categoriesWithChildren.add(cat.parentId);
       }
     });
 
-    // Identify categories that have children
-    const categoriesWithChildren = new Set();
-    categoriesPlain.forEach((cat) => {
-      if (childrenMap.has(cat.id)) {
-        categoriesWithChildren.add(cat.id);
-      }
-    });
+    const combinedLeafIds = new Set();
 
-    // Check if category is a leaf (has no children)
-    const isLeaf = !categoriesWithChildren.has(parsedCategoryId);
+    for (const rawId of resolvedCategoryIds) {
+      const parsedId = parseInt(rawId, 10);
+      if (isNaN(parsedId)) continue;
 
-    if (isLeaf) {
-      // If it's a leaf category, use just this categoryId
-      categoryIds = [parsedCategoryId];
-    } else {
-      // If it's not a leaf, get all leaf descendant category IDs
-      const leafDescendants = getAllLeafDescendants(
-        categoriesPlain,
-        parsedCategoryId,
-      );
-      categoryIds = leafDescendants.map((cat) => cat.id);
-
-      if (!categoryIds || categoryIds.length === 0) {
-        categoryIds = [parsedCategoryId];
+      const isLeaf = !categoriesWithChildren.has(parsedId);
+      if (isLeaf) {
+        combinedLeafIds.add(parsedId);
+      } else {
+        const leafDescendants = getAllLeafDescendants(
+          allCategoriesPlain,
+          parsedId,
+        );
+        leafDescendants.forEach((leaf) => combinedLeafIds.add(leaf.id));
       }
     }
-  } else if (!normalizedSearch && personalize && userId) {
+
+    if (combinedLeafIds.size > 0) {
+      finalCategoryIds = Array.from(combinedLeafIds);
+    }
+  }
+
+  // --- Start of Personalize / Trending Logic (runs only if no specific category selected) ---
+  if (!finalCategoryIds && !normalizedSearch && personalize && userId) {
+
     // Handle personalize feature: convert slugs to categoryIds
     const slugs = await getUserViewedCategorySlugs(userId, { limit: 5 });
     if (slugs.length > 0) {
@@ -407,9 +419,10 @@ exports.getAllCataloguesWithKeysetPagination = async (options) => {
   }
 
   // Add categoryIds to filters if we have any
-  if (categoryIds && categoryIds.length > 0) {
-    normalizedFilters.categoryIds = categoryIds;
+  if (finalCategoryIds && finalCategoryIds.length > 0) {
+    normalizedFilters.categoryIds = finalCategoryIds;
   }
+
 
   const result = await getAllCataloguesWithKeysetPagination({
     cursor,

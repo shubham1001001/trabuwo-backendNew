@@ -234,11 +234,23 @@ exports.authenticateWithOtp = async ({ mobile, otp }) => {
 };
 
 exports.authenticateWithPassword = async ({ email, password }) => {
-  const user = await dao.findUserWithRoles({ email });
+  const isEmail = email.includes("@");
+  const isMobile = !isEmail && /^\d{10}$/.test(email);
+
+  let user;
+  if (isEmail) {
+    user = await dao.findUserWithRoles({ email });
+  } else if (isMobile) {
+    user = await dao.findUserWithRoles({ mobile: email });
+  } else {
+    // Attempt email lookup as fallback for malformed but potentially valid identifiers
+    user = await dao.findUserWithRoles({ email });
+  }
 
   if (!user) {
-    throw new AuthenticationError("Invalid email or password");
+    throw new AuthenticationError("Invalid identifier or password");
   }
+
 
 
    if (user.status === "deleted") {

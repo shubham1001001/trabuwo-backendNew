@@ -27,9 +27,20 @@ exports.createCatalogue = async (data, options = {}) => {
   });
 };
 
-exports.getCatalogueById = async (id) => {
+exports.getCatalogueById = async (id, options = {}) => {
   return await Catalogue.findOne({
     where: { id, isDeleted: false },
+    include: [
+      {
+        model: Product,
+        as: "products",
+        include: [
+          { model: ProductImage, as: "images" },
+          { model: ProductVariant, as: "variants" },
+        ],
+      },
+    ],
+    ...options,
   });
 };
 

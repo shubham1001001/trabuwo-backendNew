@@ -122,10 +122,29 @@ exports.getCategoriesByParentId = async (req, res) => {
   );
 };
 
+const formatTreeImages = (nodes) => {
+  if (!Array.isArray(nodes)) return [];
+  return nodes.map((node) => ({
+    ...node,
+    imageUrl: node.imageUrl
+      ? node.imageUrl.startsWith("http")
+        ? node.imageUrl
+        : `https://${node.imageUrl}`
+      : null,
+    children: node.children ? formatTreeImages(node.children) : [],
+  }));
+};
+
 exports.getCategoryTree = async (req, res) => {
   const tree = await service.getCategoryTree();
-  return apiResponse.success(res, tree, "Category tree retrieved successfully");
+  const formattedTree = formatTreeImages(tree);
+  return apiResponse.success(
+    res,
+    formattedTree,
+    "Category tree retrieved successfully"
+  );
 };
+
 
 // Additional enhanced controller methods
 exports.getCategoryWithChildren = async (req, res) => {

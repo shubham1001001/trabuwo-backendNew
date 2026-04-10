@@ -23,6 +23,8 @@ const sequelize = new Sequelize(
         rejectUnauthorized: false,
       },
     },
+
+
     pool: {
       max: 5, // Maximum connections - optimized for 0.1 CPU Render instance
       min: 2, // Minimum connections - maintains warm connections

@@ -5,6 +5,7 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
+const rateLimit = require("express-rate-limit");
 const logger = require("./config/logger");
 const cookieParser = require("cookie-parser");
 const config = require("config");
@@ -21,6 +22,56 @@ const { Role } = require("./modules/auth/model");
 const { v4: uuidv4 } = require("uuid");
 const asyncHandler = require("./utils/asyncHandler");
 const app = express();
+
+app.use((req, res, next) => {
+  const origin = req.get("origin");
+  if (origin) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+  }
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS"
+  );
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Authorization, X-Platform, X-Requested-With, Accept, Origin"
+  );
+
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(204);
+  }
+  next();
+});
+
+
+// Trust proxy - Required if behind a load balancer (Nginx, AWS ELB, etc.)
+app.set("trust proxy", 1);
+
+// General API rate limiter: max 500 requests per 15 minutes
+const generalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 500,
+  message: {
+    success: false,
+    message: "Too many requests, please try again later.",
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Stricter limiter for Auth/OTP: max 20 requests per 15 minutes
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  message: {
+    success: false,
+    message: "Too many authentication attempts, please try again after 15 minutes",
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 
 // Webhook route - bypasses all middleware except raw body parsing
 const paymentController = require("./modules/payment/controller");
@@ -42,8 +93,9 @@ app.post(
 /*IMPROVEMENT  RATE LIMITING etc before production */
 /*IMPROVEMENT  No API Error throwing in service layer */
 
-app.use(cors());
+
 app.use(helmet());
+
 // app.use(
 //   helmet({
 //     contentSecurityPolicy: {
@@ -108,6 +160,8 @@ app.get(
   }),
 );
 
+app.use("/api/auth", authLimiter);
+app.use("/api", generalLimiter);
 app.use("/api", require("./routes"));
 
 // app.use("/", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
@@ -222,7 +276,7 @@ async function startServer() {
     await seedRoles();
 
     const PORT = config.get("port") || 3000;
-    app.listen(PORT, () => {
+    app.listen(PORT, "0.0.0.0", () => {
       logger.info(`Server running on port ${PORT}`);
     });
   } catch (err) {
