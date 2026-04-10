@@ -18,7 +18,8 @@ const sequelize = require("../../config/database");
 
 exports.createUser = async (email, password) => {
   const hashedPassword = await bcrypt.hash(password, 12);
-  return dao.createUser({ email, password: hashedPassword });
+  // Defaulting to 'admin' for email-based signups to support Admin Panel registration
+  return dao.createUserWithRole({ email, password: hashedPassword }, "admin");
 };
 
 exports.findUserByEmail = (email) => dao.findUserByEmail(email);
