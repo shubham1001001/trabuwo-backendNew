@@ -181,9 +181,34 @@ router.get("/leaves", asyncHandler(controller.getLeafCategories));
  */
 router.get("/tree", asyncHandler(controller.getCategoryTree));
 
-// Apply authentication and seller role requirement to all routes
+/**
+ * @swagger
+ * /api/category/{id}:
+ *   get:
+ *     summary: Get category by ID
+ *     tags: [Category]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Category ID
+ *         example: 1
+ *     responses:
+ *       200:
+ *         description: Category retrieved successfully
+ *       404:
+ *         description: Category not found
+ */
+router.get(
+  "/:id",
+  validation.getCategoryByIdValidation,
+  asyncHandler(controller.getCategoryById)
+);
+
+// Apply authentication and seller role requirement to all routes below
 router.use(authenticate);
-// router.use(requireRole("seller"));
 
 /**
  * @swagger
@@ -379,53 +404,6 @@ router.get(
  *         $ref: '#/components/responses/InternalError'
  */
 router.get("/last-used", asyncHandler(controller.lastUsedCategoryWithChain));
-
-/**
- * @swagger
- * /api/category/{id}:
- *   get:
- *     summary: Get category by ID
- *     tags: [Category]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *         description: Category ID
- *         example: 1
- *     responses:
- *       200:
- *         description: Category retrieved successfully
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Success'
- *             example:
- *               success: true
- *               data:
- *                 id: 1
- *                 name: "Electronics"
- *                 description: "Electronic devices"
- *                 parentId: null
- *                 isVisible: true
- *                 isDeleted: false
- *       401:
- *         $ref: '#/components/responses/Unauthorized'
- *       403:
- *         $ref: '#/components/responses/Forbidden'
- *       404:
- *         $ref: '#/components/responses/NotFound'
- *       500:
- *         $ref: '#/components/responses/InternalError'
- */
-router.get(
-  "/:id",
-  validation.getCategoryByIdValidation,
-  asyncHandler(controller.getCategoryById)
-);
 
 /**
  * @swagger

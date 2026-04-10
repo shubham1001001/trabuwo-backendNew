@@ -242,6 +242,15 @@ exports.updateQCStatus = async (publicId, status, qcNotes = null) => {
     throw new ResourceCreationError("Failed to update QC status");
   }
 
+  // If approved (set to live), also activate all products in this catalogue
+  if (finalStatus === "live") {
+    const { Product } = require("../product/model");
+    await Product.update(
+      { status: "active" },
+      { where: { catalogueId: catalogue.id } }
+    );
+  }
+
   return updatedCatalogue;
 };
 

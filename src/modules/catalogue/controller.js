@@ -1,7 +1,10 @@
+const { NotFoundError, ValidationError } = require("../../utils/errors");
+const bulkService = require("./bulkService");
 const service = require("./service");
+const excelService = require("../../utils/excelService");
+const categoryDao = require("../category/dao");
+const categorySchemaDao = require("../categorySchema/dao");
 const apiResponse = require("../../utils/apiResponse");
-const { findUserByPublicId } = require("../auth/dao");
-const { NotFoundError } = require("../../utils/errors");
 
 exports.createCatalogue = async (req, res) => {
   const catalogue = await service.createCatalogue(req.body, req.user.id);
@@ -142,4 +145,50 @@ exports.getMyCatalogues = async (req, res) => {
 
   const catalogues = await service.getMyCatalogues(req.user.id, options);
   return apiResponse.success(res, catalogues);
+};
+exports.getBulkTemplate = async (req, res) => {
+  const { categoryId } = req.params;
+  const category = await categoryDao.getCategoryById(categoryId);
+  if (!category) {
+    throw new NotFoundError("Category not found");
+  }
+
+  const schemas = await categorySchemaDao.getCategorySchemasByCategoryId(categoryId);
+  const buffer = await excelService.generateBulkCatalogueTemplate(category, schemas);
+
+  res.setHeader(
+    "Content-Type",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+  );
+  res.setHeader(
+    "Content-Disposition",
+    `attachment; filename=${category.name.replace(/\s+/g, "_")}_Bulk_Template.xlsx`
+  );
+
+  return res.send(buffer);
+};
+
+exports.bulkUpload = async (req, res) => {
+  const { categoryId } = req.body;
+  const excelFile = req.files?.["excel"]?.[0];
+  const zipFile = req.files?.["zip"]?.[0];
+
+  if (!categoryId) {
+    throw new ValidationError("Category ID is required");
+  }
+  if (!excelFile) {
+    throw new ValidationError("Excel file is required");
+  }
+  if (!zipFile) {
+    throw new ValidationError("Images Zip file is required");
+  }
+
+  const results = await bulkService.processBulkUpload(
+    req.user.id,
+    categoryId,
+    excelFile.buffer,
+    zipFile.buffer
+  );
+
+  return apiResponse.success(res, results, "Bulk upload processed");
 };

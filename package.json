@@ -32,6 +32,7 @@
     "@opentelemetry/resources": "^2.1.0",
     "@opentelemetry/sdk-node": "^0.205.0",
     "@opentelemetry/semantic-conventions": "^1.37.0",
+    "adm-zip": "^0.5.17",
     "axios": "^1.10.0",
     "bcryptjs": "^3.0.2",
     "config": "^4.0.0",

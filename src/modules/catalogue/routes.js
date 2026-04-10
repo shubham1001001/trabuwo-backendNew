@@ -8,6 +8,12 @@ const {
   requireRole,
   attachUserIfPresent,
 } = require("../../middleware/auth");
+const multer = require("multer");
+const storage = multer.memoryStorage();
+const upload = multer({ 
+  storage: storage,
+  limits: { fileSize: 50 * 1024 * 1024 } // 50MB limit
+});
 
 /**
  * @swagger
@@ -587,6 +593,38 @@ router.post(
   "/create",
   validation.createCatalogueValidation,
   asyncHandler(controller.createCatalogue),
+);
+
+/**
+ * @swagger
+ * /api/catalogue/bulk-template/{categoryId}:
+ *   get:
+ *     summary: Download bulk upload Excel template for a category
+ *     tags: [Catalogue]
+ *     security:
+ *       - bearerAuth: []
+ */
+router.get(
+  "/bulk-template/:categoryId",
+  asyncHandler(controller.getBulkTemplate)
+);
+
+/**
+ * @swagger
+ * /api/catalogue/bulk-upload:
+ *   post:
+ *     summary: Bulk upload catalogues via Excel and Zip
+ *     tags: [Catalogue]
+ *     security:
+ *       - bearerAuth: []
+ */
+router.post(
+  "/bulk-upload",
+  upload.fields([
+    { name: "excel", maxCount: 1 },
+    { name: "zip", maxCount: 1 }
+  ]),
+  asyncHandler(controller.bulkUpload)
 );
 
 /**
