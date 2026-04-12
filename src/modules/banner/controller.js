@@ -8,13 +8,14 @@ exports.createBanner = asyncHandler(async (req, res) => {
   const originalMimeType = req.file ? req.file.mimetype : null;
 
   if (!imageBuffer) {
-    return new ValidationError("Banner image is required");
+    throw new ValidationError("Banner image is required");
   }
 
   const banner = await service.createBanner(
     req.body,
     imageBuffer,
-    originalMimeType
+    originalMimeType,
+    req.file?.originalname
   );
   return apiResponse.success(res, banner, "Banner created successfully", 201);
 });

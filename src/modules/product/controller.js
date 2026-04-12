@@ -102,6 +102,11 @@ exports.generatePresignedUrl = async (req, res) => {
   );
 };
 
+exports.uploadDirect = async (req, res) => {
+  const result = await service.uploadDirect(req.file, req.user.id);
+  return apiResponse.success(res, result, "Image uploaded successfully");
+};
+
 exports.createProductVariant = async (req, res) => {
   const { productId } = req.params;
   const variantData = req.body;

@@ -22,6 +22,14 @@ const {
 module.exports = (err, req, res, next) => {
   logger.error(err);
 
+  if (err.name === "MulterError") {
+    let message = err.message;
+    if (err.code === "LIMIT_FILE_SIZE") {
+      message = "File too large. Maximum size allowed is 50MB.";
+    }
+    return ApiError.send(res, new ApiError(400, message, "FILE_UPLOAD_ERROR"));
+  }
+
   if (err instanceof Msg91Error) {
     return ApiError.send(
       res,

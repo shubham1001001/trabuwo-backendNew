@@ -41,10 +41,6 @@ const generatePresignedUrl = async (fileName, contentType, userId, folder) => {
     Bucket: config.get("aws.s3.bucketName"),
     Key: key,
     ContentType: contentType,
-    Metadata: {
-      "uploaded-by": userId.toString(),
-      "original-name": fileName,
-    },
   });
 
   try {

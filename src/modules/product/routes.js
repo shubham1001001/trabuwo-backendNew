@@ -4,6 +4,12 @@ const controller = require("./controller");
 const validation = require("./validation");
 const asyncHandler = require("../../utils/asyncHandler");
 const { authenticate, attachUserIfPresent } = require("../../middleware/auth");
+const multer = require("multer");
+const storage = multer.memoryStorage();
+const upload = multer({ 
+  storage: storage,
+  limits: { fileSize: 10 * 1024 * 1024 } // 10MB limit for single image
+});
 
 /**
  * @swagger
@@ -646,6 +652,12 @@ router.post(
   "/presigned-url",
   validation.generatePresignedUrlValidation,
   asyncHandler(controller.generatePresignedUrl)
+);
+
+router.post(
+  "/upload-direct",
+  upload.single("image"),
+  asyncHandler(controller.uploadDirect)
 );
 
 /**

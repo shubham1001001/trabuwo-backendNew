@@ -886,6 +886,26 @@ exports.generatePresignedUrl = async (fileName, contentType, userId) => {
   );
 };
 
+exports.uploadDirect = async (file, userId) => {
+  if (!file) {
+    throw new ValidationError("No file provided");
+  }
+
+  const folder = "product_images";
+  const fileName = file.originalname || `upload-${Date.now()}`;
+  const contentType = file.mimetype || "application/octet-stream";
+  
+  const key = s3Service.generateFileName(fileName, userId, folder);
+  
+  await s3Service.uploadBuffer(file.buffer, key, contentType);
+
+  return {
+    url: s3Service.getFileUrl(key),
+    key: key,
+    fileName: fileName
+  };
+};
+
 exports.createProductVariant = async (sourceProductId, variantData, userId) => {
   return await sequelize.transaction(async (t) => {
     const sourceProduct = await dao.getProductById(sourceProductId, userId, {

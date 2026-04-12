@@ -1,71 +1,108 @@
+const { 
+  processImageForUpload, 
+  sanitizeFileName 
+} = require("../../utils/imageProcessor");
+const sharp = require("sharp");
 const dao = require("./dao");
 const s3Service = require("../../services/s3");
-const sharp = require("sharp");
 const config = require("config");
-const { NotFoundError, ResourceCreationError } = require("../../utils/errors");
+const {
+  NotFoundError,
+  ResourceCreationError,
+  ValidationError,
+} = require("../../utils/errors");
+
+const BANNER_QUALITY_RULES = {
+  minWidth: 1440,
+  minHeight: 500,
+  preferredWidth: 1920,
+  preferredHeight: 640,
+};
+
+const buildCdnUrl = (assetPath) => {
+  const cloudfrontDomain = config.get("aws.cloudfront.domain") || "";
+  const normalizedDomain = cloudfrontDomain.replace(/\/+$/, "");
+  const normalizedPath = String(assetPath || "").replace(/^\/+/, "");
+
+  if (!normalizedDomain) return normalizedPath;
+  if (/^https?:\/\//i.test(normalizedPath)) return normalizedPath;
+  if (/^https?:\/\//i.test(normalizedDomain)) {
+    return `${normalizedDomain}/${normalizedPath}`;
+  }
+  return `https://${normalizedDomain}/${normalizedPath}`;
+};
+
+const validateBannerImageQuality = async (imageBuffer) => {
+  const metadata = await sharp(imageBuffer).metadata();
+  const width = metadata.width || 0;
+  const height = metadata.height || 0;
+
+  if (!width || !height) {
+    throw new ValidationError("Unable to read banner dimensions");
+  }
+
+  if (
+    width < BANNER_QUALITY_RULES.minWidth ||
+    height < BANNER_QUALITY_RULES.minHeight
+  ) {
+    throw new ValidationError(
+      `Banner too small (${width}x${height}). Minimum required is ${BANNER_QUALITY_RULES.minWidth}x${BANNER_QUALITY_RULES.minHeight}. Recommended ${BANNER_QUALITY_RULES.preferredWidth}x${BANNER_QUALITY_RULES.preferredHeight}.`
+    );
+  }
+
+};
 
 const processAndUploadBannerImages = async (
   imageBuffer,
   bannerId,
-  originalMimeType
+  originalMimeType,
+  originalName = "banner"
 ) => {
   try {
     const sizes = [
-      { name: "small", width: 320 },
-      { name: "medium", width: 768 },
-      { name: "large", width: 1200 },
+      { name: "small", width: 640 },
+      { name: "medium", width: 1280 },
+      { name: "large", width: 1920 },
     ];
 
-    const isWebP = originalMimeType === "image/webp";
-    const imageProcessingPromises = sizes.map(async (size) => {
-      let webpBuffer;
+    const sanitizedName = sanitizeFileName(originalName);
+    const timestamp = Date.now();
 
-      if (isWebP) {
-        webpBuffer = await sharp(imageBuffer)
-          .resize(size.width, null, { withoutEnlargement: true })
-          .toBuffer();
-      } else {
-        webpBuffer = await sharp(imageBuffer)
-          .resize(size.width, null, { withoutEnlargement: true })
-          .webp({ quality: 80 })
-          .toBuffer();
-      }
+    const imageProcessingPromises = sizes.map(async (size) => {
+      const webpBuffer = await processImageForUpload(imageBuffer, {
+        width: size.width,
+        mimeType: originalMimeType,
+        quality: 88
+      });
 
       return {
         size: size.name,
         buffer: webpBuffer,
-        key: `banners/${bannerId}/${size.name}.webp`,
+        key: `banners/${bannerId}/${timestamp}-${size.name}-${sanitizedName}.webp`,
       };
     });
 
     const processedImages = await Promise.all(imageProcessingPromises);
 
-    const uploadPromises = [
-      ...processedImages.map(({ buffer, key }) =>
-        s3Service.uploadBuffer(buffer, key, "image/webp")
-      ),
-      s3Service.uploadBuffer(
-        imageBuffer,
-        `banners/${bannerId}/original.${originalMimeType.split("/")[1]}`,
-        originalMimeType
-      ),
-    ];
+    // Upload processed images
+    const uploadPromises = processedImages.map(({ buffer, key }) =>
+      s3Service.uploadBuffer(buffer, key, "image/webp")
+    );
+
+    // Also upload the original as fallback
+    const originalExt = originalMimeType.split("/")[1] || "jpg";
+    const originalKey = `banners/${bannerId}/${timestamp}-original-${sanitizedName}.${originalExt}`;
+    uploadPromises.push(
+      s3Service.uploadBuffer(imageBuffer, originalKey, originalMimeType)
+    );
 
     const uploadResults = await Promise.all(uploadPromises);
 
     const imageUrls = {
-      smallImageUrl: `${config.get("aws.cloudfront.domain")}/${
-        uploadResults[0]
-      }`,
-      mediumImageUrl: `${config.get("aws.cloudfront.domain")}/${
-        uploadResults[1]
-      }`,
-      largeImageUrl: `${config.get("aws.cloudfront.domain")}/${
-        uploadResults[2]
-      }`,
-      fallbackImageUrl: `${config.get("aws.cloudfront.domain")}/${
-        uploadResults[3]
-      }`,
+      smallImageUrl: buildCdnUrl(uploadResults[0]),
+      mediumImageUrl: buildCdnUrl(uploadResults[1]),
+      largeImageUrl: buildCdnUrl(uploadResults[2]),
+      fallbackImageUrl: buildCdnUrl(uploadResults[3]),
     };
 
     return imageUrls;
@@ -79,23 +116,31 @@ const processAndUploadBannerImages = async (
   }
 };
 
-const createBanner = async (bannerData, imageBuffer, originalMimeType) => {
+const createBanner = async (bannerData, imageBuffer, originalMimeType, originalName = "banner") => {
   try {
+    await validateBannerImageQuality(imageBuffer);
+
+    const parsedIsActive =
+      bannerData.isActive === undefined
+        ? true
+        : bannerData.isActive === "true" || bannerData.isActive === true;
+
     const banner = await dao.createBanner({
       title: bannerData.title,
       description: bannerData.description,
       section: bannerData.section,
-      position: bannerData.position,
-      isActive: bannerData.isActive || true,
+      position: Number(bannerData.position) || 1,
+      isActive: parsedIsActive,
       startTime: bannerData.startTime,
       endTime: bannerData.endTime,
-      clickUrl: bannerData.clickUrl,
+      clickUrl: bannerData.clickUrl || null,
     });
 
     const imageUrls = await processAndUploadBannerImages(
       imageBuffer,
       banner.id,
-      originalMimeType
+      originalMimeType,
+      originalName
     );
 
     const updatedBanner = await dao.updateBannerById(banner.id, imageUrls);
@@ -139,6 +184,7 @@ const updateBannerById = async (
 
   // If new image is provided, process and upload it
   if (imageBuffer && originalMimeType) {
+    await validateBannerImageQuality(imageBuffer);
     imageUrls = await processAndUploadBannerImages(
       imageBuffer,
       id,

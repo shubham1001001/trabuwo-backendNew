@@ -9,7 +9,7 @@ const createBannerValidation = [
     .isLength({ min: 2, max: 100 })
     .withMessage("Banner title must be between 2 and 100 characters"),
   body("description")
-    .optional()
+    .optional({ checkFalsy: true })
     .trim()
     .isLength({ max: 500 })
     .withMessage("Banner description must not exceed 500 characters"),
@@ -18,7 +18,7 @@ const createBannerValidation = [
     .isInt({ min: 1 })
     .withMessage("Position must be a positive integer"),
   body("isActive")
-    .optional()
+    .optional({ checkFalsy: true })
     .isBoolean()
     .withMessage("isActive must be a boolean value"),
   body("startTime")
@@ -28,9 +28,10 @@ const createBannerValidation = [
       if (!value.endsWith("Z") && !value.endsWith("+00:00"))
         throw new Error("Time must be in UTC");
       const startDate = new Date(value);
-      const now = new Date(new Date().toISOString());
-      if (startDate <= now) {
-        throw new Error("startTime must be in the future");
+      const now = new Date();
+      // Allow for a 1-minute grace period
+      if (startDate < new Date(now.getTime() - 60000)) {
+        throw new Error("startTime cannot be in the past");
       }
       return true;
     }),
@@ -47,7 +48,7 @@ const createBannerValidation = [
       return true;
     }),
   body("clickUrl")
-    .optional()
+    .optional({ checkFalsy: true })
     .isURL()
     .withMessage("clickUrl must be a valid URL"),
   handleValidationErrors,
@@ -65,47 +66,58 @@ const updateBannerValidation = [
     .isLength({ min: 2, max: 100 })
     .withMessage("Banner title must be between 2 and 100 characters"),
   body("description")
-    .optional()
+    .optional({ checkFalsy: true })
     .trim()
     .isLength({ max: 500 })
     .withMessage("Banner description must not exceed 500 characters"),
-  body("section").isIn(["home"]).withMessage("Section must be one of: home"),
+  body("section")
+    .optional()
+    .isIn(["home"])
+    .withMessage("Section must be one of: home"),
   body("position")
     .optional()
     .isInt({ min: 1 })
     .withMessage("Position must be a positive integer"),
   body("isActive")
-    .optional()
+    .optional({ checkFalsy: true })
     .isBoolean()
     .withMessage("isActive must be a boolean value"),
   body("startTime")
+    .optional()
     .isISO8601()
     .withMessage("startTime must be a valid ISO 8601 date")
     .custom((value) => {
       if (!value.endsWith("Z") && !value.endsWith("+00:00"))
         throw new Error("Time must be in UTC");
       const startDate = new Date(value);
-      const now = new Date(new Date().toISOString());
-      if (startDate <= now) {
-        throw new Error("startTime must be in the future");
+      const now = new Date();
+      // Allow for a 1-minute grace period
+      if (startDate < new Date(now.getTime() - 60000)) {
+        throw new Error("startTime cannot be in the past");
       }
       return true;
     }),
   body("endTime")
+    .optional()
     .isISO8601()
     .withMessage("endTime must be a valid ISO 8601 date")
     .custom((value, { req }) => {
       if (!value.endsWith("Z") && !value.endsWith("+00:00"))
         throw new Error("Time must be in UTC");
       const endDate = new Date(value);
-      const startDate = new Date(req.body.startTime);
+      const startDate = req.body.startTime
+        ? new Date(req.body.startTime)
+        : null;
+      if (!startDate) {
+        return true;
+      }
       if (endDate <= startDate) {
         throw new Error("endTime must be after startTime");
       }
       return true;
     }),
   body("clickUrl")
-    .optional()
+    .optional({ checkFalsy: true })
     .isURL()
     .withMessage("clickUrl must be a valid URL"),
   handleValidationErrors,
