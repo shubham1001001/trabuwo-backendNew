@@ -54,6 +54,12 @@ const HomeCategory = sequelize.define(
       defaultValue: 1,
       field: "display_order",
     },
+    homeOrder: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 1,
+      field: "home_order",
+    },
     isActive: {
       type: DataTypes.BOOLEAN,
       allowNull: false,

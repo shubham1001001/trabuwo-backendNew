@@ -31,6 +31,13 @@ const sanitizePayload = (payload) => {
         : parseInt(sanitized.displayOrder, 10);
   }
 
+  if (sanitized.homeOrder !== undefined) {
+    sanitized.homeOrder =
+      sanitized.homeOrder === "" || sanitized.homeOrder === null
+        ? null
+        : parseInt(sanitized.homeOrder, 10);
+  }
+
   // Parse filters if it's a string
   if (
     sanitized.filters !== undefined &&
@@ -98,6 +105,7 @@ const formatHomeCategoryResponse = (homeCategory) => {
         : `https://${data.imgUrl}`
       : null,
     displayOrder: data.displayOrder,
+    homeOrder: data.homeOrder,
     isActive: data.isActive,
     deviceType: data.deviceType,
     filters: data.filters,

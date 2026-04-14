@@ -59,4 +59,6 @@ router.use(
   require("../modules/productStockNotification/routes")
 );
 router.use("/brands", require("../modules/brand/routes"))
+router.use("/gold-section", require("../modules/goldSection/routes"));
+router.use("/original-brand-categories", require("../modules/originalBrand/routes"));
 module.exports = router;

@@ -94,7 +94,12 @@ app.post(
 /*IMPROVEMENT  No API Error throwing in service layer */
 
 
-app.use(helmet());
+app.use(
+  helmet({
+    crossOriginEmbedderPolicy: false,
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+  })
+);
 
 // app.use(
 //   helmet({

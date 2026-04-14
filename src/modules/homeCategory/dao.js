@@ -33,10 +33,10 @@ exports.getHomeCategoryByName = async (name) => {
   });
 };
 
-exports.getAllHomeCategories = async (filters = {}) => {
+exports.getAllHomeCategories = async (filters = {}, customOrder = null) => {
   return await HomeCategory.findAll({
     where: filters,
-    order: [
+    order: customOrder || [
       ["displayOrder", "ASC"],
       ["name", "ASC"],
     ],
@@ -211,14 +211,14 @@ exports.getHomeCategoriesForHomePage = async (deviceType = null) => {
           "sectionId",
           "redirectCategoryId",
           "imgUrl",
-          "displayOrder",
+          "homeOrder",
           "isActive",
           "deviceType",
           "filters",
           "showOnHomePage",
         ],
         order: [
-          ["displayOrder", "ASC"],
+          ["homeOrder", "ASC"],
           ["name", "ASC"],
         ],
         include: [
