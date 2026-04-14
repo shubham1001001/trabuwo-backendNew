@@ -766,7 +766,7 @@ exports.generatePresignedUrlValidation = [
     .withMessage("contentType is required")
     .isString()
     .withMessage("contentType must be a string")
-    .matches(/^image\/(jpeg|jpg|png|gif|webp|pjpeg|x-png|jfif)$/i)
+    .matches(/^image\/(jpeg|jpg|png|gif|webp|avif|pjpeg|x-png|jfif)$/i)
     .withMessage("contentType must be a valid image MIME type"),
 
   handleValidationErrors,
