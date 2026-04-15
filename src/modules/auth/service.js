@@ -235,7 +235,7 @@ exports.authenticateWithOtp = async ({ mobile, otp }) => {
 
 exports.authenticateWithPassword = async ({ email, password }) => {
   const isEmail = email.includes("@");
-  const isMobile = !isEmail && /^\d{10}$/.test(email);
+  const isMobile = !isEmail && /^(91)?\d{10}$/.test(email);
 
   let user;
   if (isEmail) {

@@ -13,7 +13,7 @@ exports.registerValidation = [
 ];
 
 exports.loginValidation = [
-  body("email").isEmail().withMessage("Valid email is required"),
+  body("email").notEmpty().withMessage("Valid email or mobile is required"),
   body("password").notEmpty().withMessage("Password is required"),
   handleValidationErrors,
 ];
