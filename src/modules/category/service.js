@@ -339,6 +339,51 @@ exports.getCategoryTree = async () => {
   return await dao.getCategoryTree();
 };
 
+exports.getMobileHomeCategoryTree = async () => {
+  const tree = await dao.getCategoryTree();
+  if (!Array.isArray(tree) || tree.length === 0) {
+    return [];
+  }
+
+  const trendingIndex = tree.findIndex(
+    (node) => String(node?.name || "").toLowerCase() === "trending",
+  );
+
+  const sourceNodesForAll =
+    trendingIndex >= 0
+      ? tree.filter((_, index) => index !== trendingIndex)
+      : tree;
+
+  const allChildren = [];
+  sourceNodesForAll.forEach((node) => {
+    if (Array.isArray(node?.children) && node.children.length > 0) {
+      allChildren.push(...node.children);
+    }
+  });
+
+  if (trendingIndex >= 0) {
+    const trendingNode = tree[trendingIndex];
+    const allNode = {
+      ...trendingNode,
+      name: "All",
+      slug: "all",
+      children: allChildren,
+    };
+
+    return [allNode, ...tree.filter((_, index) => index !== trendingIndex)];
+  }
+
+  return [
+    {
+      name: "All",
+      slug: "all",
+      parentId: null,
+      children: allChildren,
+    },
+    ...tree,
+  ];
+};
+
 // Additional enhanced methods
 exports.getCategoryWithChildren = async (id) => {
   const category = await dao.getCategoryWithChildren(id);

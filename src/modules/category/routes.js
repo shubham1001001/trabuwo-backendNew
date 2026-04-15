@@ -183,6 +183,50 @@ router.get("/tree", asyncHandler(controller.getCategoryTree));
 
 /**
  * @swagger
+ * /api/category/mobile-home:
+ *   get:
+ *     summary: Get mobile home category tree with "All" as first category
+ *     tags: [Category]
+ *     description: Returns category tree for mobile home. The first top-level category is "All" (replacing Trending), and its children include subcategories from all categories except Trending. Leaf categories remain nested under each subcategory.
+ *     responses:
+ *       200:
+ *         description: Mobile home category tree retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Success'
+ *             example:
+ *               success: true
+ *               message: "Mobile home category tree retrieved successfully"
+ *               data: [
+ *                 {
+ *                   id: 769,
+ *                   publicId: "019a876e-35d0-7497-853e-2f26e505c6b4",
+ *                   name: "All",
+ *                   slug: "all",
+ *                   parentId: null,
+ *                   children: [
+ *                     {
+ *                       id: 1087,
+ *                       name: "Electronics",
+ *                       children: [
+ *                         {
+ *                           id: 1088,
+ *                           name: "Smartphones",
+ *                           children: []
+ *                         }
+ *                       ]
+ *                     }
+ *                   ]
+ *                 }
+ *               ]
+ *       500:
+ *         $ref: '#/components/responses/InternalError'
+ */
+router.get("/mobile-home", asyncHandler(controller.getMobileHomeCategoryTree));
+
+/**
+ * @swagger
  * /api/category/{id}:
  *   get:
  *     summary: Get category by ID

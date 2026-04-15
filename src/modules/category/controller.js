@@ -145,6 +145,16 @@ exports.getCategoryTree = async (req, res) => {
   );
 };
 
+exports.getMobileHomeCategoryTree = async (req, res) => {
+  const tree = await service.getMobileHomeCategoryTree();
+  const formattedTree = formatTreeImages(tree);
+  return apiResponse.success(
+    res,
+    formattedTree,
+    "Mobile home category tree retrieved successfully"
+  );
+};
+
 
 // Additional enhanced controller methods
 exports.getCategoryWithChildren = async (req, res) => {
