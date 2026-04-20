@@ -1,6 +1,7 @@
 const dao = require("./dao");
-const { uploadBuffer } = require("../../services/s3");
-const config = require("config");
+const s3Service = require("../../services/s3");
+const { convertToWebP, DEFAULT_QUALITY } = require("../../utils/imageProcessor");
+const { v4: uuidv4 } = require("uuid");
 
 const getAllOriginalBrands = async (filter = {}) => {
   return await dao.findAll(filter);
@@ -8,11 +9,9 @@ const getAllOriginalBrands = async (filter = {}) => {
 
 const createOriginalBrand = async (data, file) => {
   if (file) {
-    const s3Key = await uploadBuffer(
-      file.buffer,
-      `original-brands/${Date.now()}.webp`,
-      file.mimetype
-    );
+    const webpBuffer = await convertToWebP(file.buffer, DEFAULT_QUALITY, file.mimetype);
+    const s3Key = `original-brands/${Date.now()}-${uuidv4()}.webp`;
+    await s3Service.uploadBuffer(webpBuffer, s3Key, "image/webp");
     data.imgUrl = s3Service.getFileUrl(s3Key);
   }
   return await dao.create(data);
@@ -20,11 +19,9 @@ const createOriginalBrand = async (data, file) => {
 
 const updateOriginalBrand = async (publicId, data, file) => {
   if (file) {
-    const s3Key = await uploadBuffer(
-      file.buffer,
-      `original-brands/${Date.now()}.webp`,
-      file.mimetype
-    );
+    const webpBuffer = await convertToWebP(file.buffer, DEFAULT_QUALITY, file.mimetype);
+    const s3Key = `original-brands/${Date.now()}-${uuidv4()}.webp`;
+    await s3Service.uploadBuffer(webpBuffer, s3Key, "image/webp");
     data.imgUrl = s3Service.getFileUrl(s3Key);
   }
   return await dao.update(publicId, data);

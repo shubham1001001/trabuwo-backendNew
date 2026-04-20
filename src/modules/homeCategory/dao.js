@@ -238,7 +238,7 @@ exports.getHomeCategoriesForHomePage = async (deviceType = null) => {
       },
     ],
     order: [
-      ["displayOrder", "ASC"],
+      ["homeOrder", "ASC"],
       ["name", "ASC"],
     ],
   });

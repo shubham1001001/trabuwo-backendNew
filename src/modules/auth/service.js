@@ -547,8 +547,10 @@ exports.updateProfileImage = async (userId, file) => {
 
   // delete old image
   if (user.profileImage) {
-    const oldKey = user.profileImage.split(".amazonaws.com/")[1];
-    await s3Service.deleteObject(oldKey);
+    const oldKey = s3Service.getKeyFromUrl(user.profileImage);
+    if (oldKey) {
+      await s3Service.deleteObject(oldKey);
+    }
   }
 
   //correct DAO use
