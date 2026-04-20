@@ -73,5 +73,14 @@
   },
   "gst": {
     "gstinCheckApiKey": ""
+  },
+  "digitalocean": {
+    "spaceName": "",
+    "region": "sgp1",
+    "endpoint": "",
+    "accessKeyId": "",
+    "secretAccessKey": "",
+    "baseUrl": "",
+    "cdnUrl": ""
   }
 }

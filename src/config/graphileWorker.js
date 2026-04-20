@@ -8,14 +8,15 @@ const graphileConfig = config.get("graphileWorker") || {};
 
 const connectionString = `postgres://${dbConfig.user}:${dbConfig.password}@${dbConfig.host}:${dbConfig.port}/${dbConfig.name}`;
 
-// Dedicated pg pool for Graphile Worker with SSL, matching Sequelize's DB settings
+const isLocalhost = dbConfig.host === "127.0.0.1" || dbConfig.host === "localhost";
+
 const pgPool = new Pool({
   host: dbConfig.host,
   port: dbConfig.port,
   user: dbConfig.user,
   password: dbConfig.password,
   database: dbConfig.name,
-  ssl: {
+  ssl: isLocalhost ? false : {
     require: true,
     rejectUnauthorized: false,
   },

@@ -49,7 +49,7 @@ exports.updateSettings = async (payload, files = {}) => {
         await s3Service.deleteObject(oldKey);
       } catch (err) {}
     }
-    return `${config.get("aws.cloudfront.domain")}/${key}`;
+    return s3Service.getFileUrl(key);
   };
 
   if (files.bgFile) {
@@ -83,5 +83,5 @@ exports.uploadGoldCategoryImage = async (file) => {
         fileName,
         'image/webp'
     );
-    return `${config.get("aws.cloudfront.domain")}/${key}`;
+    return s3Service.getFileUrl(key);
 };

@@ -11,10 +11,11 @@ const ApiError = require("../utils/ApiError");
 const s3ObjectTrackerService = require("../modules/s3ObjectTracker/service");
 
 const s3Client = new S3Client({
-  region: config.get("aws.region"),
+  region: config.get("digitalocean.region"),
+  endpoint: config.get("digitalocean.endpoint"),
   credentials: {
-    accessKeyId: config.get("aws.accessKeyId"),
-    secretAccessKey: config.get("aws.secretAccessKey"),
+    accessKeyId: config.get("digitalocean.accessKeyId"),
+    secretAccessKey: config.get("digitalocean.secretAccessKey"),
   },
 });
 
@@ -27,7 +28,7 @@ const generateFileName = (originalName, userId, folder) => {
 
 const generateSignedDownloadUrl = async (key, expiresIn = 3600) => {
   const command = new GetObjectCommand({
-    Bucket: config.get("aws.s3.bucketName"),
+    Bucket: config.get("digitalocean.spaceName"),
     Key: key,
   });
 
@@ -38,9 +39,10 @@ const generatePresignedUrl = async (fileName, contentType, userId, folder) => {
   const key = generateFileName(fileName, userId, folder);
 
   const command = new PutObjectCommand({
-    Bucket: config.get("aws.s3.bucketName"),
+    Bucket: config.get("digitalocean.spaceName"),
     Key: key,
     ContentType: contentType,
+    ACL: "public-read",
   });
 
   try {
@@ -54,7 +56,7 @@ const generatePresignedUrl = async (fileName, contentType, userId, folder) => {
       presignedUrl,
       key,
       url: getFileUrl(key),
-      bucket: config.get("aws.s3.bucketName"),
+      bucket: config.get("digitalocean.spaceName"),
     };
   } catch (error) {
     throw new ApiError(
@@ -66,15 +68,22 @@ const generatePresignedUrl = async (fileName, contentType, userId, folder) => {
 };
 
 const getFileUrl = (key) => {
-  return `https://${config.get("aws.s3.bucketName")}.s3.${config.get(
-    "aws.region"
-  )}.amazonaws.com/${key}`;
+  const baseUrl = config.get("digitalocean.cdnUrl") || config.get("digitalocean.baseUrl");
+  return `${baseUrl}/${key}`;
+};
+
+const getKeyFromUrl = (url) => {
+  if (!url) return null;
+  const baseUrl = config.get("digitalocean.cdnUrl") || config.get("digitalocean.baseUrl");
+  // Ensure we don't have double slashes if the baseUrl ends with one
+  const cleanBaseUrl = baseUrl.endsWith("/") ? baseUrl.slice(0, -1) : baseUrl;
+  return url.replace(`${cleanBaseUrl}/`, "");
 };
 
 const deleteObject = async (key) => {
   try {
     const command = new DeleteObjectCommand({
-      Bucket: config.get("aws.s3.bucketName"),
+      Bucket: config.get("digitalocean.spaceName"),
       Key: key,
     });
 
@@ -93,10 +102,11 @@ const deleteObject = async (key) => {
 const uploadBuffer = async (buffer, key, contentType) => {
   try {
     const command = new PutObjectCommand({
-      Bucket: config.get("aws.s3.bucketName"),
+      Bucket: config.get("digitalocean.spaceName"),
       Key: key,
       Body: buffer,
       ContentType: contentType,
+      ACL: "public-read",
       Metadata: {
         "uploaded-by": "system",
         "upload-type": "banner",
@@ -120,9 +130,10 @@ const generatePresignedUrlBulk = async (images, userId) => {
     try {
       const key = generateFileName(image.fileName, userId, "product_images");
       const command = new PutObjectCommand({
-        Bucket: config.get("aws.s3.bucketName"),
+        Bucket: config.get("digitalocean.spaceName"),
         Key: key,
         ContentType: image.contentType,
+        ACL: "public-read",
         Metadata: {
           "uploaded-by": userId.toString(),
           "original-name": image.fileName,
@@ -139,7 +150,7 @@ const generatePresignedUrlBulk = async (images, userId) => {
         presignedUrl,
         key,
         url: getFileUrl(key),
-        bucket: config.get("aws.s3.bucketName"),
+        bucket: config.get("digitalocean.spaceName"),
         status: "success",
       };
     } catch (error) {
@@ -170,11 +181,11 @@ const generatePresignedUrlBulk = async (images, userId) => {
 const uploadProfileBuffer = async (buffer, key, contentType, metadata = {}) => {
   try {
     const command = new PutObjectCommand({
-      Bucket: config.get("aws.s3.bucketName"),
+      Bucket: config.get("digitalocean.spaceName"),
       Key: key,
       Body: buffer,
       ContentType: contentType,
-        // ACL: "public-read",
+      ACL: "public-read",
       Metadata: {
         ...metadata, //now defined
       },
@@ -200,5 +211,6 @@ module.exports = {
   deleteObject,
   uploadBuffer,
   uploadProfileBuffer,
-  generateFileName
+  generateFileName,
+  getKeyFromUrl
 };

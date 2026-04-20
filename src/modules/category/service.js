@@ -100,7 +100,7 @@ exports.createCategory = async (
       const sanitizedName = sanitizeFileName(imageName);
       const key = `category-images/${created.id}/${sanitizedName}-${uuidv7()}.webp`;
       await s3Service.uploadBuffer(webpBuffer, key, "image/webp");
-      const imageUrl = `${config.get("aws.cloudfront.domain")}/${key}`;
+      const imageUrl = s3Service.getFileUrl(key);
       await dao.updateCategoryById(created.id, { imageUrl });
     } catch (err) {
       logger.error("Failed to upload category image during creation", {
@@ -257,14 +257,11 @@ exports.updateCategoryById = async (
       const sanitizedName = sanitizeFileName(imageName);
       const key = `category-images/${id}/${sanitizedName}-${uuidv7()}.webp`;
       await s3Service.uploadBuffer(webpBuffer, key, "image/webp");
-      dataToUpdate.imageUrl = `${config.get("aws.cloudfront.domain")}/${key}`;
+      dataToUpdate.imageUrl = s3Service.getFileUrl(key);
 
       // Delete old image if exists
       if (category.imageUrl) {
-        const oldKey = category.imageUrl.replace(
-          `${config.get("aws.cloudfront.domain")}/`,
-          ""
-        );
+        const oldKey = s3Service.getKeyFromUrl(category.imageUrl);
         try {
           await s3Service.deleteObject(oldKey);
         } catch (s3err) {

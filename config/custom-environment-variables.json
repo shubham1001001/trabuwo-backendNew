@@ -75,5 +75,14 @@
   },
   "gst": {
     "gstinCheckApiKey": "GSTIN_API_KEY"
+  },
+  "digitalocean": {
+    "spaceName": "DO_SPACE_NAME",
+    "region": "DO_REGION",
+    "endpoint": "DO_ENDPOINT",
+    "accessKeyId": "DO_ACCESS_KEY",
+    "secretAccessKey": "DO_SECRET_KEY",
+    "baseUrl": "DO_BASE_URL",
+    "cdnUrl": "DO_CDN_URL"
   }
 }

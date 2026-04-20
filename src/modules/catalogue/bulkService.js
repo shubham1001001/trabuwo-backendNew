@@ -190,14 +190,7 @@ class BulkCatalogueService {
               
               await s3Service.uploadBuffer(processedBuffer, key, "image/webp");
               
-              const cfDomain = config.get("aws.cloudfront.domain");
-              let imageUrl;
-              if (cfDomain) {
-                const protocol = cfDomain.startsWith("http") ? "" : "https://";
-                imageUrl = `${protocol}${cfDomain}/${key}`;
-              } else {
-                imageUrl = s3Service.getFileUrl(key);
-              }
+              imageUrl = s3Service.getFileUrl(key);
 
               await ProductImage.create({
                 productId: product.id,

@@ -79,7 +79,7 @@ exports.createAssetWithUpload = async (
         );
         return {
           name: size.name,
-          url: `${config.get("aws.cloudfront.domain")}/${uploadedKey}`,
+          url: s3Service.getFileUrl(uploadedKey),
         };
       })
     );
@@ -162,7 +162,7 @@ exports.updateAssetWithUpload = async (
         );
         return {
           name: size.name,
-          url: `${config.get("aws.cloudfront.domain")}/${uploadedKey}`,
+          url: s3Service.getFileUrl(uploadedKey),
           key: uploadedKey,
         };
       })

@@ -72,7 +72,7 @@ exports.createCategoryIconWithUpload = async (
       "image/webp"
     );
 
-    const iconUrl = `${config.get("aws.cloudfront.domain")}/${uploadedKey}`;
+    const iconUrl = s3Service.getFileUrl(uploadedKey);
 
     const updated = await dao.updateCategoryIconById(
       created.id,
@@ -115,7 +115,7 @@ exports.updateCategoryIconWithUpload = async (
       "image/webp"
     );
     newIconKey = uploadedKey;
-    newIconUrl = `${config.get("aws.cloudfront.domain")}/${uploadedKey}`;
+    newIconUrl = s3Service.getFileUrl(uploadedKey);
   }
 
   try {

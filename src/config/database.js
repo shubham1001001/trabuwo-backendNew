@@ -4,6 +4,8 @@ const logger = require("./logger");
 
 const dbConfig = config.get("db");
 /*IMPROVEMNT Connection Pooling etc before production */
+const isLocalhost = dbConfig.host === "127.0.0.1" || dbConfig.host === "localhost";
+
 const sequelize = new Sequelize(
   dbConfig.name,
   dbConfig.user,
@@ -16,14 +18,14 @@ const sequelize = new Sequelize(
     logging: (msg) => {
       logger.info(`[Sequelize] ${msg}`);
     },
-    dialectOptions: {
-      ssl: {
-        require: true,
-        /*Remember to REMOVE THIS BEFORE DEPLOYING TO PRODUCTION*/
-        rejectUnauthorized: false,
+    ...(isLocalhost ? {} : {
+      dialectOptions: {
+        ssl: {
+          require: true,
+          rejectUnauthorized: false,
+        },
       },
-    },
-
+    }),
 
     pool: {
       max: 5, // Maximum connections - optimized for 0.1 CPU Render instance

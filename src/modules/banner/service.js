@@ -20,16 +20,7 @@ const BANNER_QUALITY_RULES = {
 };
 
 const buildCdnUrl = (assetPath) => {
-  const cloudfrontDomain = config.get("aws.cloudfront.domain") || "";
-  const normalizedDomain = cloudfrontDomain.replace(/\/+$/, "");
-  const normalizedPath = String(assetPath || "").replace(/^\/+/, "");
-
-  if (!normalizedDomain) return normalizedPath;
-  if (/^https?:\/\//i.test(normalizedPath)) return normalizedPath;
-  if (/^https?:\/\//i.test(normalizedDomain)) {
-    return `${normalizedDomain}/${normalizedPath}`;
-  }
-  return `https://${normalizedDomain}/${normalizedPath}`;
+  return s3Service.getFileUrl(assetPath);
 };
 
 const validateBannerImageQuality = async (imageBuffer) => {

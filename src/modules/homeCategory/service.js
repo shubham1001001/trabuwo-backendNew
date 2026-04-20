@@ -79,7 +79,7 @@ exports.createHomeCategory = async (
       created.id
     }/${sanitizedName}-${uuidv7()}.webp`;
     await s3Service.uploadBuffer(webpBuffer, key, "image/webp");
-    updateData.imgUrl = `${config.get("aws.cloudfront.domain")}/${key}`;
+    updateData.imgUrl = s3Service.getFileUrl(key);
   }
 
   if (Object.keys(updateData).length > 0) {
@@ -202,7 +202,7 @@ exports.updateHomeCategory = async (
       key,
       "image/webp"
     );
-    newImgUrl = `${config.get("aws.cloudfront.domain")}/${uploadedKey}`;
+    newImgUrl = s3Service.getFileUrl(uploadedKey);
     newImgKey = uploadedKey;
   }
 

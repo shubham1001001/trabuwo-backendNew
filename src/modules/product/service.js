@@ -283,11 +283,10 @@ exports.createBulkCataloguesWithProducts = async (catalogues, userId) => {
         if (!images.length) continue;
         for (let idx = 0; idx < images.length; idx++) {
           const image = images[idx];
-          const cloudfrontDomain = config.get("aws.cloudfront.domain");
-          const protocol = cloudfrontDomain.startsWith("http") ? "" : "https://";
+          
           imageRows.push({
             productId: created.id,
-            imageUrl: `${protocol}${cloudfrontDomain}/${image.imageKey}`,
+            imageUrl: s3Service.getFileUrl(image.imageKey),
             imageKey: image.imageKey,
             altText: image.altText || "",
             caption: image.caption || "",
@@ -526,13 +525,12 @@ exports.bulkUpdateProductsWithImages = async (
           transaction: t,
         });
 
-        const cloudfrontDomain = config.get("aws.cloudfront.domain");
-        const protocol = cloudfrontDomain.startsWith("http") ? "" : "https://";
+        
 
         // Prepare new images data
         const imageRows = originalProduct.images.map((image, imageIndex) => ({
           productId: productId,
-          imageUrl: `${protocol}${cloudfrontDomain}/${image.imageKey}`,
+          imageUrl: s3Service.getFileUrl(image.imageKey),
           imageKey: image.imageKey,
 
           altText: image.altText || "",
@@ -659,14 +657,13 @@ exports.bulkUpdateCatalogueProducts = async (
     products.forEach((product) => {
       if (product.images && product.images.length > 0) {
         const productId = productIdMap.get(product.publicId);
-        const cloudfrontDomain = config.get("aws.cloudfront.domain");
-        const protocol = cloudfrontDomain.startsWith("http") ? "" : "https://";
+        
 
         product.images.forEach((image, index) => {
           imageRows.push({
             publicId: image.publicId,
             productId: productId,
-            imageUrl: `${protocol}${cloudfrontDomain}/${image.imageKey}`,
+            imageUrl: s3Service.getFileUrl(image.imageKey),
             imageKey: image.imageKey,
 
             altText: image.altText || "",

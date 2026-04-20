@@ -9,12 +9,6 @@ module.exports = {
     host: config.get("db.host"),
     port: config.get("db.port"),
     dialect: "postgres",
-    dialectOptions: {
-      ssl: {
-        require: true,
-        rejectUnauthorized: false,
-      },
-    },
   },
   test: {
     username: config.get("db.user"),
