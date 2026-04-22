@@ -54,8 +54,8 @@ exports.createPaymentOrder = async (
   };
 };
 
-exports.verifyPayment = async (orderPublicId, gatewayPaymentId, signature) => {
-  const payment = await dao.findPaymentByOrderPublicId(orderPublicId);
+exports.verifyPayment = async (paymentPublicId, gatewayPaymentId, signature) => {
+  const payment = await dao.findPaymentByPublicId(paymentPublicId);
   if (!payment) {
     throw new NotFoundError("Payment not found");
   }
@@ -74,6 +74,10 @@ exports.verifyPayment = async (orderPublicId, gatewayPaymentId, signature) => {
     gatewayPaymentId,
     capturedAt: new Date(),
   });
+
+  // Late require to avoid circular dependency
+  const orderService = require("../order/service");
+  await orderService.finalizeOrderAfterPayment(payment.orderId);
 
   return dao.findPaymentById(payment.id);
 };
@@ -106,6 +110,10 @@ exports.processWebhook = async (event, signature, rawBody) => {
         errorCode: null,
         errorDescription: null,
       });
+
+      // Late require to avoid circular dependency
+      const orderService = require("../order/service");
+      await orderService.finalizeOrderAfterPayment(payment.orderId);
       break;
     case "payment.failed":
       await dao.updatePaymentStatusById(payment.id, "failed", {

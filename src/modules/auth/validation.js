@@ -22,6 +22,7 @@ exports.loginWithOtpValidation = [
   body("mobile")
     .notEmpty()
     .withMessage("Mobile is required")
+    .customSanitizer((value) => value.replace(/\D/g, ""))
     .matches(/^91\d{10}$/)
     .withMessage("Mobile must be in the format 919234567890"),
   body("otp").notEmpty().withMessage("OTP is required"),
@@ -45,6 +46,7 @@ exports.sendOtpValidation = [
   body("mobile")
     .notEmpty()
     .withMessage("Mobile is required")
+    .customSanitizer((value) => value.replace(/\D/g, ""))
     .matches(/^91\d{10}$/)
     .withMessage("Mobile must be in the format 919234567890"),
   handleValidationErrors,
@@ -54,6 +56,7 @@ exports.verifyOtpValidation = [
   query("mobile")
     .notEmpty()
     .withMessage("Mobile is required")
+    .customSanitizer((value) => value.replace(/\D/g, ""))
     .matches(/^91\d{10}$/)
     .withMessage("Mobile must be in the format 919234567890"),
   query("otp").notEmpty().withMessage("OTP is required"),
@@ -64,6 +67,7 @@ exports.retryOtpValidation = [
   query("mobile")
     .notEmpty()
     .withMessage("Mobile is required")
+    .customSanitizer((value) => value.replace(/\D/g, ""))
     .matches(/^91\d{10}$/)
     .withMessage("Mobile must be in the format 919234567890"),
   query("retrytype")
@@ -78,6 +82,7 @@ exports.forgotPasswordValidation = [
   body("mobile")
     .notEmpty()
     .withMessage("Mobile is required")
+    .customSanitizer((value) => value.replace(/\D/g, ""))
     .matches(/^91\d{10}$/)
     .withMessage("Mobile must be in the format 919234567890"),
   body("otp").notEmpty().withMessage("OTP is required"),
@@ -115,6 +120,7 @@ exports.subscribeWhatsAppValidation = [
   body("type").isIn(["whatsapp"]).withMessage("type must be whatsapp"),
   body("value")
     .matches(/^91\d{10}$/)
+    .customSanitizer((value) => value.replace(/\D/g, ""))
     .withMessage("Mobile must be in the format 919234567890"),
   handleValidationErrors,
 ];
@@ -122,6 +128,7 @@ exports.subscribeWhatsAppValidation = [
 exports.updateWhatsAppValidation = [
   body("value")
     .matches(/^91\d{10}$/)
+    .customSanitizer((value) => value.replace(/\D/g, ""))
     .withMessage("Mobile must be in the format 919234567890"),
   handleValidationErrors,
 ];

@@ -12,6 +12,8 @@ const { User } = require("../auth/model");
 const { Order: OrderModel } = require("./model");
 const { Shipment } = require("../shiprocket/model");
 const sequelize = require("../../config/database");
+const productService = require("../product/service");
+
 exports.getOrdersBySellerId = async (sellerId) => {
   return dao.getOrdersBySellerId(sellerId);
 };
@@ -286,8 +288,7 @@ exports.getSellerDashboardData = async (sellerId) => {
 exports.getOrdersStatsLast30Days = async (sellerId) => {
   return dao.getOrdersStatsLast30Days(sellerId);
 };
-
-exports.checkoutCart = async (userId, userAddressPublicId) => {
+exports.checkoutCart = async (userId, userAddressPublicId, paymentMethod = "ONLINE") => {
   const cart = await cartDao.findCartByUserId(userId, "active");
   if (!cart) {
     throw new NotFoundError("Cart not found");
@@ -336,15 +337,32 @@ exports.checkoutCart = async (userId, userAddressPublicId) => {
     }));
     await dao.createOrderItems(orderItemsPayload, { transaction: t });
 
-    await cartDao.updateCart(cart.id, { status: "converted" });
+    await cartDao.updateCart(cart.id, { status: "converted" }, { transaction: t });
 
-    const payment = await paymentService.createPaymentOrder(
-      order.id,
-      userId,
-      totalAmount,
-      "Checkout",
-      { transaction: t }
-    );
+    let payment;
+    if (paymentMethod === "COD") {
+      payment = await paymentDao.createPayment(
+        {
+          orderId: order.id,
+          userId,
+          paymentMethod: "COD",
+          amount: totalAmount,
+          status: "pending",
+          description: "Checkout - COD",
+        },
+        { transaction: t }
+      );
+      // Finalize immediately for COD
+      await exports.finalizeOrderAfterPayment(order.id, { transaction: t });
+    } else {
+      payment = await paymentService.createPaymentOrder(
+        order.id,
+        userId,
+        totalAmount,
+        "Checkout - Online",
+        { transaction: t }
+      );
+    }
 
     return { order, payment };
   });
@@ -365,7 +383,7 @@ exports.checkoutCart = async (userId, userAddressPublicId) => {
 };
 
 exports.buyNow = async (userId, payload) => {
-  const { productVariantId, userAddressPublicId, quantity } = payload;
+  const { productVariantId, userAddressPublicId, quantity, paymentMethod = "ONLINE" } = payload;
 
   const variant = await productDao.getVariantByPublicId(productVariantId);
   if (!variant || variant.isDeleted || !variant.isActive) {
@@ -406,13 +424,30 @@ exports.buyNow = async (userId, payload) => {
 
     await dao.createOrderItems([orderItem], { transaction: t });
 
-    const payment = await paymentService.createPaymentOrder(
-      order.id,
-      userId,
-      totalAmount,
-      "Buy Now",
-      { transaction: t }
-    );
+    let payment;
+    if (paymentMethod === "COD") {
+      payment = await paymentDao.createPayment(
+        {
+          orderId: order.id,
+          userId,
+          paymentMethod: "COD",
+          amount: totalAmount,
+          status: "pending",
+          description: "Buy Now - COD",
+        },
+        { transaction: t }
+      );
+      // Finalize immediately for COD
+      await exports.finalizeOrderAfterPayment(order.id, { transaction: t });
+    } else {
+      payment = await paymentService.createPaymentOrder(
+        order.id,
+        userId,
+        totalAmount,
+        "Buy Now - Online",
+        { transaction: t }
+      );
+    }
 
     return { order, payment };
   });
@@ -454,4 +489,48 @@ exports.getOrderByIdForBuyer = async (orderPublicId, buyerId) => {
     throw new NotFoundError("Order not found");
   }
   return order;
+};
+
+exports.finalizeOrderAfterPayment = async (orderId, options = {}) => {
+  const { transaction } = options;
+
+  // We need the order with its items to decrement inventory
+  const order = await dao.getOrderById(orderId);
+  if (!order) {
+    console.error(`Order ${orderId} not found during finalization`);
+    return;
+  }
+
+  // Use the passed transaction if available, otherwise just run them
+  const processFinalization = async (t) => {
+    // 1. Decrement inventory for each item
+    for (const item of order.items) {
+      if (item.productVariantId) {
+        await productService.decrementInventory(
+          item.productVariantId,
+          item.quantity,
+          { transaction: t }
+        );
+      }
+    }
+
+    // 2. Update order status to paid/pending
+    // Based on the system, 'pending' means placed and awaiting seller action.
+    // If it's already 'pending', we just ensure it stays that way or mark as 'paid'
+    // if there's a specific paid status. Current possible statuses appear to be
+    // 'pending', 'ready_to_ship', 'shipped', 'cancelled', 'delivered'.
+    // We'll keep it 'pending' but it's now officially paid for online orders.
+    await OrderModel.update(
+      { status: "pending" },
+      { where: { id: order.id }, transaction: t }
+    );
+  };
+
+  if (transaction) {
+    await processFinalization(transaction);
+  } else {
+    await sequelize.transaction(async (t) => {
+      await processFinalization(t);
+    });
+  }
 };

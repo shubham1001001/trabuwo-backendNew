@@ -33,7 +33,7 @@ module.exports = (err, req, res, next) => {
   if (err instanceof Msg91Error) {
     return ApiError.send(
       res,
-      new ApiError(err?.response?.status, err.message, err.code)
+      new ApiError(err?.response?.status || 400, err.message, err.code || "OTP_ERROR")
     );
   }
 

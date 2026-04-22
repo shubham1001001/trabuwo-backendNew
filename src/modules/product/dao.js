@@ -675,3 +675,10 @@ exports.bulkUpsertProductImages = async (images, options = {}) => {
     ...options,
   });
 };
+exports.decrementInventory = async (variantId, quantity, options = {}) => {
+  return await ProductVariant.decrement("inventory", {
+    by: quantity,
+    where: { id: variantId },
+    ...options,
+  });
+};

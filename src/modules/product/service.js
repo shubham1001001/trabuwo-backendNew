@@ -219,6 +219,10 @@ exports.softDeleteProductById = async (id, userId) => {
   });
 };
 
+exports.decrementInventory = async (variantId, quantity, options = {}) => {
+  return await dao.decrementInventory(variantId, quantity, options);
+};
+
 exports.getProductsByUserId = (userId) => dao.getProductsByUserId(userId);
 
 exports.createBulkCataloguesWithProducts = async (catalogues, userId) => {

@@ -169,14 +169,26 @@ function addTotals(cart) {
     return total + safePrice * item.quantity;
   }, 0);
 
+  const totalMRP = cart.items.reduce((total, item) => {
+    const mrpNumber = Number(item.productVariant?.mrp || 0);
+    const safeMRP = Number.isNaN(mrpNumber) ? 0 : mrpNumber;
+    return total + safeMRP * item.quantity;
+  }, 0);
+
+  const totalDiscount = totalMRP - totalAmount;
+
   const itemCount = cart.items.reduce(
     (count, item) => count + item.quantity,
     0
   );
 
+  const cartData = cart.toJSON ? cart.toJSON() : cart;
+
   return {
-    ...cart.toJSON(),
+    ...cartData,
     totalAmount,
+    totalMRP,
+    totalDiscount,
     itemCount,
   };
 }

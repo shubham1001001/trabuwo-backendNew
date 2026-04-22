@@ -499,10 +499,10 @@ async updateProductStock(productId, newStock, userId) {
   attributes: [
     "id",
     "publicId",
-    "trabuwo_price",
+    "trabuwoPrice",
     "mrp",
     "inventory",
-    "sku_id"
+    "skuId"
   ],
 },
     ],

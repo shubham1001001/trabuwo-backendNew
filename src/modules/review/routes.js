@@ -5,6 +5,212 @@ const validation = require("./validation");
 const asyncHandler = require("../../utils/asyncHandler");
 const { authenticate } = require("../../middleware/auth");
 
+/**
+ * @swagger
+ * /api/review/product/{productId}:
+ *   get:
+ *     summary: Get reviews for a specific product
+ *     tags: [Review]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: productId
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: Product ID
+ *         example: "123e4567-e89b-12d3-a456-426614174000"
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 1
+ *         description: Page number for pagination
+ *         example: 1
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 10
+ *           default: 10
+ *         description: Number of reviews per page
+ *         example: 10
+ *       - in: query
+ *         name: sort
+ *         schema:
+ *           type: string
+ *           enum: [newest, highest, lowest]
+ *           default: newest
+ *         description: Sort order for reviews
+ *         example: newest
+ *     responses:
+ *       200:
+ *         description: Product reviews retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Success'
+ *             example:
+ *               success: true
+ *               message: "Product reviews retrieved"
+ *               data:
+ *                 reviews:
+ *                   - id: "123e4567-e89b-12d3-a456-426614174002"
+ *                     rating: 5
+ *                     title: "Great product!"
+ *                     text: "This product exceeded my expectations..."
+ *                     reviewer: "John Doe"
+ *                     createdAt: "2024-01-15T10:30:00Z"
+ *                     helpfulCount: 3
+ *                     orderItem:
+ *                       id: "123e4567-e89b-12d3-a456-426614174001"
+ *                       productVariant:
+ *                         product:
+ *                           name: "Product Name"
+ *                 pagination:
+ *                   page: 1
+ *                   limit: 10
+ *                   total: 25
+ *                   totalPages: 3
+ *       400:
+ *         $ref: '#/components/responses/BadRequest'
+ *       404:
+ *         description: Product not found
+ *       500:
+ *         $ref: '#/components/responses/InternalError'
+ */
+router.get(
+  "/product/:productId",
+  validation.productListValidation,
+  asyncHandler(controller.getProductReviews)
+);
+
+/**
+ * @swagger
+ * /api/review/store/{storeId}:
+ *   get:
+ *     summary: Get reviews for a specific store
+ *     tags: [Review]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: storeId
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: Store ID
+ *         example: "123e4567-e89b-12d3-a456-426614174000"
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 1
+ *         description: Page number for pagination
+ *         example: 1
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 10
+ *           default: 10
+ *         description: Number of reviews per page
+ *         example: 10
+ *     responses:
+ *       200:
+ *         description: Store reviews retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Success'
+ *             example:
+ *               success: true
+ *               message: "Store reviews retrieved"
+ *               data:
+ *                 reviews:
+ *                   - publicId: "123e4567-e89b-12d3-a456-426614174002"
+ *                     rating: 5
+ *                     title: "Great product!"
+ *                     text: "This product exceeded my expectations..."
+ *                     helpfulCount: 3
+ *                     createdAt: "2024-01-15T10:30:00Z"
+ *                     images:
+ *                       - imageUrl: "https://example.com/image.jpg"
+ *                         sortOrder: 1
+ *                     reviewer:
+ *                       publicId: "123e4567-e89b-12d3-a456-426614174004"
+ *                       email: "reviewer@example.com"
+ *                 pagination:
+ *                   total: 25
+ *                   page: 1
+ *                   limit: 10
+ *                   totalPages: 3
+ *       400:
+ *         $ref: '#/components/responses/BadRequest'
+ *       404:
+ *         description: Store not found
+ *       500:
+ *         $ref: '#/components/responses/InternalError'
+ */
+router.get(
+  "/store/:storeId",
+  validation.storeListValidation,
+  asyncHandler(controller.getStoreReviews)
+);
+
+/**
+ * @swagger
+ * /api/review/store/{storeId}/histogram:
+ *   get:
+ *     summary: Get rating histogram for a specific store
+ *     tags: [Review]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: storeId
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: Store ID
+ *         example: "123e4567-e89b-12d3-a456-426614174000"
+ *     responses:
+ *       200:
+ *         description: Store rating histogram retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Success'
+ *             example:
+ *               success: true
+ *               message: "Store rating histogram retrieved"
+ *               data:
+ *                 "1": 5
+ *                 "2": 2
+ *                 "3": 3
+ *                 "4": 10
+ *                 "5": 15
+ *       400:
+ *         $ref: '#/components/responses/BadRequest'
+ *       404:
+ *         description: Store not found
+ *       500:
+ *         $ref: '#/components/responses/InternalError'
+ */
+router.get(
+  "/store/:storeId/histogram",
+  validation.storeHistogramValidation,
+  asyncHandler(controller.getStoreRatingHistogram)
+);
+
 router.use(authenticate);
 
 /**
@@ -242,89 +448,7 @@ router.delete(
   asyncHandler(controller.remove)
 );
 
-/**
- * @swagger
- * /api/review/product/{productId}:
- *   get:
- *     summary: Get reviews for a specific product
- *     tags: [Review]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: productId
- *         required: true
- *         schema:
- *           type: string
- *           format: uuid
- *         description: Product ID
- *         example: "123e4567-e89b-12d3-a456-426614174000"
- *       - in: query
- *         name: page
- *         schema:
- *           type: integer
- *           minimum: 1
- *           default: 1
- *         description: Page number for pagination
- *         example: 1
- *       - in: query
- *         name: limit
- *         schema:
- *           type: integer
- *           minimum: 1
- *           maximum: 10
- *           default: 10
- *         description: Number of reviews per page
- *         example: 10
- *       - in: query
- *         name: sort
- *         schema:
- *           type: string
- *           enum: [newest, highest, lowest]
- *           default: newest
- *         description: Sort order for reviews
- *         example: newest
- *     responses:
- *       200:
- *         description: Product reviews retrieved successfully
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Success'
- *             example:
- *               success: true
- *               message: "Product reviews retrieved"
- *               data:
- *                 reviews:
- *                   - id: "123e4567-e89b-12d3-a456-426614174002"
- *                     rating: 5
- *                     title: "Great product!"
- *                     text: "This product exceeded my expectations..."
- *                     reviewer: "John Doe"
- *                     createdAt: "2024-01-15T10:30:00Z"
- *                     helpfulCount: 3
- *                     orderItem:
- *                       id: "123e4567-e89b-12d3-a456-426614174001"
- *                       productVariant:
- *                         product:
- *                           name: "Product Name"
- *                 pagination:
- *                   page: 1
- *                   limit: 10
- *                   total: 25
- *                   totalPages: 3
- *       400:
- *         $ref: '#/components/responses/BadRequest'
- *       404:
- *         description: Product not found
- *       500:
- *         $ref: '#/components/responses/InternalError'
- */
-router.get(
-  "/product/:productId",
-  validation.productListValidation,
-  asyncHandler(controller.getProductReviews)
-);
+
 
 /**
  * @swagger
@@ -387,127 +511,9 @@ router.get(
   asyncHandler(controller.getMyReviews)
 );
 
-/**
- * @swagger
- * /api/review/store/{storeId}:
- *   get:
- *     summary: Get reviews for a specific store
- *     tags: [Review]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: storeId
- *         required: true
- *         schema:
- *           type: string
- *           format: uuid
- *         description: Store ID
- *         example: "123e4567-e89b-12d3-a456-426614174000"
- *       - in: query
- *         name: page
- *         schema:
- *           type: integer
- *           minimum: 1
- *           default: 1
- *         description: Page number for pagination
- *         example: 1
- *       - in: query
- *         name: limit
- *         schema:
- *           type: integer
- *           minimum: 1
- *           maximum: 10
- *           default: 10
- *         description: Number of reviews per page
- *         example: 10
- *     responses:
- *       200:
- *         description: Store reviews retrieved successfully
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Success'
- *             example:
- *               success: true
- *               message: "Store reviews retrieved"
- *               data:
- *                 reviews:
- *                   - publicId: "123e4567-e89b-12d3-a456-426614174002"
- *                     rating: 5
- *                     title: "Great product!"
- *                     text: "This product exceeded my expectations..."
- *                     helpfulCount: 3
- *                     createdAt: "2024-01-15T10:30:00Z"
- *                     images:
- *                       - imageUrl: "https://example.com/image.jpg"
- *                         sortOrder: 1
- *                     reviewer:
- *                       publicId: "123e4567-e89b-12d3-a456-426614174004"
- *                       email: "reviewer@example.com"
- *                 pagination:
- *                   total: 25
- *                   page: 1
- *                   limit: 10
- *                   totalPages: 3
- *       400:
- *         $ref: '#/components/responses/BadRequest'
- *       404:
- *         description: Store not found
- *       500:
- *         $ref: '#/components/responses/InternalError'
- */
-router.get(
-  "/store/:storeId",
-  validation.storeListValidation,
-  asyncHandler(controller.getStoreReviews)
-);
 
-/**
- * @swagger
- * /api/review/store/{storeId}/histogram:
- *   get:
- *     summary: Get rating histogram for a specific store
- *     tags: [Review]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: storeId
- *         required: true
- *         schema:
- *           type: string
- *           format: uuid
- *         description: Store ID
- *         example: "123e4567-e89b-12d3-a456-426614174000"
- *     responses:
- *       200:
- *         description: Store rating histogram retrieved successfully
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Success'
- *             example:
- *               success: true
- *               message: "Store rating histogram retrieved"
- *               data:
- *                 "1": 5
- *                 "2": 2
- *                 "3": 3
- *                 "4": 10
- *                 "5": 15
- *       400:
- *         $ref: '#/components/responses/BadRequest'
- *       404:
- *         description: Store not found
- *       500:
- *         $ref: '#/components/responses/InternalError'
- */
-router.get(
-  "/store/:storeId/histogram",
-  validation.storeHistogramValidation,
-  asyncHandler(controller.getStoreRatingHistogram)
-);
+
+
 
 /**
  * @swagger

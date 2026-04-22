@@ -29,6 +29,7 @@ exports.findCartByUserId = (userId, status = "active") => {
             attributes: [
               "publicId",
               "trabuwoPrice",
+              "mrp",
               "inventory",
               "skuId",
               "dynamicFields",
@@ -64,7 +65,7 @@ exports.findCartById = (cartId) => {
           {
             model: ProductVariant,
             as: "productVariant",
-            attributes: ["publicId", "trabuwoPrice", "inventory", "skuId"],
+            attributes: ["publicId", "trabuwoPrice", "mrp", "inventory", "skuId"],
             include: [
               {
                 model: Product,
@@ -135,7 +136,7 @@ exports.getCartWithItems = (cartId) => {
           {
             model: ProductVariant,
             as: "productVariant",
-            attributes: ["publicId", "trabuwoPrice", "inventory", "skuId"],
+            attributes: ["publicId", "trabuwoPrice", "mrp", "inventory", "skuId"],
             include: [
               {
                 model: Product,

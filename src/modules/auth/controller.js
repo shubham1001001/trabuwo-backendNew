@@ -43,7 +43,7 @@ exports.loginUserWithPassword = async (req, res) => {
 
   return apiResponse.success(res, {
     accessToken: authData.accessToken,
-    refreshToken: platform === "web" ? null : authData.refreshToken,
+    refreshToken: authData.refreshToken,
     user: authData.user,
   });
 };
@@ -68,13 +68,18 @@ exports.loginWithOtp = async (req, res) => {
 
   return apiResponse.success(res, {
     accessToken: authData.accessToken,
-    refreshToken: platform === "web" ? null : authData.refreshToken,
+    refreshToken: authData.refreshToken,
     user: authData.user,
   });
 };
 
 exports.refreshToken = async (req, res) => {
-  const { refreshToken } = req.body;
+  let { refreshToken } = req.body;
+  const platform = req.header("X-Platform")?.toLowerCase();
+
+  if (!refreshToken && platform === "web") {
+    refreshToken = req.cookies?.refreshToken;
+  }
 
   if (!refreshToken) {
     throw new ValidationError("Refresh token is required");
@@ -88,8 +93,6 @@ exports.refreshToken = async (req, res) => {
   const { accessToken, refreshToken: newRefreshToken } =
     await generateTokenPair(user, roles);
 
-  const platform = req.header("X-Platform")?.toLowerCase();
-
   if (platform === "web") {
     res.cookie("refreshToken", newRefreshToken, {
       httpOnly: true,
@@ -102,8 +105,8 @@ exports.refreshToken = async (req, res) => {
 
   return apiResponse.success(res, {
     accessToken,
-    refreshToken: platform === "web" ? null : newRefreshToken,
-    user: { id: user.id, email: user.email, roles },
+    refreshToken: newRefreshToken,
+    user: { id: user.id, email: user.email, mobile: user.mobile, roles },
   });
 };
 

@@ -41,6 +41,27 @@ router.get(
   asyncHandler(controller.getProductsByCatalogueId)
 );
 
+router.get(
+  "/category/:categoryId",
+  attachUserIfPresent,
+  validation.getProductsByCategoryValidation,
+  asyncHandler(controller.getProductsByCategoryId)
+);
+
+router.get(
+  "/:id",
+  attachUserIfPresent,
+  validation.getProductValidation,
+  asyncHandler(controller.getProductById)
+);
+
+router.get(
+  "/",
+  attachUserIfPresent,
+  validation.getAllProductsValidation,
+  asyncHandler(controller.getAllProducts)
+);
+
 router.use(authenticate);
 
 /**
@@ -793,11 +814,7 @@ router.post(
  *       404:
  *         description: Product not found
  */
-router.get(
-  "/:id",
-  validation.getProductValidation,
-  asyncHandler(controller.getProductById)
-);
+
 
 /**
  * @swagger
@@ -814,11 +831,7 @@ router.get(
  *       401:
  *         description: Unauthorized
  */
-router.get(
-  "/",
-  validation.getAllProductsValidation,
-  asyncHandler(controller.getAllProducts)
-);
+
 
 /**
  * @swagger
@@ -847,11 +860,7 @@ router.get(
  *       404:
  *         description: Category not found
  */
-router.get(
-  "/category/:categoryId",
-  validation.getProductsByCategoryValidation,
-  asyncHandler(controller.getProductsByCategoryId)
-);
+
 
 /**
  * @swagger
