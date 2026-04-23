@@ -305,10 +305,16 @@ exports.getAllCataloguesWithKeysetPagination = async (options) => {
     normalizedFilters.discount = Math.min(...discountValues);
   }
 
-  // Handle 'category' string filter (name or slug) from buyer frontend
+  // Handle 'categoryId' which can be a single ID, an array, or a comma-separated string
   let resolvedCategoryIds = [];
   if (categoryId) {
-    resolvedCategoryIds = Array.isArray(categoryId) ? categoryId : [categoryId];
+    if (Array.isArray(categoryId)) {
+      resolvedCategoryIds = categoryId;
+    } else if (typeof categoryId === "string" && categoryId.includes(",")) {
+      resolvedCategoryIds = categoryId.split(",").map(id => id.trim()).filter(Boolean);
+    } else {
+      resolvedCategoryIds = [categoryId];
+    }
   }
 
   const categoryFilter = normalizedFilters.category;

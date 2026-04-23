@@ -237,12 +237,20 @@ exports.updateCategoryById = async (
     dataToUpdate.showOnWeb =
       data.showOnWeb === "true" || data.showOnWeb === true;
   }
+  if (data.showOnMobile !== undefined) {
+    dataToUpdate.showOnMobile =
+      data.showOnMobile === "true" || data.showOnMobile === true;
+  }
   if (data.isGold !== undefined) {
     dataToUpdate.isGold = data.isGold === "true" || data.isGold === true;
   }
   if (data.displayOrderWeb !== undefined) {
     const parsed = parseInt(data.displayOrderWeb, 10);
     dataToUpdate.displayOrderWeb = !isNaN(parsed) && parsed !== 0 ? parsed : null;
+  }
+  if (data.displayOrderMobile !== undefined) {
+    const parsed = parseInt(data.displayOrderMobile, 10);
+    dataToUpdate.displayOrderMobile = !isNaN(parsed) && parsed !== 0 ? parsed : null;
   }
 
   if (imageBuffer && mimeType) {

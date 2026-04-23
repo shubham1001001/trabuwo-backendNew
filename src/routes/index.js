@@ -61,4 +61,5 @@ router.use(
 router.use("/brands", require("../modules/brand/routes"))
 router.use("/gold-section", require("../modules/goldSection/routes"));
 router.use("/original-brand-categories", require("../modules/originalBrand/routes"));
+router.use("/mobile-category", require("../modules/mobileCategory/routes"));
 module.exports = router;
