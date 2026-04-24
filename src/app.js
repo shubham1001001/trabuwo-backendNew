@@ -24,10 +24,13 @@ const asyncHandler = require("./utils/asyncHandler");
 const app = express();
 
 app.use((req, res, next) => {
-  const origin = req.get("origin");
+  const origin = req.headers.origin;
+  logger.info(`CORS Middleware: Method=${req.method}, Origin=${origin}`);
+
   if (origin) {
     res.setHeader("Access-Control-Allow-Origin", origin);
   }
+
   res.setHeader("Access-Control-Allow-Credentials", "true");
   res.setHeader(
     "Access-Control-Allow-Methods",
@@ -39,7 +42,7 @@ app.use((req, res, next) => {
   );
 
   if (req.method === "OPTIONS") {
-    return res.sendStatus(204);
+    return res.status(200).end();
   }
   next();
 });
@@ -90,32 +93,6 @@ app.post(
   asyncHandler(shiprocketController.handleWebhook),
 );
 
-/*IMPROVEMENT  RATE LIMITING etc before production */
-/*IMPROVEMENT  No API Error throwing in service layer */
-
-
-app.use(
-  helmet({
-    crossOriginEmbedderPolicy: false,
-    crossOriginResourcePolicy: { policy: "cross-origin" },
-  })
-);
-
-// app.use(
-//   helmet({
-//     contentSecurityPolicy: {
-//       directives: {
-//         defaultSrc: ["'self'"],
-//         connectSrc: ["'self'", "http://localhost:5000"],
-//         scriptSrc: ["'self'", "'unsafe-inline'"],
-//         styleSrc: ["'self'", "'unsafe-inline'"],
-//         imgSrc: ["'self'", "data:", "https:"],
-//       },
-//     },
-//   })
-// );
-
-
 app.use(cookieParser());
 
 app.use((req, res, next) => {
@@ -125,7 +102,6 @@ app.use((req, res, next) => {
     method: req.method,
     url: req.originalUrl,
     userAgent: req.get("User-Agent"),
-    /*IMPROVEMENT app.set('trust proxy', true); // Add this before your middleware */
     ip: req.ip || "unknown",
     timestamp: new Date().toISOString(),
   });
@@ -150,7 +126,7 @@ app.get(
   "/health-check",
   asyncHandler(async (req, res) => {
     await sequelize.query("SELECT 1");
-    const redisHealthy = await redisHealthCheck();
+    const redisHealth = await redisHealthCheck();
 
     return res.status(200).json({
       success: true,
@@ -159,7 +135,7 @@ app.get(
         status: "healthy",
         timestamp: new Date().toISOString(),
         database: "connected",
-        redis: redisHealthy ? "connected" : "degraded",
+        redis: redisHealth ? "connected" : "degraded",
       },
     });
   }),
@@ -169,7 +145,6 @@ app.use("/api/auth", authLimiter);
 app.use("/api", generalLimiter);
 app.use("/api", require("./routes"));
 
-// app.use("/", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use(
   "/",
   swaggerUi.serve,
@@ -222,7 +197,6 @@ async function initializeGraphileWorker() {
 
 async function setupPgTrgmIndex() {
   try {
-    //remember to look into this before going to production
     await sequelize.query(`
       CREATE EXTENSION IF NOT EXISTS pg_trgm;
       CREATE INDEX IF NOT EXISTS category_name_trgm_idx
@@ -241,15 +215,10 @@ async function setupPgTrgmIndex() {
 async function setupProductSearchIndexes() {
   try {
     await sequelize.query(`
-      -- Enable extensions required for trigram & full-text
       CREATE EXTENSION IF NOT EXISTS pg_trgm;
       CREATE EXTENSION IF NOT EXISTS unaccent;
-
-      -- Create GIN index for full-text search on searchVector
       CREATE INDEX IF NOT EXISTS products_search_vector_idx 
       ON products USING GIN ("search_vector");
-
-      -- Create GIN trigram index for fuzzy search on product name
       CREATE INDEX IF NOT EXISTS products_name_trgm_idx 
       ON products USING GIN (name gin_trgm_ops);
     `);
@@ -271,10 +240,8 @@ async function seedRoles() {
 async function startServer() {
   try {
     await connectDatabase();
-    // if (process.argv[2] !== "NODE_ENV=development") {
     await connectRedis();
     await initializeGraphileWorker();
-    // }
 
     await setupPgTrgmIndex();
     await setupProductSearchIndexes();
@@ -307,6 +274,3 @@ process.on("SIGINT", async () => {
   await graphileWorkerService.close();
   process.exit(0);
 });
-
-//TODO : Before going to production
-// For every module check or implement Sequelize Cascade & Referential Integrity.

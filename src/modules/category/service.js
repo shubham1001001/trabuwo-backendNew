@@ -532,8 +532,11 @@ exports.getLeafCategoriesForMobile = async () => {
   });
 
   const rootCategories = allCategories.filter(
-    (category) => Number(category.parentId) === 769
-    //  category.showOnMobile === true
+    (category) => 
+      category.parentId === null || 
+      category.parentId === undefined || 
+      category.parentId === 0 ||
+      category.parentId === ""
   );
 
   const findAllDescendants = (categoryId) => {
