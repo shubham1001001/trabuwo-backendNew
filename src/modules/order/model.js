@@ -66,6 +66,40 @@ const Order = sequelize.define(
       onDelete: "SET NULL",
       onUpdate: "CASCADE",
     },
+    deliveryDate: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+    resellerId: {
+      type: DataTypes.BIGINT,
+      allowNull: true,
+      references: {
+        model: User,
+        key: "id",
+      },
+      onDelete: "NO ACTION",
+      onUpdate: "CASCADE",
+    },
+    paymentMethod: {
+      type: DataTypes.ENUM("prepaid", "cod"),
+      allowNull: false,
+      defaultValue: "prepaid",
+    },
+    shippingFee: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: false,
+      defaultValue: 0,
+    },
+    platformFee: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: false,
+      defaultValue: 0,
+    },
+    codFee: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: false,
+      defaultValue: 0,
+    },
   },
   {
     timestamps: true,
@@ -112,6 +146,30 @@ const OrderItem = sequelize.define(
     price: {
       type: DataTypes.DECIMAL(10, 2),
       allowNull: false,
+    },
+    listingPrice: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: false,
+      defaultValue: 0,
+    },
+    resellerPrice: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: true,
+    },
+    resellerMargin: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: false,
+      defaultValue: 0,
+    },
+    commissionAmount: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: false,
+      defaultValue: 0,
+    },
+    sellerPayout: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: false,
+      defaultValue: 0,
     },
   },
   {

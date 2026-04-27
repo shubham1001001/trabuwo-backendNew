@@ -13,6 +13,13 @@ const { Order: OrderModel } = require("./model");
 const { Shipment } = require("../shiprocket/model");
 const sequelize = require("../../config/database");
 const productService = require("../product/service");
+const walletService = require("../wallet/service");
+
+// Financial Constants (based on Revenue Model document)
+const COMMISSION_RATE = 0.05; // 5%
+const SHIPPING_FEE = 80;
+const PLATFORM_FEE = 15;
+const COD_FEE = 20;
 
 exports.getOrdersBySellerId = async (sellerId) => {
   return dao.getOrdersBySellerId(sellerId);
@@ -305,26 +312,50 @@ exports.checkoutCart = async (userId, userAddressPublicId, paymentMethod = "ONLI
   }
 
   const itemsSnapshot = cart.items.map((item) => {
-    const unitPrice = Number(item.productVariant?.trabuwoPrice);
+    const listingPrice = Number(item.productVariant?.trabuwoPrice);
+    const resellerPrice = item.resellerPrice ? Number(item.resellerPrice) : null;
+    const finalProductPrice = resellerPrice || listingPrice;
+    
+    const commissionAmount = listingPrice * COMMISSION_RATE;
+    const sellerPayout = listingPrice - commissionAmount;
+    const resellerMargin = resellerPrice ? (resellerPrice - listingPrice) : 0;
+
     return {
       productVariantId: item.productVariantId,
       quantity: item.quantity,
-      price: unitPrice,
+      price: finalProductPrice,
+      listingPrice,
+      resellerPrice,
+      resellerMargin,
+      commissionAmount,
+      sellerPayout
     };
   });
 
-  const totalAmount = itemsSnapshot.reduce(
+  const productSubtotal = itemsSnapshot.reduce(
     (sum, i) => sum + i.price * i.quantity,
     0
   );
+
+  const isCod = paymentMethod === "COD";
+  const currentShippingFee = SHIPPING_FEE;
+  const currentPlatformFee = PLATFORM_FEE;
+  const currentCodFee = isCod ? COD_FEE : 0;
+
+  const totalAmount = productSubtotal + currentShippingFee + currentPlatformFee + currentCodFee;
 
   const result = await sequelize.transaction(async (t) => {
     const order = await dao.createOrder(
       {
         buyerId: userId,
+        resellerId: cart.resellerId,
         status: "pending",
         totalAmount,
         buyerAddressId: userAddress.id,
+        paymentMethod: isCod ? "cod" : "prepaid",
+        shippingFee: currentShippingFee,
+        platformFee: currentPlatformFee,
+        codFee: currentCodFee
       },
       { transaction: t }
     );
@@ -334,13 +365,18 @@ exports.checkoutCart = async (userId, userAddressPublicId, paymentMethod = "ONLI
       productVariantId: i.productVariantId,
       quantity: i.quantity,
       price: i.price,
+      listingPrice: i.listingPrice,
+      resellerPrice: i.resellerPrice,
+      resellerMargin: i.resellerMargin,
+      commissionAmount: i.commissionAmount,
+      sellerPayout: i.sellerPayout
     }));
     await dao.createOrderItems(orderItemsPayload, { transaction: t });
 
     await cartDao.updateCart(cart.id, { status: "converted" }, { transaction: t });
 
     let payment;
-    if (paymentMethod === "COD") {
+    if (isCod) {
       payment = await paymentDao.createPayment(
         {
           orderId: order.id,
@@ -368,6 +404,13 @@ exports.checkoutCart = async (userId, userAddressPublicId, paymentMethod = "ONLI
   });
 
   const { order, payment } = result;
+
+  // Credit wallets (Pending) after order is successfully placed/paid
+  // For COD, we do it now. For Online, it should be done in payment verification.
+  if (isCod) {
+    const orderWithItems = await dao.getOrderById(order.id);
+    await walletService.creditOrderEarnings(orderWithItems);
+  }
 
   return {
     orderId: order.publicId,
@@ -401,16 +444,35 @@ exports.buyNow = async (userId, payload) => {
     throw new ValidationError("Invalid user address");
   }
 
-  const unitPrice = Number(variant.trabuwoPrice);
-  const totalAmount = unitPrice * quantity;
+  const listingPrice = Number(variant.trabuwoPrice);
+  const resellerPrice = payload.resellerPrice ? Number(payload.resellerPrice) : null;
+  const finalProductPrice = resellerPrice || listingPrice;
+
+  const commissionAmount = listingPrice * COMMISSION_RATE;
+  const sellerPayout = listingPrice - commissionAmount;
+  const resellerMargin = resellerPrice ? (resellerPrice - listingPrice) : 0;
+
+  const productSubtotal = finalProductPrice * quantity;
+  
+  const isCod = paymentMethod === "COD";
+  const currentShippingFee = SHIPPING_FEE;
+  const currentPlatformFee = PLATFORM_FEE;
+  const currentCodFee = isCod ? COD_FEE : 0;
+
+  const totalAmount = productSubtotal + currentShippingFee + currentPlatformFee + currentCodFee;
 
   const result = await sequelize.transaction(async (t) => {
     const order = await dao.createOrder(
       {
         buyerId: userId,
+        resellerId: payload.resellerId || null,
         status: "pending",
         totalAmount,
         buyerAddressId: userAddress.id,
+        paymentMethod: isCod ? "cod" : "prepaid",
+        shippingFee: currentShippingFee,
+        platformFee: currentPlatformFee,
+        codFee: currentCodFee
       },
       { transaction: t }
     );
@@ -419,13 +481,18 @@ exports.buyNow = async (userId, payload) => {
       orderId: order.id,
       productVariantId: variant.id,
       quantity,
-      price: unitPrice,
+      price: finalProductPrice,
+      listingPrice,
+      resellerPrice,
+      resellerMargin,
+      commissionAmount,
+      sellerPayout
     };
 
     await dao.createOrderItems([orderItem], { transaction: t });
 
     let payment;
-    if (paymentMethod === "COD") {
+    if (isCod) {
       payment = await paymentDao.createPayment(
         {
           orderId: order.id,
@@ -453,6 +520,12 @@ exports.buyNow = async (userId, payload) => {
   });
 
   const { order, payment } = result;
+
+  // Credit wallets (Pending) for COD
+  if (isCod) {
+    const orderWithItems = await dao.getOrderById(order.id);
+    await walletService.creditOrderEarnings(orderWithItems);
+  }
 
   return {
     orderId: order.publicId,

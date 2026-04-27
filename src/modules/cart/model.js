@@ -32,6 +32,14 @@ const Cart = sequelize.define(
       allowNull: false,
       defaultValue: "active",
     },
+    resellerId: {
+      type: DataTypes.BIGINT,
+      allowNull: true,
+      references: {
+        model: User,
+        key: "id",
+      },
+    },
   },
   {
     timestamps: true,
@@ -79,6 +87,10 @@ const CartItem = sequelize.define(
       validate: {
         min: 1,
       },
+    },
+    resellerPrice: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: true,
     },
   },
   {

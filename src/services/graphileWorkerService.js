@@ -13,6 +13,9 @@ const {
 const {
   getJobConfig: getPriceRecommendationsRefreshJobConfig,
 } = require("../jobs/priceRecommendationsRefreshJob");
+const {
+  getJobConfig: getPayoutSettlementJobConfig,
+} = require("../jobs/payoutSettlementJob");
 
 class GraphileWorkerService {
   constructor() {
@@ -37,6 +40,7 @@ class GraphileWorkerService {
       await this.scheduleRefreshTokenCleanupJob();
       await this.scheduleProductViewHistoryCleanupJob();
       await this.schedulePriceRecommendationsRefreshJob();
+      await this.schedulePayoutSettlementJob();
       logger.info("All recurring tasks scheduled");
     } catch (error) {
       logger.error("Failed to schedule recurring tasks:", error);
@@ -96,6 +100,19 @@ class GraphileWorkerService {
         "Failed to schedule price recommendations refresh job:",
         error
       );
+      throw error;
+    }
+  }
+
+  async schedulePayoutSettlementJob() {
+    try {
+      const jobConfig = getPayoutSettlementJobConfig();
+      await this.scheduleRecurringJob("payout-settlement", jobConfig.cron, jobConfig.retries || 3);
+      logger.info(
+        `Payout settlement job scheduled with pattern: ${jobConfig.cron}`
+      );
+    } catch (error) {
+      logger.error("Failed to schedule payout settlement job:", error);
       throw error;
     }
   }

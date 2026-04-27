@@ -230,7 +230,7 @@ async function setupProductSearchIndexes() {
 }
 
 async function seedRoles() {
-  const roles = ["admin", "buyer", "seller"];
+  const roles = ["admin", "buyer", "seller", "influencer", "reseller"];
   for (const roleName of roles) {
     await Role.findOrCreate({ where: { name: roleName } });
   }
