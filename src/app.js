@@ -232,9 +232,23 @@ async function setupProductSearchIndexes() {
 async function seedRoles() {
   const roles = ["admin", "buyer", "seller", "influencer", "reseller"];
   for (const roleName of roles) {
-    await Role.findOrCreate({ where: { name: roleName } });
+    try {
+      await Role.findOrCreate({ where: { name: roleName } });
+    } catch (err) {
+      logger.warn(`Could not seed role ${roleName}:`, err.message);
+    }
   }
   logger.info("Default roles seeded.");
+}
+
+async function seedPlatformConfigs() {
+  try {
+    const platformConfigService = require("./modules/platformConfig/service");
+    await platformConfigService.seedDefaults();
+    logger.info("Platform configurations seeded.");
+  } catch (err) {
+    logger.warn("Platform configuration seeding failed:", err);
+  }
 }
 
 async function startServer() {
@@ -246,6 +260,7 @@ async function startServer() {
     await setupPgTrgmIndex();
     await setupProductSearchIndexes();
     await seedRoles();
+    await seedPlatformConfigs();
 
     const PORT = config.get("port") || 3000;
     app.listen(PORT, "0.0.0.0", () => {

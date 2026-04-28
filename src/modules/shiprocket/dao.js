@@ -409,6 +409,37 @@ exports.processWebhookData = async (shipmentId, webhookData, scansData) => {
     );
 
     await exports.upsertWebhookScans(shipmentId, scansData, t);
+
+    // ──────────────── Revenue Model Integration ────────────────
+    const shipment = await Shipment.findByPk(shipmentId, { transaction: t });
+    if (shipment && shipment.orderId) {
+      const statusId = parseInt(webhookData.shipment_status_id);
+      let orderUpdate = {};
+
+      if (statusId === 7) { // Delivered
+        const deliveryDate = webhookTimestamp || new Date();
+        const payoutDate = new Date(deliveryDate);
+        payoutDate.setDate(payoutDate.getDate() + 7);
+
+        orderUpdate = { 
+          status: "delivered", 
+          deliveryDate,
+          payoutDate 
+        };
+      } else if (statusId === 6 || statusId === 13) { // Shipped / Picked Up
+        orderUpdate = { status: "shipped" };
+      } else if ([10, 12, 14].includes(statusId)) { // Cancelled / RTO
+        orderUpdate = { status: "cancelled" }; // For now, simple cancellation
+      }
+
+      if (Object.keys(orderUpdate).length > 0) {
+        await Order.update(orderUpdate, { 
+          where: { id: shipment.orderId }, 
+          transaction: t 
+        });
+      }
+    }
+    // ──────────────────────────────────────────────────────────
   });
 };
 

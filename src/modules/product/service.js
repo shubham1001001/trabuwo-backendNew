@@ -15,6 +15,9 @@ const {
 } = require("../../utils/errors");
 const s3Service = require("../../services/s3");
 const { ProductImage, ProductVariant } = require("./model");
+const platformConfigService = require("../platformConfig/service");
+const pricingHelper = require("../pricing/helper");
+const shiprocketService = require("../shiprocket/service");
 
 const SENSITIVE_PRODUCT_FIELDS = new Set([
   "id",
@@ -61,6 +64,38 @@ exports.getProductsByCatalogueId = async (catalogueId, userId) => {
 
 exports.getProductsByCategoryId = (categoryId) =>
   dao.getProductsByCategoryId(categoryId);
+
+const enrichVariantsPricing = async (variants, categoryId) => {
+  if (!variants || variants.length === 0) return variants;
+
+  // Only calculate if at least one variant has sellerPrice or sellerReturnPrice
+  const needsCalculation = variants.some(v => v.sellerPrice != null || v.sellerReturnPrice != null);
+  if (!needsCalculation) return variants;
+
+  const commissionRate = await platformConfigService.getCommissionRate(categoryId);
+  const platformFee = await platformConfigService.getPlatformFee();
+  const builtInShippingFee = await platformConfigService.getBuiltInShippingFee();
+
+  return variants.map(v => {
+    if (v.sellerPrice != null) {
+      v.trabuwoPrice = pricingHelper.calculateBuyerPrice(
+        v.sellerPrice,
+        commissionRate,
+        platformFee,
+        builtInShippingFee
+      );
+    }
+    if (v.sellerReturnPrice != null) {
+      v.wrongDefectiveReturnPrice = pricingHelper.calculateBuyerPrice(
+        v.sellerReturnPrice,
+        commissionRate,
+        platformFee,
+        builtInShippingFee
+      );
+    }
+    return v;
+  });
+};
 
 const handleImageUpdates = async (productId, images, transaction) => {
   if (images === undefined) return;
@@ -144,6 +179,8 @@ const handleVariantUpdates = async (productId, variants, transaction) => {
       const payload = {
         publicId: variant.publicId,
         productId,
+        sellerPrice: variant.sellerPrice,
+        sellerReturnPrice: variant.sellerReturnPrice,
         trabuwoPrice: variant.trabuwoPrice,
         wrongDefectiveReturnPrice: variant.wrongDefectiveReturnPrice || 0,
         mrp: variant.mrp || 0,
@@ -191,7 +228,10 @@ exports.updateProductById = async (publicId, data, userId) => {
 
     await handleImageUpdates(product.id, images, t);
 
-    await handleVariantUpdates(product.id, variants, t);
+    if (variants && variants.length > 0) {
+      await enrichVariantsPricing(variants, product.catalogue.categoryId);
+      await handleVariantUpdates(product.id, variants, t);
+    }
 
     return dao.getProductById(publicId, userId, { transaction: t });
   });
@@ -313,6 +353,8 @@ exports.createBulkCataloguesWithProducts = async (catalogues, userId) => {
           const v = variants[vIdx];
           variantRows.push({
             productId: created.id,
+            sellerPrice: v.sellerPrice,
+            sellerReturnPrice: v.sellerReturnPrice,
             trabuwoPrice: v.trabuwoPrice,
             wrongDefectiveReturnPrice: v.wrongDefectiveReturnPrice,
             mrp: v.mrp,
@@ -323,6 +365,7 @@ exports.createBulkCataloguesWithProducts = async (catalogues, userId) => {
         }
       }
       if (variantRows.length > 0) {
+        await enrichVariantsPricing(variantRows, catalogue.categoryId);
         await dao.bulkCreateProductVariants(variantRows, { transaction: t });
       }
 
@@ -691,6 +734,8 @@ exports.bulkUpdateCatalogueProducts = async (
           variantRows.push({
             publicId: variant.publicId,
             productId: productId,
+            sellerPrice: variant.sellerPrice,
+            sellerReturnPrice: variant.sellerReturnPrice,
             trabuwoPrice: variant.trabuwoPrice,
             wrongDefectiveReturnPrice: variant.wrongDefectiveReturnPrice || 0,
             mrp: variant.mrp,
@@ -703,6 +748,7 @@ exports.bulkUpdateCatalogueProducts = async (
     });
 
     if (variantRows.length > 0) {
+      await enrichVariantsPricing(variantRows, catalogue.categoryId);
       await dao.bulkUpsertProductVariants(variantRows, { transaction: t });
     }
 
@@ -931,4 +977,65 @@ exports.createProductVariant = async (sourceProductId, variantData, userId) => {
 
     return productVariant;
   });
+};
+
+exports.getShippingQuote = async (productPublicId, deliveryPincode, cod = 0) => {
+  const product = await dao.getProductWithSellerPincode(productPublicId);
+  if (!product) throw new NotFoundError("Product not found");
+
+  const sellerPincode = product.catalogue?.seller?.sellerOnboarding?.address?.[0]?.Location?.pincode;
+  if (!sellerPincode) throw new ValidationError("Seller pickup pincode not configured");
+
+  const weightInKg = (product.weightInGram || 500) / 1000;
+
+  const builtInShippingFee = await platformConfigService.getBuiltInShippingFee();
+
+  let cheapestRate = builtInShippingFee;
+  let estimatedDays = null;
+  let courierName = null;
+  let isServiceable = false;
+
+  try {
+    const ratesData = await shiprocketService.calculateShippingRates({
+      pickup_postcode: sellerPincode,
+      delivery_postcode: String(deliveryPincode),
+      weight: weightInKg,
+      cod: cod ? 1 : 0,
+    });
+
+    const availableCouriers = ratesData?.available_courier_companies || [];
+    if (availableCouriers.length > 0) {
+      availableCouriers.sort((a, b) => Number(a.rate) - Number(b.rate));
+      const cheapest = availableCouriers[0];
+      cheapestRate = Number(cheapest.rate);
+      estimatedDays = cheapest.estimated_delivery_days || null;
+      courierName = cheapest.courier_name || null;
+      isServiceable = true;
+    }
+  } catch (err) {
+    // Shiprocket unavailable — fall back to built-in fee
+  }
+
+  const variantsWithAdjustedPrice = await ProductVariant.findAll({
+    where: { productId: product.id, isDeleted: false, isActive: true },
+    attributes: ["publicId", "trabuwoPrice", "mrp"],
+  });
+
+  const variants = variantsWithAdjustedPrice.map((v) => {
+    const base = Number(v.trabuwoPrice);
+    const adjusted = parseFloat((base - builtInShippingFee + cheapestRate).toFixed(2));
+    return { publicId: v.publicId, trabuwoPrice: base, adjustedPrice: adjusted, mrp: Number(v.mrp) };
+  });
+
+  return {
+    sellerPincode,
+    deliveryPincode: String(deliveryPincode),
+    shippingCost: cheapestRate,
+    builtInShippingFee,
+    isServiceable,
+    estimatedDays,
+    courierName,
+    freeShipping: true,
+    variants,
+  };
 };

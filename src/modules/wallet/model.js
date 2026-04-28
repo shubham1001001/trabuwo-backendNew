@@ -87,6 +87,7 @@ const WalletTransaction = sequelize.define(
         "withdrawal",
         "refund",
         "penalty",
+        "rto_penalty",
         "adjustment"
       ),
       allowNull: false,
@@ -103,6 +104,122 @@ const WalletTransaction = sequelize.define(
   }
 );
 
+const PlatformLedger = sequelize.define(
+  "PlatformLedger",
+  {
+    id: { type: DataTypes.BIGINT, primaryKey: true, autoIncrement: true },
+    publicId: {
+      type: DataTypes.UUID,
+      allowNull: false,
+      unique: true,
+      defaultValue: () => uuidv7(),
+    },
+    orderId: {
+      type: DataTypes.BIGINT,
+      allowNull: true,
+      references: { model: Order, key: "id" },
+    },
+    entryType: {
+      type: DataTypes.ENUM(
+        "buyer_payment",
+        "seller_credit",
+        "reseller_credit",
+        "commission_earned",
+        "shipping_margin",
+        "platform_fee_earned",
+        "logistics_cost",
+        "pg_cost",
+        "refund_issued",
+        "return_cost",
+        "rto_cost",
+        "payout_disbursed"
+      ),
+      allowNull: false,
+    },
+    amount: {
+      type: DataTypes.DECIMAL(15, 2),
+      allowNull: false,
+    },
+    description: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    metadata: {
+      type: DataTypes.JSONB,
+      allowNull: true,
+    },
+  },
+  {
+    tableName: "platform_ledger",
+    underscored: true,
+    timestamps: true,
+  }
+);
+
+const PayoutRequest = sequelize.define(
+  "PayoutRequest",
+  {
+    id: { type: DataTypes.BIGINT, primaryKey: true, autoIncrement: true },
+    publicId: {
+      type: DataTypes.UUID,
+      allowNull: false,
+      unique: true,
+      defaultValue: () => uuidv7(),
+    },
+    walletId: {
+      type: DataTypes.BIGINT,
+      allowNull: false,
+      references: { model: Wallet, key: "id" },
+    },
+    userId: {
+      type: DataTypes.BIGINT,
+      allowNull: false,
+      references: { model: User, key: "id" },
+    },
+    amount: {
+      type: DataTypes.DECIMAL(15, 2),
+      allowNull: false,
+    },
+    status: {
+      type: DataTypes.ENUM(
+        "pending",
+        "approved",
+        "processing",
+        "completed",
+        "rejected",
+        "on_hold"
+      ),
+      allowNull: false,
+      defaultValue: "pending",
+    },
+    razorpayPayoutId: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    adminNotes: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    scheduledAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+    processedAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+    metadata: {
+      type: DataTypes.JSONB,
+      allowNull: true,
+    },
+  },
+  {
+    tableName: "payout_requests",
+    underscored: true,
+    timestamps: true,
+  }
+);
+
 User.hasOne(Wallet, { foreignKey: "userId", as: "wallet" });
 Wallet.belongsTo(User, { foreignKey: "userId", as: "user" });
 
@@ -111,4 +228,8 @@ WalletTransaction.belongsTo(Wallet, { foreignKey: "walletId", as: "wallet" });
 
 WalletTransaction.belongsTo(Order, { foreignKey: "orderId", as: "order" });
 
-module.exports = { Wallet, WalletTransaction };
+PlatformLedger.belongsTo(Order, { foreignKey: "orderId", as: "order" });
+PayoutRequest.belongsTo(Wallet, { foreignKey: "walletId", as: "wallet" });
+PayoutRequest.belongsTo(User, { foreignKey: "userId", as: "user" });
+
+module.exports = { Wallet, WalletTransaction, PlatformLedger, PayoutRequest };

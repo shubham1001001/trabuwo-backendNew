@@ -10,7 +10,7 @@ exports.createMultipleProducts = async (req, res) => {
 };
 
 exports.getProductById = async (req, res) => {
-  const product = await service.getProductById(req.params.id, req.user.id);
+  const product = await service.getProductById(req.params.id, req.user?.id);
   return apiResponse.success(res, product);
 };
 
@@ -138,4 +138,11 @@ exports.bulkUpdateCatalogueProducts = async (req, res) => {
   );
 
   apiResponse.success(res, result.data, result.message, 200);
+};
+
+exports.getShippingQuote = async (req, res) => {
+  const { publicId } = req.params;
+  const { deliveryPincode, cod } = req.query;
+  const quote = await service.getShippingQuote(publicId, deliveryPincode, Number(cod) || 0);
+  return apiResponse.success(res, quote);
 };

@@ -31,6 +31,7 @@ const taskList = {
   "refresh-token-cleanup": require("../tasks/refreshTokenCleanup"),
   "product-view-history-cleanup": require("../tasks/productViewHistoryCleanup"),
   "price-recommendations-refresh": require("../tasks/priceRecommendationsRefresh"),
+  "payout-settlement": require("../tasks/payoutSettlement"),
 };
 
 async function startWorker() {

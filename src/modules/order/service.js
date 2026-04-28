@@ -14,12 +14,31 @@ const { Shipment } = require("../shiprocket/model");
 const sequelize = require("../../config/database");
 const productService = require("../product/service");
 const walletService = require("../wallet/service");
+const configService = require("../platformConfig/service");
 
-// Financial Constants (based on Revenue Model document)
-const COMMISSION_RATE = 0.05; // 5%
-const SHIPPING_FEE = 80;
-const PLATFORM_FEE = 15;
-const COD_FEE = 20;
+const getDynamicShippingRate = async (variantWithProduct, buyerPincode, isCod, builtInShippingFee) => {
+  try {
+    const sellerPincode = variantWithProduct?.product?.catalogue?.seller?.sellerOnboarding?.address?.[0]?.Location?.pincode;
+    if (!sellerPincode || !buyerPincode) return builtInShippingFee;
+
+    const weightInKg = (variantWithProduct?.product?.weightInGram || 500) / 1000;
+
+    const ratesData = await shiprocketService.calculateShippingRates({
+      pickup_postcode: sellerPincode,
+      delivery_postcode: String(buyerPincode),
+      weight: weightInKg,
+      cod: isCod ? 1 : 0,
+    });
+
+    const available = ratesData?.available_courier_companies || [];
+    if (available.length === 0) return builtInShippingFee;
+
+    available.sort((a, b) => Number(a.rate) - Number(b.rate));
+    return Number(available[0].rate);
+  } catch {
+    return builtInShippingFee;
+  }
+};
 
 exports.getOrdersBySellerId = async (sellerId) => {
   return dao.getOrdersBySellerId(sellerId);
@@ -311,38 +330,72 @@ exports.checkoutCart = async (userId, userAddressPublicId, paymentMethod = "ONLI
     throw new ValidationError("Invalid user address");
   }
 
-  const itemsSnapshot = cart.items.map((item) => {
+  const [platformFee, codFee, pgPercentage, codPgCost, builtInShippingFee] = await Promise.all([
+    configService.getPlatformFee(),
+    configService.getCodFee(),
+    configService.getPgCostPercentage(),
+    configService.getCodPgCost(),
+    configService.getBuiltInShippingFee()
+  ]);
+
+  const isCod = paymentMethod === "COD";
+  const buyerPincode = userAddress.location?.pincode || userAddress.Location?.pincode;
+
+  const itemsSnapshot = await Promise.all(cart.items.map(async (item) => {
     const listingPrice = Number(item.productVariant?.trabuwoPrice);
     const resellerPrice = item.resellerPrice ? Number(item.resellerPrice) : null;
-    const finalProductPrice = resellerPrice || listingPrice;
-    
-    const commissionAmount = listingPrice * COMMISSION_RATE;
-    const sellerPayout = listingPrice - commissionAmount;
-    const resellerMargin = resellerPrice ? (resellerPrice - listingPrice) : 0;
+
+    // Fetch variant with seller info for dynamic shipping rate
+    const variantWithProduct = await productDao.getVariantWithProduct(item.productVariantId);
+    const actualLogisticsCost = await getDynamicShippingRate(variantWithProduct, buyerPincode, isCod, builtInShippingFee);
+
+    // Adjust listing price: swap built-in shipping for actual logistics cost
+    const adjustedListingPrice = parseFloat((listingPrice - builtInShippingFee + actualLogisticsCost).toFixed(2));
+    const finalProductPrice = resellerPrice || adjustedListingPrice;
+
+    const categoryId = variantWithProduct?.product?.catalogue?.categoryId || variantWithProduct?.product?.categoryId;
+    const commissionRate = await configService.getCommissionRate(categoryId);
+    const commissionAmount = adjustedListingPrice * commissionRate;
+
+    const sellerPriceValue = variantWithProduct?.sellerPrice ?? item.productVariant?.sellerPrice;
+    let sellerPayout;
+    if (sellerPriceValue != null) {
+      sellerPayout = Number(sellerPriceValue);
+    } else {
+      sellerPayout = adjustedListingPrice - commissionAmount;
+    }
+
+    const resellerMargin = resellerPrice ? (resellerPrice - adjustedListingPrice) : 0;
 
     return {
       productVariantId: item.productVariantId,
       quantity: item.quantity,
       price: finalProductPrice,
-      listingPrice,
+      listingPrice: adjustedListingPrice,
       resellerPrice,
       resellerMargin,
       commissionAmount,
-      sellerPayout
+      sellerPayout,
+      logisticsCost: actualLogisticsCost,
     };
-  });
+  }));
 
   const productSubtotal = itemsSnapshot.reduce(
     (sum, i) => sum + i.price * i.quantity,
     0
   );
 
-  const isCod = paymentMethod === "COD";
-  const currentShippingFee = SHIPPING_FEE;
-  const currentPlatformFee = PLATFORM_FEE;
-  const currentCodFee = isCod ? COD_FEE : 0;
+  // Shipping is FREE to buyer (baked into product price)
+  const currentShippingFee = 0;
+  const currentPlatformFee = platformFee;
+  const currentCodFee = isCod ? codFee : 0;
 
   const totalAmount = productSubtotal + currentShippingFee + currentPlatformFee + currentCodFee;
+
+  // Use average logistics cost across items for order-level tracking
+  const logisticsCost = itemsSnapshot.reduce((sum, i) => sum + i.logisticsCost, 0);
+  const pgCost = isCod ? codPgCost : (totalAmount * (pgPercentage / 100));
+  const shippingMargin = 0;
 
   const result = await sequelize.transaction(async (t) => {
     const order = await dao.createOrder(
@@ -355,7 +408,10 @@ exports.checkoutCart = async (userId, userAddressPublicId, paymentMethod = "ONLI
         paymentMethod: isCod ? "cod" : "prepaid",
         shippingFee: currentShippingFee,
         platformFee: currentPlatformFee,
-        codFee: currentCodFee
+        codFee: currentCodFee,
+        logisticsCost,
+        pgCost,
+        shippingMargin
       },
       { transaction: t }
     );
@@ -416,6 +472,9 @@ exports.checkoutCart = async (userId, userAddressPublicId, paymentMethod = "ONLI
     orderId: order.publicId,
     status: order.status,
     totalAmount: Number(order.totalAmount),
+    shippingFee: currentShippingFee,
+    platformFee: currentPlatformFee,
+    codFee: currentCodFee,
     items: itemsSnapshot.map((i) => ({
       productVariantId: i.productVariantId,
       quantity: i.quantity,
@@ -444,22 +503,54 @@ exports.buyNow = async (userId, payload) => {
     throw new ValidationError("Invalid user address");
   }
 
+  const [platformFee, codFee, pgPercentage, codPgCost, builtInShippingFee] = await Promise.all([
+    configService.getPlatformFee(),
+    configService.getCodFee(),
+    configService.getPgCostPercentage(),
+    configService.getCodPgCost(),
+    configService.getBuiltInShippingFee()
+  ]);
+
+  const isCod = paymentMethod === "COD";
+
+  // Fetch variant with product+seller pincode for dynamic shipping
+  const variantWithProduct = await productDao.getVariantWithProduct(variant.id);
+  const buyerPincode = userAddress.location?.pincode || userAddress.Location?.pincode;
+  const actualLogisticsCost = await getDynamicShippingRate(variantWithProduct, buyerPincode, isCod, builtInShippingFee);
+
   const listingPrice = Number(variant.trabuwoPrice);
   const resellerPrice = payload.resellerPrice ? Number(payload.resellerPrice) : null;
-  const finalProductPrice = resellerPrice || listingPrice;
+  // Adjust listing price: replace built-in shipping with actual logistics cost
+  const adjustedListingPrice = parseFloat((listingPrice - builtInShippingFee + actualLogisticsCost).toFixed(2));
+  const finalProductPrice = resellerPrice || adjustedListingPrice;
 
-  const commissionAmount = listingPrice * COMMISSION_RATE;
-  const sellerPayout = listingPrice - commissionAmount;
-  const resellerMargin = resellerPrice ? (resellerPrice - listingPrice) : 0;
+  const categoryId = variantWithProduct?.product?.catalogue?.categoryId || variantWithProduct?.product?.categoryId;
+  const commissionRate = await configService.getCommissionRate(categoryId);
+  const commissionAmount = adjustedListingPrice * commissionRate;
+
+  // If sellerPrice exists, it's the new Meesho flow (Additive). Otherwise use old flow (Deductive).
+  const sellerPriceValue = variantWithProduct?.sellerPrice ?? variant.sellerPrice;
+  let sellerPayout;
+  if (sellerPriceValue != null) {
+    sellerPayout = Number(sellerPriceValue);
+  } else {
+    sellerPayout = adjustedListingPrice - commissionAmount; // Backward compatibility
+  }
+
+  const resellerMargin = resellerPrice ? (resellerPrice - adjustedListingPrice) : 0;
 
   const productSubtotal = finalProductPrice * quantity;
-  
-  const isCod = paymentMethod === "COD";
-  const currentShippingFee = SHIPPING_FEE;
-  const currentPlatformFee = PLATFORM_FEE;
-  const currentCodFee = isCod ? COD_FEE : 0;
+
+  // Shipping is FREE to buyer (baked into product price)
+  const currentShippingFee = 0;
+  const currentPlatformFee = platformFee;
+  const currentCodFee = isCod ? codFee : 0;
 
   const totalAmount = productSubtotal + currentShippingFee + currentPlatformFee + currentCodFee;
+
+  const logisticsCost = actualLogisticsCost;
+  const pgCost = isCod ? codPgCost : (totalAmount * (pgPercentage / 100));
+  const shippingMargin = 0;
 
   const result = await sequelize.transaction(async (t) => {
     const order = await dao.createOrder(
@@ -472,7 +563,10 @@ exports.buyNow = async (userId, payload) => {
         paymentMethod: isCod ? "cod" : "prepaid",
         shippingFee: currentShippingFee,
         platformFee: currentPlatformFee,
-        codFee: currentCodFee
+        codFee: currentCodFee,
+        logisticsCost,
+        pgCost,
+        shippingMargin
       },
       { transaction: t }
     );
@@ -531,11 +625,14 @@ exports.buyNow = async (userId, payload) => {
     orderId: order.publicId,
     status: order.status,
     totalAmount: Number(order.totalAmount),
+    shippingFee: currentShippingFee,
+    platformFee: currentPlatformFee,
+    codFee: currentCodFee,
     items: [
       {
         productVariantId,
         quantity,
-        price: unitPrice,
+        price: finalProductPrice,
       },
     ],
     payment,

@@ -244,11 +244,49 @@ exports.updateQCStatus = async (publicId, status, qcNotes = null) => {
 
   // If approved (set to live), also activate all products in this catalogue
   if (finalStatus === "live") {
-    const { Product } = require("../product/model");
+    const { Product, ProductVariant } = require("../product/model");
+    const platformConfigService = require("../platformConfig/service");
+    const pricingHelper = require("../pricing/helper");
+
     await Product.update(
       { status: "active" },
       { where: { catalogueId: catalogue.id } }
     );
+
+    // Recalculate prices for all variants in case commission/fees changed during QC
+    if (fullCatalogue.products) {
+      const commissionRate = await platformConfigService.getCommissionRate(catalogue.categoryId);
+      const platformFee = await platformConfigService.getPlatformFee();
+      const builtInShippingFee = await platformConfigService.getBuiltInShippingFee();
+
+      for (const product of fullCatalogue.products) {
+        if (!product.variants) continue;
+        
+        for (const variant of product.variants) {
+          const updates = {};
+          if (variant.sellerPrice != null) {
+            updates.trabuwoPrice = pricingHelper.calculateBuyerPrice(
+              variant.sellerPrice,
+              commissionRate,
+              platformFee,
+              builtInShippingFee
+            );
+          }
+          if (variant.sellerReturnPrice != null) {
+            updates.wrongDefectiveReturnPrice = pricingHelper.calculateBuyerPrice(
+              variant.sellerReturnPrice,
+              commissionRate,
+              platformFee,
+              builtInShippingFee
+            );
+          }
+          
+          if (Object.keys(updates).length > 0) {
+            await ProductVariant.update(updates, { where: { id: variant.id } });
+          }
+        }
+      }
+    }
   }
 
   return updatedCatalogue;

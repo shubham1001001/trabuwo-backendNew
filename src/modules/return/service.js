@@ -8,8 +8,9 @@ const { UserAddress } = require("../userAddress/model");
 const { Order } = require("../order/model");
 const { User } = require("../auth/model");
 const sequelize = require("../../config/database");
+const configService = require("../platformConfig/service");
 
-exports.initiateReturn = async (orderItemPublicId, buyerId, reason) => {
+exports.initiateReturn = async (orderItemPublicId, buyerId, reason, returnType = "customer_choice") => {
   const orderItem = await OrderItem.findOne({
     where: { publicId: orderItemPublicId },
     include: [
@@ -73,8 +74,9 @@ exports.initiateReturn = async (orderItemPublicId, buyerId, reason) => {
     throw new ValidationError("You can only return items from your own orders");
   }
 
-  if (order.status !== "shipped") {
-    throw new ValidationError("Order must be shipped to initiate return");
+  // Check if status is either 'shipped' or 'delivered'
+  if (!["shipped", "delivered"].includes(order.status)) {
+    throw new ValidationError("Order must be shipped or delivered to initiate return");
   }
 
   const existingReturn = await dao.findActiveReturnByOrderItemId(orderItem.id);
@@ -84,11 +86,43 @@ exports.initiateReturn = async (orderItemPublicId, buyerId, reason) => {
     );
   }
 
+  // ──────────────── Revenue Model: Cost Allocation ────────────────
+  const returnShippingCost = await configService.getConfigValue("return_shipping_cost", 60);
+  const maxFreeReturns = await configService.getConfigValue("max_free_returns_per_month", 2);
+  
+  let costBearer = "platform";
+  
+  if (returnType === "product_defect" || returnType === "wrong_product") {
+    costBearer = "seller";
+  } else {
+    // Customer choice: Check free limit
+    const startOfMonth = new Date();
+    startOfMonth.setDate(1);
+    startOfMonth.setHours(0, 0, 0, 0);
+    
+    const usedFreeReturns = await dao.countReturnsByBuyerId(buyerId, {
+      createdAt: { [sequelize.Sequelize.Op.gte]: startOfMonth },
+      costBearer: "platform"
+    });
+    
+    if (usedFreeReturns >= maxFreeReturns) {
+      costBearer = "seller"; // Or buyer pays (charge from refund), Meesho usually charges seller or platform
+      // For Trabuwo: If limit exceeded, seller bears it or we deduct from buyer's refund.
+      // The requirement says "Platform pays reverse shipping" but "Max 2 per month".
+      // Let's assume after 2, Seller pays.
+    }
+  }
+
   const returnRecord = await dao.createReturn({
     orderItemId: orderItem.id,
     status: "initiated",
     reason,
+    returnType,
+    returnShippingCost,
+    costBearer,
+    isRto: false
   });
+  // ──────────────────────────────────────────────────────────────
 
   const returnOrderData = await shiprocketService.createReturnOrder(
     returnRecord.id,
@@ -151,6 +185,7 @@ exports.processRefund = async (returnId, sellerId) => {
   );
 
   await sequelize.transaction(async (t) => {
+    // 1. Update Return Status
     await dao.updateReturn(
       returnRecord.id,
       {
@@ -165,9 +200,14 @@ exports.processRefund = async (returnId, sellerId) => {
       { transaction: t }
     );
 
+    // 2. Update Payment Status
     await paymentDao.updatePaymentStatusById(payment.id, "refunded", {
       refundedAt: new Date(),
-    });
+    }, { transaction: t });
+
+    // 3. Adjust Wallets (Debit Seller/Reseller)
+    const walletService = require("../wallet/service");
+    await walletService.handleReturn(order.id, t);
   });
 
   return await dao.findReturnByPublicId(returnRecord.publicId);

@@ -68,6 +68,24 @@ const Return = sequelize.define(
       allowNull: false,
       defaultValue: {},
     },
+    // ──────────────── Revenue Model Fields ────────────────
+    returnType: {
+      type: DataTypes.ENUM("product_defect", "customer_choice", "wrong_product", "other"),
+      allowNull: true,
+    },
+    returnShippingCost: {
+      type: DataTypes.DECIMAL(10, 2),
+      defaultValue: 0,
+    },
+    costBearer: {
+      type: DataTypes.ENUM("platform", "seller"),
+      defaultValue: "platform",
+    },
+    isRto: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    }
+    // ──────────────────────────────────────────────────────
   },
   {
     timestamps: true,

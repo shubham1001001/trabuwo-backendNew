@@ -49,6 +49,12 @@ router.get(
 );
 
 router.get(
+  "/:publicId/shipping-quote",
+  attachUserIfPresent,
+  asyncHandler(controller.getShippingQuote)
+);
+
+router.get(
   "/:id",
   attachUserIfPresent,
   validation.getProductValidation,

@@ -224,6 +224,22 @@ const ProductVariant = sequelize.define(
         key: "id",
       },
     },
+    sellerPrice: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: true, // true for backward compatibility until migration
+      comment: "Seller's desired payout for all returns",
+      validate: {
+        min: 0,
+      },
+    },
+    sellerReturnPrice: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: true,
+      comment: "Seller's desired payout for wrong/defective returns only",
+      validate: {
+        min: 0,
+      },
+    },
     trabuwoPrice: {
       type: DataTypes.DECIMAL(10, 2),
       allowNull: false,

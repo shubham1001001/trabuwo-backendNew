@@ -26,7 +26,7 @@ exports.getProductById = (id, userId, options = {}) =>
         model: Catalogue,
         as: "catalogue",
         attributes: ["id", "name", "userId"],
-        where: { userId },
+        ...(userId != null ? { where: { userId } } : {}),
         include: [
           {
             model: Category,
@@ -680,5 +680,96 @@ exports.decrementInventory = async (variantId, quantity, options = {}) => {
     by: quantity,
     where: { id: variantId },
     ...options,
+  });
+};
+
+exports.getProductWithSellerPincode = async (publicId) => {
+  return Product.findOne({
+    where: { publicId, isDeleted: false },
+    attributes: ["id", "publicId", "weightInGram", "catalogueId"],
+    include: [
+      {
+        model: Catalogue,
+        as: "catalogue",
+        attributes: ["id", "userId"],
+        include: [
+          {
+            model: User,
+            as: "seller",
+            attributes: ["id"],
+            include: [
+              {
+                model: SellerOnboarding,
+                as: "sellerOnboarding",
+                attributes: ["id"],
+                include: [
+                  {
+                    model: Address,
+                    as: "address",
+                    attributes: ["id"],
+                    include: [
+                      {
+                        model: Location,
+                        as: "Location",
+                        attributes: ["pincode", "city", "state"],
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  });
+};
+
+exports.getVariantWithProduct = async (variantId) => {
+  return ProductVariant.findOne({
+    where: { id: variantId, isDeleted: false },
+    attributes: ["id", "publicId", "productId", "trabuwoPrice", "sellerPrice"],
+    include: [
+      {
+        model: Product,
+        as: "product",
+        attributes: ["id", "publicId", "weightInGram", "catalogueId"],
+        include: [
+          {
+            model: Catalogue,
+            as: "catalogue",
+            attributes: ["id", "userId", "categoryId"],
+            include: [
+              {
+                model: User,
+                as: "seller",
+                attributes: ["id"],
+                include: [
+                  {
+                    model: SellerOnboarding,
+                    as: "sellerOnboarding",
+                    attributes: ["id"],
+                    include: [
+                      {
+                        model: Address,
+                        as: "address",
+                        attributes: ["id"],
+                        include: [
+                          {
+                            model: Location,
+                            as: "Location",
+                            attributes: ["pincode"],
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
   });
 };

@@ -6,6 +6,7 @@ const dbConfig = config.get("db");
 /*IMPROVEMNT Connection Pooling etc before production */
 const isLocalhost = dbConfig.host === "127.0.0.1" || dbConfig.host === "localhost";
 
+console.log(`[Database] Connecting to ${dbConfig.host} with DB_SSL=${process.env.DB_SSL}`);
 const sequelize = new Sequelize(
   dbConfig.name,
   dbConfig.user,
@@ -18,14 +19,12 @@ const sequelize = new Sequelize(
     logging: (msg) => {
       logger.info(`[Sequelize] ${msg}`);
     },
-    ...(isLocalhost ? {} : {
-      dialectOptions: {
-        ssl: {
-          require: true,
-          rejectUnauthorized: false,
-        },
+    dialectOptions: {
+      ssl: process.env.DB_SSL === "false" ? false : {
+        require: true,
+        rejectUnauthorized: false,
       },
-    }),
+    },
 
     pool: {
       max: 5, // Maximum connections - optimized for 0.1 CPU Render instance

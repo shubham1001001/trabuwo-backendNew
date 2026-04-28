@@ -87,3 +87,23 @@ exports.findActiveReturnByOrderItemId = (orderItemId) =>
       //   },
     },
   });
+exports.countReturnsByBuyerId = async (buyerId, filters = {}) => {
+  return await Return.count({
+    where: filters,
+    include: [
+      {
+        model: OrderItem,
+        as: "orderItem",
+        required: true,
+        include: [
+          {
+            model: Order,
+            as: "order",
+            required: true,
+            where: { buyerId }
+          }
+        ]
+      }
+    ]
+  });
+};

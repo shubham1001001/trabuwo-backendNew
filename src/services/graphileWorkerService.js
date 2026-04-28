@@ -118,12 +118,26 @@ class GraphileWorkerService {
   }
 
   async scheduleRecurringJob(taskIdentifier, cronPattern, maxAttempts = 3) {
-    // NOTE: We are not using Graphile Worker's crontab/known_crontabs mechanism yet.
-    // For now, we only log the desired schedule; actual recurrence can be wired
-    // later via a crontab file as per the Graphile Worker docs.
-    logger.info(
-      `Recurring schedule requested for ${taskIdentifier} with pattern ${cronPattern}, but crontab integration is not enabled.`
-    );
+    // Note: Since crontab is not enabled in graphile-worker config, 
+    // we use a simple interval for development to keep things running.
+    // In production, use graphile-worker crontab or known_crontabs.
+    
+    // Simple interval: once every 6 hours for payout settlement
+    // and others based on pattern (simplified for now)
+    let intervalMs = 6 * 60 * 60 * 1000; 
+    
+    if (taskIdentifier === "view-flush") intervalMs = 5 * 60 * 1000; // 5 mins
+    
+    setInterval(async () => {
+      try {
+        await graphileWorker.addJob(taskIdentifier, {}, { maxAttempts });
+        logger.info(`Scheduled job ${taskIdentifier} added to queue`);
+      } catch (err) {
+        logger.error(`Failed to schedule recurring job ${taskIdentifier}:`, err);
+      }
+    }, intervalMs);
+
+    logger.info(`Interval-based scheduler started for ${taskIdentifier} (approx ${intervalMs/1000/60} mins)`);
   }
 
   async close() {

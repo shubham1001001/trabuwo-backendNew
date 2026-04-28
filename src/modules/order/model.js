@@ -32,6 +32,7 @@ const Order = sequelize.define(
         "pending",
         "ready_to_ship",
         "shipped",
+        "delivered",
         "cancelled"
       ),
       allowNull: false,
@@ -70,6 +71,11 @@ const Order = sequelize.define(
       type: DataTypes.DATE,
       allowNull: true,
     },
+    payoutDate: {
+      type: DataTypes.DATE,
+      allowNull: true,
+      comment: "T+7 Payout date (deliveryDate + 7 days)",
+    },
     resellerId: {
       type: DataTypes.BIGINT,
       allowNull: true,
@@ -96,6 +102,21 @@ const Order = sequelize.define(
       defaultValue: 0,
     },
     codFee: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: false,
+      defaultValue: 0,
+    },
+    logisticsCost: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: false,
+      defaultValue: 0,
+    },
+    pgCost: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: false,
+      defaultValue: 0,
+    },
+    shippingMargin: {
       type: DataTypes.DECIMAL(10, 2),
       allowNull: false,
       defaultValue: 0,
