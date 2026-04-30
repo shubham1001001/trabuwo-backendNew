@@ -58,21 +58,19 @@ const getTokenFromAPI = async () => {
 
 const getOrRefreshToken = async () => {
   try {
-    // const tokenData = await redisService.get(config.get("shiprocket.tokenKey"));
+    const tokenData = await redisService.get(config.get("shiprocket.tokenKey"));
 
-    const tokenData = { token: config.get("shiprocket.token") };
-    return tokenData.token;
-    // if (tokenData && tokenData.token) {
-    //   const expiresAt = new Date(tokenData.expiresAt);
-    //   const now = new Date();
-    //   const bufferTime = 60 * 60 * 1000;
+    if (tokenData && tokenData.token) {
+      const expiresAt = new Date(tokenData.expiresAt);
+      const now = new Date();
+      const bufferTime = 60 * 60 * 1000;
 
-    //   if (expiresAt.getTime() > now.getTime() + bufferTime) {
-    //     return tokenData.token;
-    //   }
-    // }
+      if (expiresAt.getTime() > now.getTime() + bufferTime) {
+        return tokenData.token;
+      }
+    }
 
-    // return await getTokenFromAPI();
+    return await getTokenFromAPI();
   } catch (error) {
     logger.error("Error getting Shiprocket token:", error);
     throw new ExternalServiceError(

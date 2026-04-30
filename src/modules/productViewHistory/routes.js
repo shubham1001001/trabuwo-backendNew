@@ -6,7 +6,6 @@ const asyncHandler = require("../../utils/asyncHandler");
 const { authenticate, requireRole } = require("../../middleware/auth");
 
 router.use(authenticate);
-router.use(requireRole("buyer"));
 
 /**
  * @swagger

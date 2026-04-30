@@ -51,6 +51,7 @@ router.use(
   "/product-view-history",
   require("../modules/productViewHistory/routes")
 );
+router.use("/product-shares", require("../modules/productShare/routes"));
 router.use("/wishlist", require("../modules/wishlist/routes"));
 router.use("/sharelist", require("../modules/sharelist/routes"));
 router.use("/returns", require("../modules/return/routes"));

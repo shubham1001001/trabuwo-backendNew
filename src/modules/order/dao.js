@@ -62,8 +62,9 @@ exports.getOrderItemByPublicId = (publicId, status) => {
   });
 };
 
-exports.getOrderById = (id) =>
+exports.getOrderById = (id, options = {}) =>
   Order.findByPk(id, {
+    transaction: options.transaction,
     include: [
       {
         model: OrderItem,

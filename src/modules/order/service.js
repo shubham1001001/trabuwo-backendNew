@@ -242,29 +242,40 @@ exports.cancelOrder = async (orderId, sellerId) => {
 
   const shipment = await shiprocketDao.findShipmentByOrderId(order.id);
 
-  if (shipment && shipment.shiprocketOrderId) {
-    try {
-      await shiprocketService.cancelOrdersByIds([shipment.shiprocketOrderId]);
-
-      return await sequelize.transaction(async (t) => {
-        await OrderModel.update(
-          { status: "cancelled" },
-          { where: { id: order.id }, transaction: t }
+  const result = await sequelize.transaction(async (t) => {
+    // Restore inventory
+    for (const item of order.items) {
+      if (item.productVariantId) {
+        await productService.incrementInventory(
+          item.productVariantId,
+          item.quantity,
+          { transaction: t }
         );
+      }
+    }
+
+    if (shipment && shipment.shiprocketOrderId) {
+      try {
+        await shiprocketService.cancelOrdersByIds([shipment.shiprocketOrderId]);
         await Shipment.update(
           { status: "cancelled" },
           { where: { id: shipment.id }, transaction: t }
         );
-        const updatedOrder = await dao.getOrderByIdForSeller(orderId, sellerId);
-        return updatedOrder;
-      });
-    } catch (error) {
-      console.error("Failed to cancel order in Shiprocket:", error);
+      } catch (error) {
+        console.error("Failed to cancel order in Shiprocket:", error);
+      }
     }
-  }
 
-  await dao.updateOrderStatus(order.id, "cancelled");
-  return dao.getOrderByIdForSeller(orderId, sellerId);
+    await OrderModel.update(
+      { status: "cancelled" },
+      { where: { id: order.id }, transaction: t }
+    );
+
+    const updatedOrder = await dao.getOrderByIdForSeller(orderId, sellerId);
+    return updatedOrder;
+  });
+
+  return result;
 };
 
 exports.downloadShippingLabel = async (orderId, sellerId) => {
@@ -390,7 +401,7 @@ exports.checkoutCart = async (userId, userAddressPublicId, paymentMethod = "ONLI
   const currentPlatformFee = platformFee;
   const currentCodFee = isCod ? codFee : 0;
 
-  const totalAmount = productSubtotal + currentShippingFee + currentPlatformFee + currentCodFee;
+  const totalAmount = productSubtotal + currentShippingFee + currentCodFee;
 
   // Use average logistics cost across items for order-level tracking
   const logisticsCost = itemsSnapshot.reduce((sum, i) => sum + i.logisticsCost, 0);
@@ -546,7 +557,7 @@ exports.buyNow = async (userId, payload) => {
   const currentPlatformFee = platformFee;
   const currentCodFee = isCod ? codFee : 0;
 
-  const totalAmount = productSubtotal + currentShippingFee + currentPlatformFee + currentCodFee;
+  const totalAmount = productSubtotal + currentShippingFee + currentCodFee;
 
   const logisticsCost = actualLogisticsCost;
   const pgCost = isCod ? codPgCost : (totalAmount * (pgPercentage / 100));
@@ -665,7 +676,8 @@ exports.finalizeOrderAfterPayment = async (orderId, options = {}) => {
   const { transaction } = options;
 
   // We need the order with its items to decrement inventory
-  const order = await dao.getOrderById(orderId);
+  // Pass the transaction so we can read uncommitted items created in the same tx
+  const order = await dao.getOrderById(orderId, { transaction });
   if (!order) {
     console.error(`Order ${orderId} not found during finalization`);
     return;

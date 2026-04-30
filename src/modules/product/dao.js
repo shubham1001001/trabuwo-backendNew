@@ -683,6 +683,14 @@ exports.decrementInventory = async (variantId, quantity, options = {}) => {
   });
 };
 
+exports.incrementInventory = async (variantId, quantity, options = {}) => {
+  return await ProductVariant.increment("inventory", {
+    by: quantity,
+    where: { id: variantId },
+    ...options,
+  });
+};
+
 exports.getProductWithSellerPincode = async (publicId) => {
   return Product.findOne({
     where: { publicId, isDeleted: false },

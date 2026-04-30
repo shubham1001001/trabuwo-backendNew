@@ -3,6 +3,7 @@ const ApiError = require("../utils/ApiError");
 const {
   Msg91Error,
   ShiprocketError,
+  ExternalServiceError,
   ValidationError,
   AuthenticationError,
   NotFoundError,
@@ -41,6 +42,13 @@ module.exports = (err, req, res, next) => {
     return ApiError.send(
       res,
       new ApiError(err?.response?.status, err.message, err.code)
+    );
+  }
+
+  if (err instanceof ExternalServiceError) {
+    return ApiError.send(
+      res,
+      new ApiError(502, err.message, err.code, err.details)
     );
   }
 

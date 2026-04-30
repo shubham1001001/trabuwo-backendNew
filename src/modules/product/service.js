@@ -263,6 +263,10 @@ exports.decrementInventory = async (variantId, quantity, options = {}) => {
   return await dao.decrementInventory(variantId, quantity, options);
 };
 
+exports.incrementInventory = async (variantId, quantity, options = {}) => {
+  return await dao.incrementInventory(variantId, quantity, options);
+};
+
 exports.getProductsByUserId = (userId) => dao.getProductsByUserId(userId);
 
 exports.createBulkCataloguesWithProducts = async (catalogues, userId) => {

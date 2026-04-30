@@ -123,8 +123,8 @@ exports.getOrdersStatsLast30Days = async (req, res) => {
 
 exports.checkout = asyncHandler(async (req, res) => {
   const userId = req.user.id;
-  const { userAddressPublicId } = req.body;
-  const result = await service.checkoutCart(userId, userAddressPublicId);
+  const { userAddressPublicId, paymentMethod } = req.body;
+  const result = await service.checkoutCart(userId, userAddressPublicId, paymentMethod);
   return apiResponse.success(res, result, "Checkout initiated successfully");
 });
 
