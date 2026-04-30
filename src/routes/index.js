@@ -65,5 +65,6 @@ router.use("/original-brand-categories", require("../modules/originalBrand/route
 router.use("/mobile-category-sections", require("../modules/mobileCategorySection/routes"));
 router.use("/platform-config", require("../modules/platformConfig/routes"));
 router.use("/wallet", require("../modules/wallet/routes"));
+router.use("/trabuwo-balance", require("../modules/trabuwoBalance/routes"));
 
 module.exports = router;

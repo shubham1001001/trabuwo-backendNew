@@ -9,6 +9,7 @@ const { Order } = require("../order/model");
 const { User } = require("../auth/model");
 const sequelize = require("../../config/database");
 const configService = require("../platformConfig/service");
+const trabuwoBalanceService = require("../trabuwoBalance/service");
 
 exports.initiateReturn = async (orderItemPublicId, buyerId, reason, returnType = "customer_choice") => {
   const orderItem = await OrderItem.findOne({
@@ -208,6 +209,15 @@ exports.processRefund = async (returnId, sellerId) => {
     // 3. Adjust Wallets (Debit Seller/Reseller)
     const walletService = require("../wallet/service");
     await walletService.handleReturn(order.id, t);
+
+    // 4. Credit buyer's Trabuwo balance
+    await trabuwoBalanceService.creditBalance(
+      order.buyerId,
+      refundAmount,
+      "return_refund",
+      order.id,
+      { transaction: t }
+    );
   });
 
   return await dao.findReturnByPublicId(returnRecord.publicId);

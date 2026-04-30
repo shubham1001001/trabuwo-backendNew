@@ -14,6 +14,7 @@ const { Shipment } = require("../shiprocket/model");
 const sequelize = require("../../config/database");
 const productService = require("../product/service");
 const walletService = require("../wallet/service");
+const trabuwoBalanceService = require("../trabuwoBalance/service");
 const configService = require("../platformConfig/service");
 
 const getDynamicShippingRate = async (variantWithProduct, buyerPincode, isCod, builtInShippingFee) => {
@@ -270,6 +271,25 @@ exports.cancelOrder = async (orderId, sellerId) => {
       { status: "cancelled" },
       { where: { id: order.id }, transaction: t }
     );
+
+    // Credit buyer's Trabuwo balance for prepaid orders
+    if (order.paymentMethod === "prepaid" && order.buyerId) {
+      try {
+        const payment = await paymentDao.findPaymentByOrderPublicId(order.publicId);
+        if (payment && payment.status === "captured") {
+          await trabuwoBalanceService.creditBalance(
+            order.buyerId,
+            Number(order.totalAmount),
+            "order_cancelled",
+            order.id,
+            { transaction: t }
+          );
+        }
+      } catch (err) {
+        // Non-fatal: log but don't block the cancellation
+        console.error("[cancelOrder] Failed to credit Trabuwo balance:", err.message);
+      }
+    }
 
     const updatedOrder = await dao.getOrderByIdForSeller(orderId, sellerId);
     return updatedOrder;

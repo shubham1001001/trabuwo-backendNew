@@ -1,5 +1,6 @@
 const shiprocketAxios = require("./axiosConfig");
 const dao = require("./dao");
+const trabuwoBalanceService = require("../trabuwoBalance/service");
 const {
   ExternalServiceError,
   ValidationError,
@@ -1387,6 +1388,42 @@ exports.processWebhook = async (webhookPayload) => {
     webhookData,
     scansData
   );
+
+  // Credit buyer's Trabuwo balance on RTO Delivered
+  const currentStatus = (webhookPayload.current_status || "").toLowerCase();
+  const isRtoDelivered =
+    currentStatus === "rto delivered" ||
+    webhookPayload.current_status_id === 21;
+
+  if (isRtoDelivered && shipment.orderId) {
+    try {
+      const { Order } = require("../order/model");
+      const paymentDao = require("../payment/dao");
+
+      const order = await Order.findByPk(shipment.orderId, {
+        attributes: ["id", "publicId", "buyerId", "paymentMethod", "totalAmount"],
+      });
+
+      if (order && order.paymentMethod === "prepaid" && order.buyerId) {
+        const payment = await paymentDao.findPaymentByOrderPublicId(order.publicId);
+        if (payment && payment.status === "captured") {
+          await trabuwoBalanceService.creditBalance(
+            order.buyerId,
+            Number(order.totalAmount),
+            "rto_refund",
+            order.id
+          );
+          logger.info("Trabuwo balance credited for RTO", {
+            orderId: order.id,
+            buyerId: order.buyerId,
+            amount: order.totalAmount,
+          });
+        }
+      }
+    } catch (err) {
+      logger.error("Failed to credit Trabuwo balance for RTO:", err.message);
+    }
+  }
 
   return {
     processed: true,
