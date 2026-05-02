@@ -1591,3 +1591,25 @@ Error: Category not found
     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
     at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
     at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-02T13:49:55.339Z ---
+Error
+    at Query.run (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\postgres\query.js:50:25)
+    at D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async PostgresQueryInterface.select (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\abstract\query-interface.js:407:12)
+    at async RefreshToken.findAll (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1140:21)
+    at async RefreshToken.findOne (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1240:12)
+    at async exports.verifyRefreshToken (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\auth\service.js:56:23)
+    at async exports.refreshToken (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\auth\controller.js:88:23)
+
+--- 2026-05-02T13:49:56.039Z ---
+Error
+    at Query.run (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\postgres\query.js:50:25)
+    at D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async PostgresQueryInterface.select (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\abstract\query-interface.js:407:12)
+    at async RefreshToken.findAll (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1140:21)
+    at async RefreshToken.findOne (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1240:12)
+    at async exports.verifyRefreshToken (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\auth\service.js:56:23)
+    at async exports.refreshToken (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\auth\controller.js:88:23)

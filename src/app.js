@@ -40,7 +40,12 @@ app.use((req, res, next) => {
   const allowedOrigins = [
     "http://localhost:5173",
     "http://localhost:5174",
-    "http://localhost:5175"
+    "http://localhost:5175",
+    "http://165.22.210.2",
+    "http://165.22.210.2:5173",
+    "http://165.22.210.2:5174",
+    "http://165.22.210.2:5175",
+    "http://165.22.210.2:3000"
   ];
 
   if (allowedOrigins.includes(origin)) {
