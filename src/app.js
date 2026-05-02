@@ -37,21 +37,11 @@ app.use((req, res, next) => {
 
 app.use((req, res, next) => {
   const origin = req.headers.origin;
-  const allowedOrigins = [
-    "http://localhost:5173",
-    "http://localhost:5174",
-    "http://localhost:5175",
-    "http://165.22.210.2",
-    "http://165.22.210.2:5173",
-    "http://165.22.210.2:5174",
-    "http://165.22.210.2:5175",
-    "http://165.22.210.2:3000"
-  ];
 
-  if (allowedOrigins.includes(origin)) {
+  if (origin) {
     res.setHeader("Access-Control-Allow-Origin", origin);
     res.setHeader("Access-Control-Allow-Credentials", "true");
-  } else if (!origin) {
+  } else {
     // For non-browser requests or same-origin
     res.setHeader("Access-Control-Allow-Origin", "*");
   }
