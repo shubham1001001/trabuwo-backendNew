@@ -128,18 +128,20 @@ exports.checkout = asyncHandler(async (req, res) => {
   return apiResponse.success(res, result, "Checkout initiated successfully");
 });
 
-exports.buyNow = async (req, res) => {
+exports.buyNow = asyncHandler(async (req, res) => {
   const userId = req.user.id;
-  const { productVariantId, userAddressPublicId, quantity } = req.body;
+  const { productVariantId, userAddressPublicId, quantity, paymentMethod, resellerId } = req.body;
 
   const result = await service.buyNow(userId, {
     productVariantId,
     userAddressPublicId,
-    quantity: parseInt(quantity, 10),
+    quantity: Number(quantity),
+    paymentMethod,
+    resellerId,
   });
 
   return apiResponse.success(res, result, "Buy now initiated successfully");
-};
+});
 
 exports.getBuyerOrders = asyncHandler(async (req, res) => {
   const filters = {

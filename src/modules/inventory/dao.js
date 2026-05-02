@@ -3,8 +3,10 @@ const sequelize = require("../../config/database");
 const Catalogue = require("../catalogue/model");
 const { Product, ProductImage, ProductVariant } = require("../product/model");
 const Category = require("../category/model");
+const { Order, OrderItem } = require("../order/model");
 const { NotFoundError, ValidationError } = require("../../utils/errors");
 const { buildCategoryTree } = require("../category/helper");
+
 
 class InventoryDAO {
   async getCataloguesWithProducts(filters, pagination, userId) {
@@ -141,7 +143,31 @@ class InventoryDAO {
     const total = totalResult.length;
     const totalPages = Math.ceil(total / limit);
 
+    // Calculate stats for each product
+    for (const catalogue of catalogues) {
+      for (const product of catalogue.products) {
+        const variantIds = product.variants.map(v => v.id);
+        const last30Days = new Date();
+        last30Days.setDate(last30Days.getDate() - 30);
+
+        const orderCount = await OrderItem.sum('quantity', {
+          where: {
+            productVariantId: { [Op.in]: variantIds },
+            createdAt: { [Op.gte]: last30Days }
+          }
+        }) || 0;
+
+        const estimatedOrderPerDay = Number((orderCount / 30).toFixed(2));
+        const totalInventory = product.variants.reduce((sum, v) => sum + (v.inventory || 0), 0);
+        const daysToStockout = estimatedOrderPerDay > 0 ? Math.ceil(totalInventory / estimatedOrderPerDay) : null;
+
+        product.setDataValue('estimatedOrderPerDay', estimatedOrderPerDay);
+        product.setDataValue('daysToStockout', daysToStockout);
+      }
+    }
+
     return { catalogues, total, page, limit, totalPages };
+
   }
 
   async getCatalogueByIdAndUserId(catalogueId, userId) {
@@ -263,9 +289,9 @@ class InventoryDAO {
 async updateProductStock(productId, newStock, userId) {
   return await sequelize.transaction(async (t) => {
 
-    // 1️⃣ Find product with ownership check
+    // 1️⃣ Find product with ownership check (productId is the numeric DB id)
     const product = await Product.findOne({
-      where: { publicId: productId, isDeleted: false },
+      where: { id: productId, isDeleted: false },
       include: [
         {
           model: Catalogue,
@@ -319,60 +345,120 @@ async updateProductStock(productId, newStock, userId) {
       await product.update({ status: "active" }, { transaction: t });
     }
 
-    // 7️⃣ Notification job (0 → >0)
+    // 7️⃣ Notification job (0 → >0) - only if Graphile Worker is running
     if (newStock > 0) {
       for (const variantBefore of variantsBeforeUpdate) {
         if (variantBefore.inventory === 0) {
-          await t.sequelize.query(
-            `
-              SELECT graphile_worker.add_job(
-                $1::text,
-                $2::json,
-                job_key := $3
-              );
-            `,
-            {
-              transaction: t,
-              bind: [
-                "dispatch-stock-notifications",
-                JSON.stringify({
-                  productVariantId: variantBefore.id,
-                  newStock,
-                }),
-                `dispatch-stock-notifications-${variantBefore.id}`,
-              ],
-            }
-          );
+          try {
+            await t.sequelize.query(
+              `
+                SELECT graphile_worker.add_job(
+                  $1::text,
+                  $2::json,
+                  job_key := $3
+                );
+              `,
+              {
+                transaction: t,
+                bind: [
+                  "dispatch-stock-notifications",
+                  JSON.stringify({
+                    productVariantId: variantBefore.id,
+                    newStock,
+                  }),
+                  `dispatch-stock-notifications-${variantBefore.id}`,
+                ],
+              }
+            );
+          } catch (workerErr) {
+            // Graphile Worker may not be running in dev — non-fatal
+            console.warn(`[inventory] Graphile Worker not available, skipping notification for variant ${variantBefore.id}:`, workerErr.message);
+          }
         }
       }
     }
 
-    // 8️⃣ Fetch UPDATED variants
-    const updatedVariants = await ProductVariant.findAll({
-      where: { productId: product.id, isDeleted: false },
-      attributes: ["inventory"],
-      transaction: t,
-    });
+    // 8️⃣ Calculate UPDATED total inventory directly — we just set all variants to newStock
+    // (avoids a redundant SELECT FOR UPDATE that causes Postgres lock errors)
+    const updatedTotalInventory = newStock * variants.length;
 
-    // 9️⃣ Calculate UPDATED total inventory
-    const updatedTotalInventory = updatedVariants.reduce(
-      (sum, v) => sum + (v.inventory || 0),
-      0
-    );
-
-    // 🔟 Convert Sequelize instance → plain object
+    // 9️⃣ Convert Sequelize instance → plain object
     const productData = product.toJSON();
 
-    // 1️⃣1️⃣ Override dynamicFields.inventory safely
+    // 🔟 Override dynamicFields.inventory safely
     productData.dynamicFields = {
       ...(productData.dynamicFields || {}),
       inventory: updatedTotalInventory,
     };
 
-    // 1️⃣2️⃣ Return same structure with updated inventory
+    // Return updated structure
     return productData;
   });
 }
+
+async updateVariantStock(variantId, newStock, userId) {
+  return await sequelize.transaction(async (t) => {
+    const variant = await ProductVariant.findOne({
+      where: { id: variantId, isDeleted: false },
+      include: [
+        {
+          model: Product,
+          as: "product",
+          required: true,
+          include: [
+            {
+              model: Catalogue,
+              as: "catalogue",
+              where: { userId },
+              attributes: ["id", "userId"],
+              required: true
+            }
+          ]
+        }
+      ],
+      transaction: t,
+      lock: t.LOCK.UPDATE
+    });
+
+    if (!variant) {
+      throw new NotFoundError("Variant not found or permission denied");
+    }
+
+    const oldInventory = variant.inventory || 0;
+    await variant.update({ inventory: newStock }, { transaction: t });
+
+    // Notification job (0 → >0)
+    if (oldInventory === 0 && newStock > 0) {
+      try {
+        await t.sequelize.query(
+          `
+            SELECT graphile_worker.add_job(
+              $1::text,
+              $2::json,
+              job_key := $3
+            );
+          `,
+          {
+            transaction: t,
+            bind: [
+              "dispatch-stock-notifications",
+              JSON.stringify({
+                productVariantId: variant.id,
+                newStock,
+              }),
+              `dispatch-stock-notifications-${variant.id}`,
+            ],
+          }
+        );
+      } catch (workerErr) {
+        console.warn(`[inventory] Graphile Worker error:`, workerErr.message);
+      }
+    }
+
+    return variant;
+  });
+}
+
 
 
   async bulkPauseProducts(catalogueId, productIds, userId, options = {}) {

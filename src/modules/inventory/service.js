@@ -74,6 +74,12 @@ class InventoryService {
     return product;
   }
 
+  async updateVariantStock(variantId, newStock, userId) {
+    const variant = await dao.updateVariantStock(variantId, newStock, userId);
+    return variant;
+  }
+
+
   async bulkPauseProducts(catalogueId, productIds, userId) {
     return await sequelize.transaction(async (t) => {
       const result = await dao.bulkPauseProducts(

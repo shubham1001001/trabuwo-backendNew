@@ -45,10 +45,25 @@ class InventoryController {
 
     return apiResponse.success(
       res,
-      "Product stock updated successfully",
-      result
+      result,
+      "Product stock updated successfully"
     );
   });
+
+  updateVariantStock = asyncHandler(async (req, res) => {
+    const { variantId } = req.params;
+    const { stock } = req.body;
+    const userId = req.user.id;
+
+    const result = await service.updateVariantStock(variantId, stock, userId);
+
+    return apiResponse.success(
+      res,
+      result,
+      "Variant stock updated successfully"
+    );
+  });
+
 
   bulkPauseProducts = asyncHandler(async (req, res) => {
     const { catalogueId } = req.params;

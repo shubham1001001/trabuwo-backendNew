@@ -1,5 +1,6 @@
 const { Order, OrderItem } = require("./model");
 const { Product, ProductImage, ProductVariant } = require("../product/model");
+const Catalogue = require("../catalogue/model");
 const { User } = require("../auth/model");
 const { UserAddress } = require("../userAddress/model");
 const { Location } = require("../sellerOnboarding/model");
@@ -62,8 +63,12 @@ exports.getOrderItemByPublicId = (publicId, status) => {
   });
 };
 
-exports.getOrderById = (id, options = {}) =>
-  Order.findByPk(id, {
+exports.getOrderById = (id, options = {}) => {
+  const isUuid = typeof id === "string" && id.includes("-");
+  const where = isUuid ? { publicId: id } : { id };
+  
+  return Order.findOne({
+    where,
     transaction: options.transaction,
     include: [
       {
@@ -77,7 +82,14 @@ exports.getOrderById = (id, options = {}) =>
               {
                 model: Product,
                 as: "product",
-                include: [{ model: ProductImage, as: "images" }],
+                include: [
+                  { model: ProductImage, as: "images" },
+                  {
+                    model: Catalogue,
+                    as: "catalogue",
+                    attributes: ["id", "userId"],
+                  },
+                ],
               },
             ],
           },
@@ -89,22 +101,18 @@ exports.getOrderById = (id, options = {}) =>
         attributes: ["id", "email", "mobile"],
       },
       {
-        model: User,
-        as: "seller",
-        attributes: ["id", "email", "mobile"],
-      },
-      {
         model: UserAddress,
         as: "buyerAddress",
         include: [
           {
             model: Location,
-            as: "Location",
+            as: "location",
           },
         ],
       },
     ],
   });
+};
 
 exports.getOrdersBySellerId = (sellerId) =>
   Order.findAll({
@@ -401,23 +409,36 @@ exports.getOrdersBySellerIdWithProductSearch = async (
 exports.updateOrderStatus = (id, status) =>
   Order.update({ status }, { where: { id } });
 
-exports.getOrderByIdForSeller = (id) =>
+exports.getOrderByIdForSeller = (id, sellerId) =>
   Order.findOne({
     where: { publicId: id },
     include: [
       {
         model: OrderItem,
         as: "items",
+        required: !!sellerId,
         include: [
           {
             model: ProductVariant,
             as: "productVariant",
-            required: true,
+            required: !!sellerId,
             include: [
               {
                 model: Product,
                 as: "product",
-                required: true,
+                required: !!sellerId,
+                // When sellerId is provided, restrict to that seller's catalogues
+                ...(sellerId && {
+                  where: {
+                    catalogue_id: {
+                      [Op.in]: sequelize.literal(`(
+                        SELECT id FROM catalogues
+                        WHERE user_id = ${sequelize.escape(sellerId)}
+                        AND is_deleted = false
+                      )`),
+                    },
+                  },
+                }),
                 include: [{ model: ProductImage, as: "images" }],
               },
             ],
@@ -566,21 +587,6 @@ const handleProductSearch = async (
     }
   }
 
-  // Test query to verify skuId filtering
-  if (filters.skuId) {
-    const testQuery = `
-      SELECT p.id, p.name, p."skuId"
-      FROM products p
-      WHERE p."skuId" = :skuId
-      LIMIT 5
-    `;
-    const testResult = await sequelize.query(testQuery, {
-      replacements: { skuId: filters.skuId },
-      type: QueryTypes.SELECT,
-    });
-    console.log("🔍 Test Query Result:", testResult);
-  }
-
   // Count query - if this returns 0, we know no records match ALL filters
   const countQuery = `
     SELECT COUNT(DISTINCT o.id) as count
@@ -600,13 +606,8 @@ const handleProductSearch = async (
 
   const totalCount = parseInt(countResult[0].count, 10);
 
-  // If no records match ALL filters, return empty result immediately
   if (totalCount === 0) {
-    console.log("🔍 No matches found, returning empty result");
-    return {
-      rows: [],
-      count: 0,
-    };
+    return { rows: [], count: 0 };
   }
 
   // Get order IDs with pagination
@@ -622,8 +623,6 @@ const handleProductSearch = async (
     ORDER BY o."createdAt" DESC
     LIMIT :limit OFFSET :offset
   `;
-
-  console.log("🔍 Order IDs Query:", orderIdsQuery);
 
   const orderIds = await sequelize.query(orderIdsQuery, {
     replacements: { ...replacements, limit, offset },
@@ -657,8 +656,6 @@ const handleProductSearch = async (
     order: [["createdAt", "DESC"]],
   });
 
-  console.log("🔍 Final orders count:", orders.length);
-
   return {
     rows: orders,
     count: totalCount,
@@ -681,31 +678,55 @@ exports.getOrdersStatsLast30Days = async (sellerId) => {
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-  const stats = await Order.findOne({
-    attributes: [
-      [sequelize.fn("COUNT", sequelize.col("id")), "orderCount"],
-      [
-        sequelize.fn(
-          "COALESCE",
-          sequelize.fn("SUM", sequelize.col("totalAmount")),
-          0
-        ),
-        "totalSales",
-      ],
-    ],
-    where: {
-      sellerId: sellerId,
-      createdAt: {
-        [Op.gte]: thirtyDaysAgo,
-      },
-    },
-    raw: true,
-  });
+  // Order model has no sellerId column — filter via catalogue ownership
+  const result = await sequelize.query(
+    `
+    SELECT
+      COUNT(DISTINCT o.id) AS "orderCount",
+      COALESCE(SUM(o.total_amount), 0) AS "totalSales"
+    FROM orders o
+    INNER JOIN order_items oi ON oi.order_id = o.id
+    INNER JOIN product_variants pv ON pv.id = oi.product_variant_id
+    INNER JOIN products p ON p.id = pv.product_id
+    INNER JOIN catalogues c ON c.id = p.catalogue_id AND c.is_deleted = false
+    WHERE c.user_id = :sellerId
+    AND o.created_at >= :thirtyDaysAgo
+    `,
+    {
+      replacements: { sellerId, thirtyDaysAgo },
+      type: QueryTypes.SELECT,
+      raw: true,
+    }
+  );
 
   return {
-    orderCount: parseInt(stats.orderCount) || 0,
-    totalSales: parseFloat(stats.totalSales) || 0,
+    orderCount: parseInt(result[0]?.orderCount, 10) || 0,
+    totalSales: parseFloat(result[0]?.totalSales) || 0,
   };
+};
+
+exports.getOrderStatusCounts = async (sellerId) => {
+  const rows = await sequelize.query(
+    `
+    SELECT o.status, COUNT(DISTINCT o.id) AS count
+    FROM orders o
+    INNER JOIN order_items oi ON oi.order_id = o.id
+    INNER JOIN product_variants pv ON pv.id = oi.product_variant_id
+    INNER JOIN products p ON p.id = pv.product_id
+    INNER JOIN catalogues c ON c.id = p.catalogue_id AND c.is_deleted = false
+    WHERE c.user_id = :sellerId
+    GROUP BY o.status
+    `,
+    { replacements: { sellerId }, type: QueryTypes.SELECT, raw: true }
+  );
+
+  const counts = { on_hold: 0, pending: 0, ready_to_ship: 0, shipped: 0, cancelled: 0 };
+  rows.forEach((row) => {
+    if (Object.prototype.hasOwnProperty.call(counts, row.status)) {
+      counts[row.status] = parseInt(row.count, 10);
+    }
+  });
+  return counts;
 };
 
 exports.getOrdersByBuyerId = async (buyerId, filters = {}) => {
@@ -770,7 +791,7 @@ exports.getOrdersByBuyerId = async (buyerId, filters = {}) => {
 exports.getOrderByIdForBuyer = (orderPublicId, buyerId) =>
   Order.findOne({
     where: { publicId: orderPublicId, buyerId },
-    attributes: ["id", "publicId", "status", "totalAmount", "createdAt"],
+    attributes: ["id", "publicId", "status", "totalAmount", "createdAt", "deliveryDate", "paymentMethod"],
     include: [
       {
         model: OrderItem,

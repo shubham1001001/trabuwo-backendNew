@@ -54,8 +54,14 @@ exports.createPaymentOrder = async (
   };
 };
 
-exports.verifyPayment = async (paymentPublicId, gatewayPaymentId, signature) => {
-  const payment = await dao.findPaymentByPublicId(paymentPublicId);
+exports.verifyPayment = async (id, gatewayPaymentId, signature) => {
+  let payment = await dao.findPaymentByPublicId(id);
+  
+  if (!payment) {
+    // Try finding by Order Public ID if Payment Public ID doesn't match
+    payment = await dao.findPaymentByOrderPublicId(id);
+  }
+
   if (!payment) {
     throw new NotFoundError("Payment not found");
   }

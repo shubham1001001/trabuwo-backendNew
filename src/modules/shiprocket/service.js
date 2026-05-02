@@ -1,3 +1,4 @@
+const config = require("config");
 const shiprocketAxios = require("./axiosConfig");
 const dao = require("./dao");
 const trabuwoBalanceService = require("../trabuwoBalance/service");
@@ -93,9 +94,9 @@ exports.createOrder = async (orderId, buyerId) => {
   });
 
   const requestData = {
-    order_id: "123",
+    order_id: order.publicId,
     order_date: order.createdAt.toISOString().split("T")[0],
-    pickup_location: "Home",
+    pickup_location: config.get("shiprocket.pickupLocation") || "Primary",
     comment: "",
     billing_customer_name: deliveryAddress.name,
     billing_last_name: "",
@@ -125,10 +126,10 @@ exports.createOrder = async (orderId, buyerId) => {
     transaction_charges: 0,
     total_discount: 0,
     sub_total: parseFloat(order.totalAmount),
-    length: 10,
-    breadth: 15,
-    height: 20,
-    weight: 2.5,
+    length: config.get("shiprocket.defaultLength") || 10,
+    breadth: config.get("shiprocket.defaultBreadth") || 15,
+    height: config.get("shiprocket.defaultHeight") || 20,
+    weight: config.get("shiprocket.defaultWeight") || 2.5,
   };
 
   console.log("requestData", requestData);
@@ -314,198 +315,6 @@ exports.generateShipmentLabel = async (orderId) => {
 
   throw new ExternalServiceError(
     "Failed to generate shipment label",
-    "SHIPROCKET"
-  );
-};
-
-exports.createReturnOrder = async (returnId, orderItem) => {
-  const { Address, Location } = require("../sellerOnboarding/model");
-  const SellerOnboarding =
-    require("../sellerOnboarding/model").SellerOnboarding;
-
-  const order = orderItem.order;
-  if (!order || !order.buyerAddress) {
-    throw new NotFoundError("Order or buyer address not found");
-  }
-
-  const product = orderItem.productVariant.product;
-  const Catalogue = require("../catalogue/model");
-  const catalogue = await Catalogue.findByPk(product.catalogueId);
-
-  if (!catalogue) {
-    throw new NotFoundError("Catalogue not found");
-  }
-
-  const { User } = require("../auth/model");
-  const seller = await User.findByPk(catalogue.userId);
-
-  if (!seller) {
-    throw new NotFoundError("Seller not found");
-  }
-
-  const sellerOnboarding = await SellerOnboarding.findOne({
-    where: { userId: seller.id },
-  });
-
-  if (!sellerOnboarding) {
-    throw new NotFoundError("Seller onboarding not found");
-  }
-
-  const sellerAddress = await Address.findOne({
-    where: { sellerOnboardingId: sellerOnboarding.id },
-    include: [
-      {
-        model: Location,
-        as: "Location",
-        required: true,
-      },
-    ],
-  });
-
-  if (!sellerAddress) {
-    throw new NotFoundError("Seller address not found");
-  }
-
-  const buyerAddress = order.buyerAddress;
-  const buyerLocation = await buyerAddress.getLocation();
-
-  if (!buyerLocation) {
-    throw new NotFoundError("Buyer location not found");
-  }
-
-  const buyer = order.buyer;
-  const buyerPhoneNumber = buyerAddress.phoneNumber || buyer?.mobile;
-  const buyerEmail = buyer?.email || order.buyer?.email;
-
-  if (!buyerPhoneNumber) {
-    throw new ValidationError(
-      "Buyer phone number is required to create return shipment"
-    );
-  }
-
-  const pickupAddress = {
-    name: buyerAddress.name,
-    phone: buyerPhoneNumber,
-    address: `${buyerAddress.buildingNumber || ""} ${
-      buyerAddress.street || ""
-    }`.trim(),
-    address_2: buyerAddress.landmark || "",
-    city: buyerLocation.city,
-    state: buyerLocation.state,
-    country: "India",
-    pin_code: buyerLocation.pincode,
-    email: buyerEmail || "",
-  };
-
-  if (!pickupAddress.email) {
-    throw new ValidationError(
-      "Buyer email is required to create return shipment"
-    );
-  }
-
-  const sellerContactName = seller?.email || "Seller";
-  const sellerPhoneNumber = seller?.mobile || buyerPhoneNumber;
-  const sellerEmail = seller?.email || buyerEmail || "";
-
-  const deliveryAddress = {
-    name: sellerContactName,
-    phone: sellerPhoneNumber,
-    address: `${sellerAddress.buildingNumber || ""} ${
-      sellerAddress.street || ""
-    }`.trim(),
-    address_2: sellerAddress.landmark || "",
-    city: sellerAddress.Location.city,
-    state: sellerAddress.Location.state,
-    country: "India",
-    pin_code: sellerAddress.Location.pincode,
-    email: sellerEmail,
-  };
-
-  if (!deliveryAddress.phone) {
-    throw new ValidationError(
-      "Seller phone number is required to create return shipment"
-    );
-  }
-
-  if (!deliveryAddress.email) {
-    throw new ValidationError(
-      "Seller email is required to create return shipment"
-    );
-  }
-
-  const orderDate = new Date(order.createdAt);
-  const formattedDate = `${orderDate.getFullYear()}-${String(
-    orderDate.getMonth() + 1
-  ).padStart(2, "0")}-${String(orderDate.getDate()).padStart(2, "0")} ${String(
-    orderDate.getHours()
-  ).padStart(2, "0")}:${String(orderDate.getMinutes()).padStart(2, "0")}`;
-
-  const requestData = {
-    order_id: order.publicId,
-    order_date: formattedDate,
-    pickup_location: "Home",
-    billing_customer_name: pickupAddress.name,
-    billing_last_name: "",
-    billing_address: pickupAddress.address,
-    billing_address_2: pickupAddress.address_2,
-    billing_city: pickupAddress.city,
-    billing_pincode: pickupAddress.pin_code,
-    billing_state: pickupAddress.state,
-    billing_country: pickupAddress.country,
-    billing_email: pickupAddress.email,
-    billing_phone: pickupAddress.phone,
-    billing_alternate_phone: "",
-    shipping_is_billing: false,
-    shipping_customer_name: deliveryAddress.name,
-    shipping_last_name: "",
-    shipping_address: deliveryAddress.address,
-    shipping_address_2: deliveryAddress.address_2,
-    shipping_city: deliveryAddress.city,
-    shipping_pincode: deliveryAddress.pin_code,
-    shipping_state: deliveryAddress.state,
-    shipping_country: deliveryAddress.country,
-    shipping_email: deliveryAddress.email,
-    shipping_phone: deliveryAddress.phone,
-    shipping_alternate_phone: "",
-    order_items: [
-      {
-        name: product.name,
-        sku: product.styleCode || `SKU-${product.id}`,
-        units: orderItem.quantity,
-        selling_price: orderItem.price,
-        discount: 0,
-        tax: 0,
-        hsn: 0,
-      },
-    ],
-    payment_method: "Prepaid",
-    shipping_charges: 0,
-    giftwrap_charges: 0,
-    transaction_charges: 0,
-    total_discount: 0,
-    sub_total: Number(orderItem.price) * Number(orderItem.quantity),
-    length: 10,
-    breadth: 10,
-    height: 10,
-    weight: 0.5,
-  };
-
-  const response = await shiprocketAxios.post(
-    "/external/orders/create/adhoc",
-    requestData
-  );
-
-  if (response.data && response.data.status === 200) {
-    return {
-      shiprocketReturnOrderId: response.data.data.order_id,
-      returnAwbNumber: response.data.data.awb_code || null,
-      returnTrackingUrl: response.data.data.tracking_url || null,
-      metadata: response.data.data,
-    };
-  }
-
-  throw new ExternalServiceError(
-    response.data?.message || "Failed to create return order in Shiprocket",
     "SHIPROCKET"
   );
 };
@@ -917,9 +726,9 @@ exports.createReturnOrder = async (orderItemPublicId) => {
   ];
 
   const dimensions = shipment.dimensions || {};
-  const length = dimensions.length || 10;
-  const breadth = dimensions.breadth || 15;
-  const height = dimensions.height || 20;
+  const length = dimensions.length || config.get("shiprocket.defaultLength") || 10;
+  const breadth = dimensions.breadth || config.get("shiprocket.defaultBreadth") || 15;
+  const height = dimensions.height || config.get("shiprocket.defaultHeight") || 20;
 
   const weightInKg = product.weightInGram
     ? parseFloat(product.weightInGram) / 1000

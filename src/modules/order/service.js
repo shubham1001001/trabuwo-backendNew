@@ -1,3 +1,4 @@
+const config = require("config");
 const dao = require("./dao");
 const { NotFoundError, ValidationError } = require("../../utils/errors");
 const cartDao = require("../cart/dao");
@@ -22,7 +23,7 @@ const getDynamicShippingRate = async (variantWithProduct, buyerPincode, isCod, b
     const sellerPincode = variantWithProduct?.product?.catalogue?.seller?.sellerOnboarding?.address?.[0]?.Location?.pincode;
     if (!sellerPincode || !buyerPincode) return builtInShippingFee;
 
-    const weightInKg = (variantWithProduct?.product?.weightInGram || 500) / 1000;
+    const weightInKg = (variantWithProduct?.product?.weightInGram || config.get("shiprocket.defaultWeight") * 1000 || 500) / 1000;
 
     const ratesData = await shiprocketService.calculateShippingRates({
       pickup_postcode: sellerPincode,
@@ -69,7 +70,6 @@ exports.acceptOrder = async (orderId, sellerId) => {
     );
   }
 
-  console.log("order", order.toJSON());
 
   if (!order.buyerAddress || !order.buyerAddress.location) {
     throw new ValidationError("Buyer address with location is required");
@@ -119,19 +119,21 @@ exports.acceptOrder = async (orderId, sellerId) => {
   const buyerLocation = buyerAddress.location;
   const buyer = order.buyer;
   const buyerPhoneNumber = buyerAddress.phoneNumber || buyer?.mobile;
-  const buyerEmail = buyer?.email;
+  let buyerEmail = buyer?.email;
 
   if (!buyerPhoneNumber) {
     throw new ValidationError("Buyer phone number is required");
   }
 
   if (!buyerEmail) {
-    throw new ValidationError("Buyer email is required");
+    // Shiprocket requires an email. If missing, use a placeholder based on phone
+    console.warn(`Buyer email missing for order ${order.publicId}. Using placeholder.`);
+    buyerEmail = `${buyerPhoneNumber.replace(/\D/g, "")}@trabuwo.com`;
   }
 
-  const buyerNameParts = (buyerAddress.name || buyerEmail).split(" ");
-  const buyerFirstName = buyerNameParts[0] || "";
-  const buyerLastName = buyerNameParts.slice(1).join(" ") || "";
+  const buyerNameParts = (buyerAddress.name || "Customer").split(" ");
+  const buyerFirstName = buyerNameParts[0] || "Customer";
+  const buyerLastName = buyerNameParts.slice(1).join(" ") || "User";
 
   const orderItems = order.items.map((item) => {
     const product = item.productVariant?.product;
@@ -166,9 +168,8 @@ exports.acceptOrder = async (orderId, sellerId) => {
     // channel_id: "27202",
     billing_customer_name: buyerFirstName,
     billing_last_name: buyerLastName,
-    billing_address: `${buyerAddress.buildingNumber || ""} ${
-      buyerAddress.street || ""
-    }`.trim(),
+    billing_address: `${buyerAddress.buildingNumber || ""} ${buyerAddress.street || ""
+      }`.trim(),
     billing_city: buyerLocation.city,
     billing_pincode: parseInt(buyerLocation.pincode),
     billing_state: buyerLocation.state,
@@ -183,44 +184,69 @@ exports.acceptOrder = async (orderId, sellerId) => {
     breadth: 1,
     height: 1,
     weight: totalWeight || 0.5,
-    pickup_location: "Jammu",
+    // Pickup location name must match the name registered in the seller's
+    // Shiprocket account. It is derived the same way as in registerPickupLocation.
+    pickup_location: config.get("shiprocket.pickupLocation") || (sellerStore?.email
+      ? sellerStore.email.substring(0, 36)
+      : "Primary"),
   };
 
-  console.log("shiprocketPayload", shiprocketPayload);
-
-  const shiprocketResponse = await shiprocketService.createForwardShipment(
-    shiprocketPayload
-  );
-
-  console.log("shiprocketResponse", shiprocketResponse);
+  // Attempt Shiprocket — non-fatal if the external service is down
+  let shiprocketResponse = null;
+  let shiprocketError = null;
+  try {
+    shiprocketResponse = await shiprocketService.createForwardShipment(
+      shiprocketPayload
+    );
+  } catch (err) {
+    shiprocketError = err.message || "Shiprocket unavailable";
+    console.warn(`[acceptOrder] Shiprocket failed for order ${order.publicId}:`, shiprocketError);
+  }
 
   const shipmentData = {
     orderId: order.id,
     sellerId: sellerId,
-    shiprocketOrderId: shiprocketResponse.order_id?.toString() || null,
-    shipmentId: shiprocketResponse.shipment_id?.toString() || null,
-    status: "confirmed",
-    awbNumber: shiprocketResponse.awb_code || null,
-    courierId: shiprocketResponse.courier_company_id || null,
-    courierName: shiprocketResponse.courier_name || null,
-    labelUrl: shiprocketResponse.label_url || null,
-    trackingUrl: shiprocketResponse.manifest_url || null,
-    weight: shiprocketResponse.applied_weight || null,
-    pickupScheduledDate: shiprocketResponse.pickup_scheduled_date || null,
+    shiprocketOrderId: shiprocketResponse?.order_id?.toString() || null,
+    shipmentId: shiprocketResponse?.shipment_id?.toString() || null,
+    status: shiprocketResponse ? "confirmed" : "pending",
+    awbNumber: shiprocketResponse?.awb_code || null,
+    courierId: shiprocketResponse?.courier_company_id || null,
+    courierName: shiprocketResponse?.courier_name || null,
+    labelUrl: shiprocketResponse?.label_url || null,
+    trackingUrl: shiprocketResponse?.manifest_url || null,
+    weight: shiprocketResponse?.applied_weight || null,
+    pickupScheduledDate: shiprocketResponse?.pickup_scheduled_date || null,
     metadata: {
-      pickup_token_number: shiprocketResponse.pickup_token_number || null,
-      routing_code: shiprocketResponse.routing_code || null,
-      rto_routing_code: shiprocketResponse.rto_routing_code || null,
-      trabuwoOrderId: shiprocketResponse.channel_order_id || null,
+      pickup_token_number: shiprocketResponse?.pickup_token_number || null,
+      routing_code: shiprocketResponse?.routing_code || null,
+      rto_routing_code: shiprocketResponse?.rto_routing_code || null,
+      trabuwoOrderId: shiprocketResponse?.channel_order_id || null,
+      shiprocketError: shiprocketError || null,
     },
   };
-  console.log("shipmentData", shipmentData);
 
   return await sequelize.transaction(async (t) => {
-    await OrderModel.update(
+    // Re-fetch and lock the order row to prevent concurrent acceptance
+    const orderToUpdate = await OrderModel.findByPk(order.id, { 
+      transaction: t,
+      lock: t.LOCK.UPDATE 
+    });
+
+    if (!orderToUpdate) {
+      throw new NotFoundError("Order not found");
+    }
+
+    if (orderToUpdate.status !== "pending") {
+      throw new ValidationError(
+        `Order cannot be accepted because its status is ${orderToUpdate.status}`
+      );
+    }
+
+    await orderToUpdate.update(
       { status: "ready_to_ship" },
-      { where: { id: order.id }, transaction: t }
+      { transaction: t }
     );
+
     const shipment = await shiprocketDao.createShipment(shipmentData, {
       transaction: t,
     });
@@ -310,32 +336,22 @@ exports.downloadShippingLabel = async (orderId, sellerId) => {
     );
   }
 
-  // Update status to shipped when label is downloaded
-  await dao.updateOrderStatus(orderId, "shipped");
+  // Do NOT update order status here. The order transitions to "shipped" when
+  // Shiprocket confirms pickup via the logistics webhook (shipment_status_id 6/13).
+  const shipment = await shiprocketDao.findShipmentByOrderId(order.id);
+  if (!shipment || !shipment.labelUrl) {
+    throw new ValidationError(
+      "Shipping label not yet available — Shiprocket has not generated it yet"
+    );
+  }
 
-  // Generate shipping label data (mock implementation)
-  const shippingLabel = {
-    orderId: order.id,
-    buyerName: order.buyer.email || order.buyer.mobile,
-    shippingAddress: {
-      buildingNumber: order.buyerAddress.buildingNumber,
-      street: order.buyerAddress.street,
-      landmark: order.buyerAddress.landmark,
-      pincode: order.buyerAddress.Location.pincode,
-      city: order.buyerAddress.Location.city,
-      state: order.buyerAddress.Location.state,
-    },
-    items: order.items.map((item) => ({
-      productName: item.product.name,
-      quantity: item.quantity,
-      price: item.price,
-    })),
-    totalAmount: order.totalAmount,
-    trackingNumber: `TRK-${order.id.slice(0, 8).toUpperCase()}`,
-    downloadUrl: `https://api.example.com/shipping-labels/${order.id}.pdf`,
+  return {
+    orderId: order.publicId,
+    labelUrl: shipment.labelUrl,
+    awbNumber: shipment.awbNumber,
+    courierName: shipment.courierName,
+    trackingUrl: shipment.trackingUrl,
   };
-
-  return shippingLabel;
 };
 
 exports.getSellerDashboardData = async (sellerId) => {
@@ -369,45 +385,53 @@ exports.checkoutCart = async (userId, userAddressPublicId, paymentMethod = "ONLI
     configService.getBuiltInShippingFee()
   ]);
 
-  const isCod = paymentMethod === "COD";
+  const isCod = paymentMethod && paymentMethod.toUpperCase() === "COD";
   const buyerPincode = userAddress.location?.pincode || userAddress.Location?.pincode;
 
-  const itemsSnapshot = await Promise.all(cart.items.map(async (item) => {
-    const listingPrice = Number(item.productVariant?.trabuwoPrice);
-    const resellerPrice = item.resellerPrice ? Number(item.resellerPrice) : null;
+  // Re-validate inventory at checkout time — cart may have been created when stock
+  // was available but another buyer may have purchased since then.
+  for (const item of cart.items) {
+    const currentInventory = item.productVariant?.inventory ?? 0;
+    if (currentInventory < item.quantity) {
+      const variantName = item.productVariant?.skuId || item.productVariantId;
+      throw new ValidationError(
+        `Item "${variantName}" is out of stock or has insufficient quantity. Available: ${currentInventory}`
+      );
+    }
+  }
 
+  const itemsSnapshot = await Promise.all(cart.items.map(async (item) => {
     // Fetch variant with seller info for dynamic shipping rate
     const variantWithProduct = await productDao.getVariantWithProduct(item.productVariantId);
     const actualLogisticsCost = await getDynamicShippingRate(variantWithProduct, buyerPincode, isCod, builtInShippingFee);
 
-    // Adjust listing price: swap built-in shipping for actual logistics cost
-    const adjustedListingPrice = parseFloat((listingPrice - builtInShippingFee + actualLogisticsCost).toFixed(2));
-    const finalProductPrice = resellerPrice || adjustedListingPrice;
+    const listingPrice = Number(item.productVariant?.trabuwoPrice || 0);
+    const resellerPrice = item.resellerPrice ? Number(item.resellerPrice) : null;
+    const resellerMargin = resellerPrice ? (resellerPrice - listingPrice) : 0;
 
     const categoryId = variantWithProduct?.product?.catalogue?.categoryId || variantWithProduct?.product?.categoryId;
-    const commissionRate = await configService.getCommissionRate(categoryId);
-    const commissionAmount = adjustedListingPrice * commissionRate;
-
-    const sellerPriceValue = variantWithProduct?.sellerPrice ?? item.productVariant?.sellerPrice;
-    let sellerPayout;
-    if (sellerPriceValue != null) {
-      sellerPayout = Number(sellerPriceValue);
-    } else {
-      sellerPayout = adjustedListingPrice - commissionAmount;
+    let commissionRate = 0.05;
+    try {
+      commissionRate = await configService.getCommissionRate(categoryId);
+    } catch (err) {
+      console.warn("Using default 5% commission:", err.message);
     }
 
-    const resellerMargin = resellerPrice ? (resellerPrice - adjustedListingPrice) : 0;
+    const commissionAmount = Number((listingPrice * commissionRate).toFixed(2));
+    const sellerPayout = Number((listingPrice - commissionAmount).toFixed(2));
+
+    const buyerProductPrice = resellerPrice || listingPrice;
 
     return {
       productVariantId: item.productVariantId,
       quantity: item.quantity,
-      price: finalProductPrice,
-      listingPrice: adjustedListingPrice,
-      resellerPrice,
-      resellerMargin,
-      commissionAmount,
-      sellerPayout,
-      logisticsCost: actualLogisticsCost,
+      price: Number(buyerProductPrice.toFixed(2)),
+      listingPrice: Number(listingPrice.toFixed(2)),
+      resellerPrice: resellerPrice ? Number(resellerPrice.toFixed(2)) : null,
+      resellerMargin: Number(resellerMargin.toFixed(2)),
+      commissionAmount: Number(commissionAmount.toFixed(2)),
+      sellerPayout: Number(sellerPayout.toFixed(2)),
+      logisticsCost: Number(actualLogisticsCost || 0),
     };
   }));
 
@@ -416,24 +440,21 @@ exports.checkoutCart = async (userId, userAddressPublicId, paymentMethod = "ONLI
     0
   );
 
-  // Shipping is FREE to buyer (baked into product price)
-  const currentShippingFee = 0;
-  const currentPlatformFee = platformFee;
-  const currentCodFee = isCod ? codFee : 0;
-
-  const totalAmount = productSubtotal + currentShippingFee + currentCodFee;
-
-  // Use average logistics cost across items for order-level tracking
   const logisticsCost = itemsSnapshot.reduce((sum, i) => sum + i.logisticsCost, 0);
-  const pgCost = isCod ? codPgCost : (totalAmount * (pgPercentage / 100));
-  const shippingMargin = 0;
+  const shippingMargin = 20; // Fixed per order as per Document 6
+  const currentShippingFee = logisticsCost + shippingMargin;
+  const currentPlatformFee = Number(platformFee || 15);
+  const currentCodFee = isCod ? Number(codFee || 20) : 0;
+
+  const totalAmount = Number((productSubtotal + currentShippingFee + currentPlatformFee + currentCodFee).toFixed(2));
+  const pgCost = isCod ? Number(codPgCost || 0) : Number((totalAmount * (pgPercentage / 100)).toFixed(2));
 
   const result = await sequelize.transaction(async (t) => {
     const order = await dao.createOrder(
       {
         buyerId: userId,
         resellerId: cart.resellerId,
-        status: "pending",
+        status: isCod ? "pending" : "on_hold",
         totalAmount,
         buyerAddressId: userAddress.id,
         paymentMethod: isCod ? "cod" : "prepaid",
@@ -476,7 +497,7 @@ exports.checkoutCart = async (userId, userAddressPublicId, paymentMethod = "ONLI
         { transaction: t }
       );
       // Finalize immediately for COD
-      await exports.finalizeOrderAfterPayment(order.id, { transaction: t });
+      await exports.finalizeOrderAfterPayment(order.id, { transaction: t, isCod: true });
     } else {
       payment = await paymentService.createPaymentOrder(
         order.id,
@@ -492,8 +513,9 @@ exports.checkoutCart = async (userId, userAddressPublicId, paymentMethod = "ONLI
 
   const { order, payment } = result;
 
-  // Credit wallets (Pending) after order is successfully placed/paid
-  // For COD, we do it now. For Online, it should be done in payment verification.
+  // Credit wallets for COD after the checkout transaction commits.
+  // For online, wallet credit is handled in finalizeOrderAfterPayment after
+  // the payment verification transaction commits.
   if (isCod) {
     const orderWithItems = await dao.getOrderById(order.id);
     await walletService.creditOrderEarnings(orderWithItems);
@@ -518,7 +540,9 @@ exports.checkoutCart = async (userId, userAddressPublicId, paymentMethod = "ONLI
 exports.buyNow = async (userId, payload) => {
   const { productVariantId, userAddressPublicId, quantity, paymentMethod = "ONLINE" } = payload;
 
+  console.log("🚀 BuyNow Step 1: Input", { userId, productVariantId, quantity, paymentMethod });
   const variant = await productDao.getVariantByPublicId(productVariantId);
+  console.log("🚀 BuyNow Step 2: Variant found", variant?.id);
   if (!variant || variant.isDeleted || !variant.isActive) {
     throw new NotFoundError("Product variant not found");
   }
@@ -541,54 +565,53 @@ exports.buyNow = async (userId, payload) => {
     configService.getCodPgCost(),
     configService.getBuiltInShippingFee()
   ]);
+  console.log("🚀 BuyNow Step 3: Configs loaded", { platformFee, codFee });
 
-  const isCod = paymentMethod === "COD";
+  const isCod = paymentMethod && paymentMethod.toUpperCase() === "COD";
 
   // Fetch variant with product+seller pincode for dynamic shipping
   const variantWithProduct = await productDao.getVariantWithProduct(variant.id);
   const buyerPincode = userAddress.location?.pincode || userAddress.Location?.pincode;
   const actualLogisticsCost = await getDynamicShippingRate(variantWithProduct, buyerPincode, isCod, builtInShippingFee);
 
-  const listingPrice = Number(variant.trabuwoPrice);
+  const listingPrice = Number(variant.trabuwoPrice || 0);
   const resellerPrice = payload.resellerPrice ? Number(payload.resellerPrice) : null;
-  // Adjust listing price: replace built-in shipping with actual logistics cost
-  const adjustedListingPrice = parseFloat((listingPrice - builtInShippingFee + actualLogisticsCost).toFixed(2));
-  const finalProductPrice = resellerPrice || adjustedListingPrice;
+  const resellerMargin = resellerPrice ? (resellerPrice - listingPrice) : 0;
+
+  const logisticsCost = Number(actualLogisticsCost || 0);
+  const shippingMargin = 20; // As per Document 14.1 (₹15-₹25 margin)
+  const currentShippingFee = logisticsCost + shippingMargin;
+  
+  const currentPlatformFee = Number(platformFee || 15);
+  const currentCodFee = isCod ? Number(codFee || 20) : 0;
 
   const categoryId = variantWithProduct?.product?.catalogue?.categoryId || variantWithProduct?.product?.categoryId;
-  const commissionRate = await configService.getCommissionRate(categoryId);
-  const commissionAmount = adjustedListingPrice * commissionRate;
-
-  // If sellerPrice exists, it's the new Meesho flow (Additive). Otherwise use old flow (Deductive).
-  const sellerPriceValue = variantWithProduct?.sellerPrice ?? variant.sellerPrice;
-  let sellerPayout;
-  if (sellerPriceValue != null) {
-    sellerPayout = Number(sellerPriceValue);
-  } else {
-    sellerPayout = adjustedListingPrice - commissionAmount; // Backward compatibility
+  let commissionRate = 0.05;
+  try {
+    commissionRate = await configService.getCommissionRate(categoryId);
+  } catch (err) {
+    console.warn("Using default 5% commission:", err.message);
   }
 
-  const resellerMargin = resellerPrice ? (resellerPrice - adjustedListingPrice) : 0;
+  const commissionAmount = Number((listingPrice * commissionRate).toFixed(2));
+  const sellerPayout = Number((listingPrice - commissionAmount).toFixed(2));
 
-  const productSubtotal = finalProductPrice * quantity;
+  // Buyer Product Price is either RP (Reseller Price) or LP (Listing Price)
+  const buyerProductPrice = resellerPrice || listingPrice;
+  const productSubtotal = buyerProductPrice * quantity;
+  
+  const totalAmount = Number((productSubtotal + currentShippingFee + currentPlatformFee + currentCodFee).toFixed(2));
 
-  // Shipping is FREE to buyer (baked into product price)
-  const currentShippingFee = 0;
-  const currentPlatformFee = platformFee;
-  const currentCodFee = isCod ? codFee : 0;
+  const pgCost = isCod ? Number(codPgCost || 0) : Number((totalAmount * (pgPercentage / 100)).toFixed(2));
 
-  const totalAmount = productSubtotal + currentShippingFee + currentCodFee;
-
-  const logisticsCost = actualLogisticsCost;
-  const pgCost = isCod ? codPgCost : (totalAmount * (pgPercentage / 100));
-  const shippingMargin = 0;
+  console.log("🚀 BuyNow Step 4: Transaction starting", { totalAmount, isCod, sellerPayout, resellerMargin });
 
   const result = await sequelize.transaction(async (t) => {
     const order = await dao.createOrder(
       {
         buyerId: userId,
         resellerId: payload.resellerId || null,
-        status: "pending",
+        status: isCod ? "pending" : "on_hold",
         totalAmount,
         buyerAddressId: userAddress.id,
         paymentMethod: isCod ? "cod" : "prepaid",
@@ -605,13 +628,13 @@ exports.buyNow = async (userId, payload) => {
     const orderItem = {
       orderId: order.id,
       productVariantId: variant.id,
-      quantity,
-      price: finalProductPrice,
-      listingPrice,
-      resellerPrice,
-      resellerMargin,
-      commissionAmount,
-      sellerPayout
+      quantity: Number(quantity),
+      price: Number(buyerProductPrice.toFixed(2)),
+      listingPrice: Number(listingPrice.toFixed(2)),
+      resellerPrice: resellerPrice ? Number(resellerPrice.toFixed(2)) : null,
+      resellerMargin: Number(resellerMargin.toFixed(2)),
+      commissionAmount: Number(commissionAmount.toFixed(2)),
+      sellerPayout: Number(sellerPayout.toFixed(2))
     };
 
     await dao.createOrderItems([orderItem], { transaction: t });
@@ -629,8 +652,9 @@ exports.buyNow = async (userId, payload) => {
         },
         { transaction: t }
       );
+      console.log("🚀 BuyNow Step 6: Payment Created, Finalizing for COD");
       // Finalize immediately for COD
-      await exports.finalizeOrderAfterPayment(order.id, { transaction: t });
+      await exports.finalizeOrderAfterPayment(order.id, { transaction: t, isCod: true });
     } else {
       payment = await paymentService.createPaymentOrder(
         order.id,
@@ -646,7 +670,8 @@ exports.buyNow = async (userId, payload) => {
 
   const { order, payment } = result;
 
-  // Credit wallets (Pending) for COD
+  // Credit wallets for COD after the checkout transaction commits.
+  // For online, wallet credit is handled in finalizeOrderAfterPayment.
   if (isCod) {
     const orderWithItems = await dao.getOrderById(order.id);
     await walletService.creditOrderEarnings(orderWithItems);
@@ -663,9 +688,10 @@ exports.buyNow = async (userId, payload) => {
       {
         productVariantId,
         quantity,
-        price: finalProductPrice,
+        price: buyerProductPrice,
       },
     ],
+    paymentMethod: order.paymentMethod,
     payment,
   };
 };
@@ -693,19 +719,25 @@ exports.getOrderByIdForBuyer = async (orderPublicId, buyerId) => {
 };
 
 exports.finalizeOrderAfterPayment = async (orderId, options = {}) => {
-  const { transaction } = options;
+  const { transaction, isCod = false } = options;
 
-  // We need the order with its items to decrement inventory
-  // Pass the transaction so we can read uncommitted items created in the same tx
   const order = await dao.getOrderById(orderId, { transaction });
   if (!order) {
-    console.error(`Order ${orderId} not found during finalization`);
+    console.error(`[finalizeOrderAfterPayment] Order ${orderId} not found`);
     return;
   }
 
-  // Use the passed transaction if available, otherwise just run them
+  // Idempotency guard for online orders: on_hold → pending on first run.
+  // If the order is no longer on_hold, finalization already ran — skip to
+  // prevent double inventory decrement when both verifyPayment and the
+  // Razorpay webhook both trigger this function. COD orders bypass this
+  // check because they start as "pending" from creation.
+  if (!isCod && order.status !== "on_hold") {
+    console.log(`[finalizeOrderAfterPayment] Already finalized for order ${orderId} (status: ${order.status}), skipping.`);
+    return;
+  }
+
   const processFinalization = async (t) => {
-    // 1. Decrement inventory for each item
     for (const item of order.items) {
       if (item.productVariantId) {
         await productService.decrementInventory(
@@ -716,12 +748,6 @@ exports.finalizeOrderAfterPayment = async (orderId, options = {}) => {
       }
     }
 
-    // 2. Update order status to paid/pending
-    // Based on the system, 'pending' means placed and awaiting seller action.
-    // If it's already 'pending', we just ensure it stays that way or mark as 'paid'
-    // if there's a specific paid status. Current possible statuses appear to be
-    // 'pending', 'ready_to_ship', 'shipped', 'cancelled', 'delivered'.
-    // We'll keep it 'pending' but it's now officially paid for online orders.
     await OrderModel.update(
       { status: "pending" },
       { where: { id: order.id }, transaction: t }
@@ -729,10 +755,23 @@ exports.finalizeOrderAfterPayment = async (orderId, options = {}) => {
   };
 
   if (transaction) {
+    // Called within an outer transaction (COD checkout) — wallet credit is
+    // handled by the caller after that transaction commits.
     await processFinalization(transaction);
   } else {
+    // Online payment path — create own transaction, then credit wallets after
+    // it commits so the wallet sees a fully committed order.
     await sequelize.transaction(async (t) => {
       await processFinalization(t);
     });
+
+    try {
+      const orderWithItems = await dao.getOrderById(orderId);
+      if (orderWithItems) {
+        await walletService.creditOrderEarnings(orderWithItems);
+      }
+    } catch (err) {
+      console.error("[finalizeOrderAfterPayment] Failed to credit wallet earnings:", err.message);
+    }
   }
 };

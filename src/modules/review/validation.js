@@ -74,3 +74,8 @@ exports.storeHistogramValidation = [
   param("storeId").isUUID(4).withMessage("storeId must be a UUID"),
   handleValidationErrors,
 ];
+
+exports.productHistogramValidation = [
+  param("productId").isUUID().withMessage("productId must be a UUID"),
+  handleValidationErrors,
+];

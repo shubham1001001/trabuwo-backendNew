@@ -21,6 +21,12 @@ const {
 
 // eslint-disable-next-line no-unused-vars
 module.exports = (err, req, res, next) => {
+  console.error("🔥 FULL ERROR STACK:", err);
+  try {
+    require("fs").appendFileSync("error_log.txt", `\n--- ${new Date().toISOString()} ---\n${err.stack}\n`);
+  } catch (logErr) {
+    console.error("❌ Could not write to error_log.txt:", logErr);
+  }
   logger.error(err);
 
   if (err.name === "MulterError") {

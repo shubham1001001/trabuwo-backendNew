@@ -134,3 +134,7 @@ exports.getStoreRatingHistogram = async (storePublicId) => {
 
   return dao.getStoreRatingHistogram(storePublicId, { shippedOnly: true });
 };
+
+exports.getProductRatingHistogram = async (cataloguePublicId) => {
+  return dao.getCatalogueRatingHistogram(cataloguePublicId, { shippedOnly: true });
+};

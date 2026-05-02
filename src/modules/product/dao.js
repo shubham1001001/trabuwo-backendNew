@@ -676,11 +676,19 @@ exports.bulkUpsertProductImages = async (images, options = {}) => {
   });
 };
 exports.decrementInventory = async (variantId, quantity, options = {}) => {
-  return await ProductVariant.decrement("inventory", {
-    by: quantity,
-    where: { id: variantId },
-    ...options,
-  });
+  const { transaction } = options;
+  const [affectedRows] = await ProductVariant.update(
+    { inventory: ProductVariant.sequelize.literal(`inventory - ${parseInt(quantity, 10)}`) },
+    {
+      where: { id: variantId, inventory: { [Op.gte]: quantity } },
+      transaction,
+    }
+  );
+  if (affectedRows === 0) {
+    const { ValidationError } = require("../../utils/errors");
+    throw new ValidationError(`Insufficient inventory for variant ${variantId} — item may be out of stock`);
+  }
+  return affectedRows;
 };
 
 exports.incrementInventory = async (variantId, quantity, options = {}) => {

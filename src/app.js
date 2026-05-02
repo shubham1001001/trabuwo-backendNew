@@ -24,14 +24,33 @@ const asyncHandler = require("./utils/asyncHandler");
 const app = express();
 
 app.use((req, res, next) => {
-  const origin = req.headers.origin;
-  logger.info(`CORS Middleware: Method=${req.method}, Origin=${origin}`);
+  const oldSetHeader = res.setHeader;
+  res.setHeader = function(name, value) {
+    if (name.toLowerCase() === 'access-control-allow-origin') {
+      logger.info(`DEBUG CORS: Path=${req.path} Method=${req.method} Header=${name} Value=${value}`);
+    }
+    return oldSetHeader.apply(this, arguments);
+  };
+  next();
+});
 
-  if (origin) {
+
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  const allowedOrigins = [
+    "http://localhost:5173",
+    "http://localhost:5174",
+    "http://localhost:5175"
+  ];
+
+  if (allowedOrigins.includes(origin)) {
     res.setHeader("Access-Control-Allow-Origin", origin);
+    res.setHeader("Access-Control-Allow-Credentials", "true");
+  } else if (!origin) {
+    // For non-browser requests or same-origin
+    res.setHeader("Access-Control-Allow-Origin", "*");
   }
 
-  res.setHeader("Access-Control-Allow-Credentials", "true");
   res.setHeader(
     "Access-Control-Allow-Methods",
     "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS"
@@ -46,6 +65,9 @@ app.use((req, res, next) => {
   }
   next();
 });
+
+
+
 
 
 // Trust proxy - Required if behind a load balancer (Nginx, AWS ELB, etc.)

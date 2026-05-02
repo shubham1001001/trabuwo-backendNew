@@ -1,0 +1,1593 @@
+
+--- 2026-05-01T09:19:52.614Z ---
+Error: Category not found
+    at exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-01T09:20:28.647Z ---
+Error: Category not found
+    at exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-01T09:22:20.660Z ---
+SequelizeEagerLoadingError: User is associated to Order using an alias. You've included an alias (seller), but it does not match the alias(es) defined in your association (buyer).
+    at Order._getIncludedAssociation (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:574:15)
+    at Order._validateIncludedElement (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:502:53)
+    at D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:421:37
+    at Array.map (<anonymous>)
+    at Order._validateIncludedElements (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:417:39)
+    at Order.findAll (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1124:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Order.findOne (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1240:12)
+    at async Order.findByPk (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1221:12)
+    at async exports.finalizeOrderAfterPayment (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:731:17)
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:664:7
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:507:18
+    at async exports.buyNow (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:613:18)
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\controller.js:135:18
+
+--- 2026-05-01T09:22:37.638Z ---
+SequelizeEagerLoadingError: User is associated to Order using an alias. You've included an alias (seller), but it does not match the alias(es) defined in your association (buyer).
+    at Order._getIncludedAssociation (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:574:15)
+    at Order._validateIncludedElement (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:502:53)
+    at D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:421:37
+    at Array.map (<anonymous>)
+    at Order._validateIncludedElements (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:417:39)
+    at Order.findAll (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1124:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Order.findOne (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1240:12)
+    at async Order.findByPk (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1221:12)
+    at async exports.finalizeOrderAfterPayment (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:731:17)
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:664:7
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:507:18
+    at async exports.buyNow (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:613:18)
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\controller.js:135:18
+
+--- 2026-05-01T09:22:50.714Z ---
+SequelizeEagerLoadingError: User is associated to Order using an alias. You've included an alias (seller), but it does not match the alias(es) defined in your association (buyer).
+    at Order._getIncludedAssociation (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:574:15)
+    at Order._validateIncludedElement (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:502:53)
+    at D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:421:37
+    at Array.map (<anonymous>)
+    at Order._validateIncludedElements (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:417:39)
+    at Order.findAll (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1124:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Order.findOne (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1240:12)
+    at async Order.findByPk (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1221:12)
+    at async exports.finalizeOrderAfterPayment (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:731:17)
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:664:7
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:507:18
+    at async exports.buyNow (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:613:18)
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\controller.js:135:18
+
+--- 2026-05-01T09:23:28.730Z ---
+SequelizeEagerLoadingError: User is associated to Order using an alias. You've included an alias (seller), but it does not match the alias(es) defined in your association (buyer).
+    at Order._getIncludedAssociation (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:574:15)
+    at Order._validateIncludedElement (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:502:53)
+    at D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:421:37
+    at Array.map (<anonymous>)
+    at Order._validateIncludedElements (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:417:39)
+    at Order.findAll (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1124:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Order.findOne (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1240:12)
+    at async Order.findByPk (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1221:12)
+    at async exports.finalizeOrderAfterPayment (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:731:17)
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:664:7
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:507:18
+    at async exports.buyNow (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:613:18)
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\controller.js:135:18
+
+--- 2026-05-01T09:23:39.880Z ---
+SequelizeEagerLoadingError: User is associated to Order using an alias. You've included an alias (seller), but it does not match the alias(es) defined in your association (buyer).
+    at Order._getIncludedAssociation (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:574:15)
+    at Order._validateIncludedElement (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:502:53)
+    at D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:421:37
+    at Array.map (<anonymous>)
+    at Order._validateIncludedElements (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:417:39)
+    at Order.findAll (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1124:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Order.findOne (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1240:12)
+    at async Order.findByPk (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1221:12)
+    at async exports.finalizeOrderAfterPayment (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:731:17)
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:664:7
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:507:18
+    at async exports.buyNow (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:613:18)
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\controller.js:135:18
+
+--- 2026-05-01T09:23:39.968Z ---
+SequelizeEagerLoadingError: User is associated to Order using an alias. You've included an alias (seller), but it does not match the alias(es) defined in your association (buyer).
+    at Order._getIncludedAssociation (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:574:15)
+    at Order._validateIncludedElement (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:502:53)
+    at D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:421:37
+    at Array.map (<anonymous>)
+    at Order._validateIncludedElements (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:417:39)
+    at Order.findAll (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1124:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Order.findOne (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1240:12)
+    at async Order.findByPk (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1221:12)
+    at async exports.finalizeOrderAfterPayment (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:731:17)
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:664:7
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:507:18
+    at async exports.buyNow (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:613:18)
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\controller.js:135:18
+
+--- 2026-05-01T09:24:03.006Z ---
+Error: Category not found
+    at exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-01T09:26:04.129Z ---
+SequelizeEagerLoadingError: User is associated to Order using an alias. You've included an alias (seller), but it does not match the alias(es) defined in your association (buyer).
+    at Order._getIncludedAssociation (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:574:15)
+    at Order._validateIncludedElement (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:502:53)
+    at D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:421:37
+    at Array.map (<anonymous>)
+    at Order._validateIncludedElements (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:417:39)
+    at Order.findAll (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1124:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Order.findOne (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1240:12)
+    at async Order.findByPk (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1221:12)
+    at async exports.finalizeOrderAfterPayment (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:731:17)
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:664:7
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:507:18
+    at async exports.buyNow (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:613:18)
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\controller.js:135:18
+
+--- 2026-05-01T09:26:18.766Z ---
+SequelizeEagerLoadingError: User is associated to Order using an alias. You've included an alias (seller), but it does not match the alias(es) defined in your association (buyer).
+    at Order._getIncludedAssociation (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:574:15)
+    at Order._validateIncludedElement (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:502:53)
+    at D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:421:37
+    at Array.map (<anonymous>)
+    at Order._validateIncludedElements (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:417:39)
+    at Order.findAll (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1124:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Order.findOne (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1240:12)
+    at async Order.findByPk (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1221:12)
+    at async exports.finalizeOrderAfterPayment (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:731:17)
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:664:7
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:507:18
+    at async exports.buyNow (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:613:18)
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\controller.js:135:18
+
+--- 2026-05-01T09:26:34.891Z ---
+SequelizeEagerLoadingError: User is associated to Order using an alias. You've included an alias (seller), but it does not match the alias(es) defined in your association (buyer).
+    at Order._getIncludedAssociation (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:574:15)
+    at Order._validateIncludedElement (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:502:53)
+    at D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:421:37
+    at Array.map (<anonymous>)
+    at Order._validateIncludedElements (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:417:39)
+    at Order.findAll (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1124:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Order.findOne (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1240:12)
+    at async Order.findByPk (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1221:12)
+    at async exports.finalizeOrderAfterPayment (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:731:17)
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:664:7
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:507:18
+    at async exports.buyNow (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:613:18)
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\controller.js:135:18
+
+--- 2026-05-01T09:26:59.115Z ---
+SequelizeEagerLoadingError: User is associated to Order using an alias. You've included an alias (seller), but it does not match the alias(es) defined in your association (buyer).
+    at Order._getIncludedAssociation (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:574:15)
+    at Order._validateIncludedElement (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:502:53)
+    at D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:421:37
+    at Array.map (<anonymous>)
+    at Order._validateIncludedElements (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:417:39)
+    at Order.findAll (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1124:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Order.findOne (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1240:12)
+    at async Order.findByPk (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1221:12)
+    at async exports.finalizeOrderAfterPayment (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:731:17)
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:664:7
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:507:18
+    at async exports.buyNow (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:613:18)
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\controller.js:135:18
+
+--- 2026-05-01T09:27:33.888Z ---
+SequelizeEagerLoadingError: User is associated to Order using an alias. You've included an alias (seller), but it does not match the alias(es) defined in your association (buyer).
+    at Order._getIncludedAssociation (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:574:15)
+    at Order._validateIncludedElement (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:502:53)
+    at D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:421:37
+    at Array.map (<anonymous>)
+    at Order._validateIncludedElements (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:417:39)
+    at Order.findAll (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1124:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Order.findOne (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1240:12)
+    at async Order.findByPk (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1221:12)
+    at async exports.finalizeOrderAfterPayment (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:731:17)
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:664:7
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:507:18
+    at async exports.buyNow (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:613:18)
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\controller.js:135:18
+
+--- 2026-05-01T09:28:04.258Z ---
+SequelizeEagerLoadingError: User is associated to Order using an alias. You've included an alias (seller), but it does not match the alias(es) defined in your association (buyer).
+    at Order._getIncludedAssociation (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:574:15)
+    at Order._validateIncludedElement (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:502:53)
+    at D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:421:37
+    at Array.map (<anonymous>)
+    at Order._validateIncludedElements (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:417:39)
+    at Order.findAll (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1124:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Order.findOne (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1240:12)
+    at async Order.findByPk (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1221:12)
+    at async exports.finalizeOrderAfterPayment (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:731:17)
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:664:7
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:507:18
+    at async exports.buyNow (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:613:18)
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\controller.js:135:18
+
+--- 2026-05-01T09:40:35.592Z ---
+Error: Category not found
+    at exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-01T09:42:55.233Z ---
+SequelizeEagerLoadingError: Location is associated to UserAddress using an alias. You've included an alias (Location), but it does not match the alias(es) defined in your association (location).
+    at UserAddress._getIncludedAssociation (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:574:15)
+    at UserAddress._validateIncludedElement (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:502:53)
+    at D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:421:37
+    at Array.map (<anonymous>)
+    at UserAddress._validateIncludedElements (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:417:39)
+    at Order._validateIncludedElement (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:557:38)
+    at D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:421:37
+    at Array.map (<anonymous>)
+    at Order._validateIncludedElements (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:417:39)
+    at Order.findAll (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1124:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Order.findOne (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1240:12)
+    at async Order.findByPk (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1221:12)
+    at async exports.finalizeOrderAfterPayment (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:739:17)
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:668:7
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:507:18
+
+--- 2026-05-01T09:43:07.234Z ---
+SequelizeEagerLoadingError: Location is associated to UserAddress using an alias. You've included an alias (Location), but it does not match the alias(es) defined in your association (location).
+    at UserAddress._getIncludedAssociation (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:574:15)
+    at UserAddress._validateIncludedElement (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:502:53)
+    at D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:421:37
+    at Array.map (<anonymous>)
+    at UserAddress._validateIncludedElements (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:417:39)
+    at Order._validateIncludedElement (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:557:38)
+    at D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:421:37
+    at Array.map (<anonymous>)
+    at Order._validateIncludedElements (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:417:39)
+    at Order.findAll (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1124:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Order.findOne (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1240:12)
+    at async Order.findByPk (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1221:12)
+    at async exports.finalizeOrderAfterPayment (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:739:17)
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:668:7
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:507:18
+
+--- 2026-05-01T09:46:06.170Z ---
+Error: Category not found
+    at exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-01T09:47:18.946Z ---
+Error: Validation error
+    at exports.handleValidationErrors (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-01T09:47:18.967Z ---
+Error: Validation error
+    at exports.handleValidationErrors (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-01T09:47:48.850Z ---
+Error: Category not found
+    at exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-01T09:49:20.924Z ---
+SequelizeEagerLoadingError: Location is associated to UserAddress using an alias. You've included an alias (Location), but it does not match the alias(es) defined in your association (location).
+    at UserAddress._getIncludedAssociation (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:574:15)
+    at UserAddress._validateIncludedElement (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:502:53)
+    at D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:421:37
+    at Array.map (<anonymous>)
+    at UserAddress._validateIncludedElements (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:417:39)
+    at Order._validateIncludedElement (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:557:38)
+    at D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:421:37
+    at Array.map (<anonymous>)
+    at Order._validateIncludedElements (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:417:39)
+    at Order.findAll (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1124:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Order.findOne (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1240:12)
+    at async Order.findByPk (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1221:12)
+    at async exports.finalizeOrderAfterPayment (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:739:17)
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:479:7
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:507:18
+
+--- 2026-05-01T09:52:35.827Z ---
+Error: Category not found
+    at exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-01T09:53:50.356Z ---
+Error: Category not found
+    at exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-01T09:54:14.688Z ---
+Error: Category not found
+    at exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-01T09:55:49.281Z ---
+Error: Category not found
+    at exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-01T09:57:19.488Z ---
+Error: Category not found
+    at exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-01T10:07:16.881Z ---
+Error
+    at Query.run (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\postgres\query.js:50:25)
+    at D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async PostgresQueryInterface.select (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\abstract\query-interface.js:407:12)
+    at async Payment.findAll (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1140:21)
+    at async Payment.findOne (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1240:12)
+    at async exports.verifyPayment (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\payment\service.js:58:19)
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\payment\controller.js:26:19
+
+--- 2026-05-01T10:07:39.690Z ---
+Error
+    at Query.run (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\postgres\query.js:50:25)
+    at D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async PostgresQueryInterface.select (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\abstract\query-interface.js:407:12)
+    at async Order.findAll (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1140:21)
+    at async Promise.all (index 1)
+    at async Order.findAndCountAll (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1322:27)
+    at async exports.getOrdersByBuyerId (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\dao.js:761:10)
+    at async exports.getOrdersByBuyerId (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:704:18)
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\controller.js:152:18
+
+--- 2026-05-01T10:08:09.411Z ---
+Error: Category not found
+    at exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-01T10:44:30.932Z ---
+Error: Category not found
+    at exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-01T10:45:14.765Z ---
+Error: Validation error
+    at exports.handleValidationErrors (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-01T10:45:14.826Z ---
+Error: Validation error
+    at exports.handleValidationErrors (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-01T10:45:46.381Z ---
+Error: Category not found
+    at exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-01T10:46:22.798Z ---
+Error: Validation error
+    at exports.handleValidationErrors (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-01T10:46:22.834Z ---
+Error: Validation error
+    at exports.handleValidationErrors (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-01T10:46:35.072Z ---
+Error: Category not found
+    at exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-01T14:04:31.839Z ---
+Error: Category not found
+    at exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-01T14:06:03.911Z ---
+ReferenceError: finalProductPrice is not defined
+    at exports.buyNow (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:662:16)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\controller.js:135:18
+
+--- 2026-05-01T14:06:27.280Z ---
+ReferenceError: finalProductPrice is not defined
+    at exports.buyNow (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:662:16)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\controller.js:135:18
+
+--- 2026-05-01T14:06:43.919Z ---
+ReferenceError: finalProductPrice is not defined
+    at exports.buyNow (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:662:16)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\controller.js:135:18
+
+--- 2026-05-01T14:06:51.106Z ---
+ReferenceError: finalProductPrice is not defined
+    at exports.buyNow (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:662:16)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\controller.js:135:18
+
+--- 2026-05-01T14:08:33.708Z ---
+ReferenceError: finalProductPrice is not defined
+    at exports.buyNow (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:662:16)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\controller.js:135:18
+
+--- 2026-05-01T14:09:22.310Z ---
+Error: Category not found
+    at exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-01T14:11:00.916Z ---
+ReferenceError: finalProductPrice is not defined
+    at exports.buyNow (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:662:16)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\controller.js:135:18
+
+--- 2026-05-01T14:11:09.114Z ---
+ReferenceError: finalProductPrice is not defined
+    at exports.buyNow (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:662:16)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\controller.js:135:18
+
+--- 2026-05-01T14:12:18.122Z ---
+ReferenceError: finalProductPrice is not defined
+    at exports.buyNow (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:662:16)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\controller.js:135:18
+
+--- 2026-05-01T14:12:35.116Z ---
+Error: Category not found
+    at exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-01T14:17:48.143Z ---
+Error: Buyer email is required
+    at exports.acceptOrder (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:128:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.acceptOrder (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\controller.js:79:18)
+
+--- 2026-05-01T14:18:40.461Z ---
+Error: Buyer email is required
+    at exports.acceptOrder (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:128:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.acceptOrder (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\controller.js:79:18)
+
+--- 2026-05-01T14:18:57.311Z ---
+Error: Buyer email is required
+    at exports.acceptOrder (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:128:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.acceptOrder (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\controller.js:79:18)
+
+--- 2026-05-01T14:20:25.723Z ---
+Error: Category not found
+    at exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-01T14:24:13.480Z ---
+Error: Category not found
+    at exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-01T14:27:29.097Z ---
+Error: Category not found
+    at exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-01T14:28:13.399Z ---
+Error: Category not found
+    at exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-01T14:37:19.181Z ---
+Error: Failed to create forward shipment in Shiprocket
+    at exports.createForwardShipment (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\shiprocket\service.js:1125:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.acceptOrder (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:193:30)
+    at async exports.acceptOrder (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\controller.js:79:18)
+
+--- 2026-05-01T14:42:57.443Z ---
+Error: Validation error
+    at exports.handleValidationErrors (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-01T14:43:37.154Z ---
+Error
+    at Query.run (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\postgres\query.js:50:25)
+    at D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async PostgresQueryInterface.select (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\abstract\query-interface.js:407:12)
+    at async Product.findAll (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1140:21)
+    at async Product.findOne (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1240:12)
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\inventory\dao.js:267:21
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:507:18
+    at async InventoryDAO.updateProductStock (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\inventory\dao.js:264:10)
+    at async InventoryService.updateProductStock (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\inventory\service.js:73:21)
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\inventory\controller.js:44:20
+
+--- 2026-05-01T14:44:32.601Z ---
+Error: Failed to create forward shipment in Shiprocket
+    at exports.createForwardShipment (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\shiprocket\service.js:1125:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.acceptOrder (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:193:30)
+    at async exports.acceptOrder (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\controller.js:79:18)
+
+--- 2026-05-01T14:47:59.670Z ---
+Error
+    at Query.run (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\postgres\query.js:50:25)
+    at D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async PostgresQueryInterface.select (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\abstract\query-interface.js:407:12)
+    at async Product.findAll (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1140:21)
+    at async Product.findOne (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1240:12)
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\inventory\dao.js:267:21
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:507:18
+    at async InventoryDAO.updateProductStock (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\inventory\dao.js:264:10)
+    at async InventoryService.updateProductStock (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\inventory\service.js:73:21)
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\inventory\controller.js:44:20
+
+--- 2026-05-01T14:48:36.733Z ---
+Error: Validation error
+    at exports.handleValidationErrors (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-01T14:49:08.807Z ---
+Error
+    at Query.run (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\postgres\query.js:50:25)
+    at D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async PostgresQueryInterface.select (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\abstract\query-interface.js:407:12)
+    at async Product.findAll (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1140:21)
+    at async Product.findOne (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1240:12)
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\inventory\dao.js:267:21
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:507:18
+    at async InventoryDAO.updateProductStock (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\inventory\dao.js:264:10)
+    at async InventoryService.updateProductStock (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\inventory\service.js:73:21)
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\inventory\controller.js:44:20
+
+--- 2026-05-01T14:51:45.891Z ---
+Error
+    at Query.run (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\postgres\query.js:50:25)
+    at D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async PostgresQueryInterface.select (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\abstract\query-interface.js:407:12)
+    at async ProductVariant.findAll (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1140:21)
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\inventory\dao.js:356:29
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:507:18
+    at async InventoryDAO.updateProductStock (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\inventory\dao.js:264:10)
+    at async InventoryService.updateProductStock (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\inventory\service.js:73:21)
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\inventory\controller.js:44:20
+
+--- 2026-05-01T14:52:29.135Z ---
+Error
+    at Query.run (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\postgres\query.js:50:25)
+    at D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async PostgresQueryInterface.select (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\abstract\query-interface.js:407:12)
+    at async ProductVariant.findAll (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1140:21)
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\inventory\dao.js:356:29
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:507:18
+    at async InventoryDAO.updateProductStock (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\inventory\dao.js:264:10)
+    at async InventoryService.updateProductStock (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\inventory\service.js:73:21)
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\inventory\controller.js:44:20
+
+--- 2026-05-02T06:11:01.385Z ---
+Error: Invalid token
+    at module.exports.authenticate (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\middleware\auth.js:16:17)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\index.js:342:13)
+    at D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\index.js:297:9
+    at processParams (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\index.js:582:12)
+    at next (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\index.js:291:5)
+    at router.handle (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\index.js:186:3)
+    at router (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\index.js:60:12)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\index.js:342:13)
+    at D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\index.js:297:9
+    at processParams (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\index.js:582:12)
+    at next (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\index.js:291:5)
+    at router.handle (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\index.js:186:3)
+    at router (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\index.js:60:12)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+
+--- 2026-05-02T06:11:01.435Z ---
+Error: Category not found
+    at exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-02T06:11:01.800Z ---
+Error: Validation error
+    at exports.handleValidationErrors (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-02T06:11:04.436Z ---
+Error: Category not found
+    at exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-02T06:12:00.948Z ---
+Error: Category not found
+    at exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-02T06:12:16.751Z ---
+Error: Category not found
+    at exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-02T06:12:25.249Z ---
+Error: Category not found
+    at exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-02T06:13:02.775Z ---
+Error: Category not found
+    at exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-02T06:13:38.538Z ---
+Error: Validation error
+    at exports.handleValidationErrors (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-02T06:20:56.315Z ---
+Error: Category not found
+    at exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-02T06:21:14.153Z ---
+Error: Category not found
+    at exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-02T06:22:22.160Z ---
+Error
+    at Query.run (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\postgres\query.js:50:25)
+    at D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async PostgresQueryInterface.insert (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\abstract\query-interface.js:308:21)
+    at async model.save (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:2490:35)
+    at async Shipment.create (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1362:12)
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:232:22
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:507:18
+    at async exports.acceptOrder (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:227:10)
+    at async exports.acceptOrder (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\controller.js:79:18)
+
+--- 2026-05-02T06:22:27.158Z ---
+Error: Order can only be accepted when status is pending
+    at exports.acceptOrder (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:67:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.acceptOrder (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\controller.js:79:18)
+
+--- 2026-05-02T06:22:35.125Z ---
+Error
+    at Query.run (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\postgres\query.js:50:25)
+    at D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async PostgresQueryInterface.insert (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\abstract\query-interface.js:308:21)
+    at async model.save (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:2490:35)
+    at async Shipment.create (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1362:12)
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:232:22
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:507:18
+    at async exports.acceptOrder (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:227:10)
+    at async exports.acceptOrder (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\controller.js:79:18)
+
+--- 2026-05-02T06:22:35.157Z ---
+Error
+    at Query.run (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\postgres\query.js:50:25)
+    at D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async PostgresQueryInterface.insert (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\abstract\query-interface.js:308:21)
+    at async model.save (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:2490:35)
+    at async Shipment.create (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1362:12)
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:232:22
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:507:18
+    at async exports.acceptOrder (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:227:10)
+    at async exports.acceptOrder (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\controller.js:79:18)
+
+--- 2026-05-02T06:22:35.377Z ---
+Error
+    at Query.run (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\postgres\query.js:50:25)
+    at D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async PostgresQueryInterface.insert (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\abstract\query-interface.js:308:21)
+    at async model.save (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:2490:35)
+    at async Shipment.create (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1362:12)
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:232:22
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:507:18
+    at async exports.acceptOrder (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:227:10)
+    at async exports.acceptOrder (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\controller.js:79:18)
+
+--- 2026-05-02T06:22:35.461Z ---
+Error
+    at Query.run (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\postgres\query.js:50:25)
+    at D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async PostgresQueryInterface.insert (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\abstract\query-interface.js:308:21)
+    at async model.save (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:2490:35)
+    at async Shipment.create (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1362:12)
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:232:22
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:507:18
+    at async exports.acceptOrder (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:227:10)
+    at async exports.acceptOrder (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\controller.js:79:18)
+
+--- 2026-05-02T06:22:35.654Z ---
+Error
+    at Query.run (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\postgres\query.js:50:25)
+    at D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async PostgresQueryInterface.insert (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\abstract\query-interface.js:308:21)
+    at async model.save (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:2490:35)
+    at async Shipment.create (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1362:12)
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:232:22
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:507:18
+    at async exports.acceptOrder (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:227:10)
+    at async exports.acceptOrder (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\controller.js:79:18)
+
+--- 2026-05-02T06:22:47.245Z ---
+Error: Shipping label not yet available — Shiprocket has not generated it yet
+    at exports.downloadShippingLabel (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:325:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.downloadShippingLabel (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\order\controller.js:103:25)
+
+--- 2026-05-02T11:14:07.533Z ---
+Error: Validation error
+    at exports.handleValidationErrors (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-02T11:14:08.040Z ---
+Error: Category not found
+    at exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-02T11:14:23.631Z ---
+Error: Category not found
+    at exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-02T11:21:29.608Z ---
+Error: Invalid token
+    at module.exports.authenticate (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\middleware\auth.js:16:17)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\index.js:342:13)
+    at D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\index.js:297:9
+    at processParams (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\index.js:582:12)
+    at next (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\index.js:291:5)
+    at router.handle (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\index.js:186:3)
+    at router (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\index.js:60:12)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\index.js:342:13)
+    at D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\index.js:297:9
+    at processParams (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\index.js:582:12)
+    at next (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\index.js:291:5)
+    at router.handle (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\index.js:186:3)
+    at router (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\index.js:60:12)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+
+--- 2026-05-02T11:21:29.952Z ---
+Error: Category not found
+    at exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-02T11:21:30.278Z ---
+Error: Validation error
+    at exports.handleValidationErrors (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-02T11:22:50.538Z ---
+Error: Validation error
+    at exports.handleValidationErrors (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-02T11:22:51.200Z ---
+Error: Category not found
+    at exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-02T11:23:15.685Z ---
+Error: Validation error
+    at exports.handleValidationErrors (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-02T11:23:16.395Z ---
+Error: Category not found
+    at exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-02T11:24:45.247Z ---
+Error: Validation error
+    at exports.handleValidationErrors (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-02T11:30:33.690Z ---
+Error: Validation error
+    at exports.handleValidationErrors (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-02T11:30:34.363Z ---
+Error: Category not found
+    at exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-02T11:30:52.933Z ---
+Error
+    at Query.run (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\postgres\query.js:50:25)
+    at D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async PostgresQueryInterface.select (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\abstract\query-interface.js:407:12)
+    at async Category.findAll (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1140:21)
+    at async exports.getCategoryTree (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\category\dao.js:139:22)
+    at async exports.getCategoryTree (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\category\service.js:344:10)
+    at async exports.getCategoryTree (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\category\controller.js:139:16)
+
+--- 2026-05-02T11:30:53.032Z ---
+Error
+    at Query.run (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\postgres\query.js:50:25)
+    at D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async PostgresQueryInterface.select (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\abstract\query-interface.js:407:12)
+    at async GoldSectionSettings.findAll (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1140:21)
+    at async GoldSectionSettings.findOne (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1240:12)
+    at async exports.getSettings (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\goldSection\dao.js:4:10)
+    at async exports.getSettings (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\goldSection\service.js:12:18)
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\goldSection\controller.js:7:20
+
+--- 2026-05-02T11:34:52.864Z ---
+Error: Validation error
+    at exports.handleValidationErrors (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-02T11:35:13.404Z ---
+Error: Validation error
+    at exports.handleValidationErrors (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-02T11:35:41.729Z ---
+Error: Validation error
+    at exports.handleValidationErrors (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-02T11:36:04.232Z ---
+Error: Validation error
+    at exports.handleValidationErrors (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-02T11:36:45.194Z ---
+Error: Validation error
+    at exports.handleValidationErrors (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-02T11:37:18.498Z ---
+Error: Validation error
+    at exports.handleValidationErrors (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-02T11:38:08.431Z ---
+Error: Validation error
+    at exports.handleValidationErrors (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-02T11:38:36.585Z ---
+Error: Validation error
+    at exports.handleValidationErrors (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-02T11:39:13.995Z ---
+Error: Validation error
+    at exports.handleValidationErrors (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-02T11:43:21.192Z ---
+Error: No token provided
+    at module.exports.authenticate (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\middleware\auth.js:8:17)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\index.js:342:13)
+    at D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\index.js:297:9
+    at processParams (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\index.js:582:12)
+    at next (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\index.js:291:5)
+    at router.handle (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\index.js:186:3)
+    at router (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\index.js:60:12)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\index.js:342:13)
+    at D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\index.js:297:9
+    at processParams (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\index.js:582:12)
+    at next (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\index.js:291:5)
+    at router.handle (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\index.js:186:3)
+    at router (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\index.js:60:12)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+
+--- 2026-05-02T11:44:10.066Z ---
+Error: Validation error
+    at exports.handleValidationErrors (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-02T11:44:11.496Z ---
+Error: Category not found
+    at exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-02T11:44:17.191Z ---
+Error: Validation error
+    at exports.handleValidationErrors (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-02T11:44:18.189Z ---
+Error: Category not found
+    at exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-02T11:46:38.424Z ---
+Error: Validation error
+    at exports.handleValidationErrors (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-02T11:47:10.312Z ---
+Error: Category not found
+    at exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-02T11:47:15.113Z ---
+Error: Validation error
+    at exports.handleValidationErrors (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-02T11:55:12.513Z ---
+Error: Validation error
+    at exports.handleValidationErrors (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-02T11:55:25.392Z ---
+Error: Validation error
+    at exports.handleValidationErrors (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-02T11:56:13.350Z ---
+Error: Validation error
+    at exports.handleValidationErrors (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-02T11:56:21.332Z ---
+Error: Validation error
+    at exports.handleValidationErrors (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-02T11:56:29.453Z ---
+Error: Validation error
+    at exports.handleValidationErrors (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-02T11:57:10.607Z ---
+Error: Validation error
+    at exports.handleValidationErrors (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-02T11:59:38.439Z ---
+Error: Validation error
+    at exports.handleValidationErrors (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-02T11:59:38.801Z ---
+Error: Category not found
+    at exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-02T12:00:53.944Z ---
+Error: Validation error
+    at exports.handleValidationErrors (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-02T12:00:54.996Z ---
+Error: Category not found
+    at exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-02T12:01:59.803Z ---
+Error: Validation error
+    at exports.handleValidationErrors (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-02T12:02:00.849Z ---
+Error: Category not found
+    at exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-02T12:02:47.264Z ---
+Error: Validation error
+    at exports.handleValidationErrors (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-02T12:03:01.298Z ---
+Error: Validation error
+    at exports.handleValidationErrors (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-02T12:03:02.327Z ---
+Error: Category not found
+    at exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-02T12:04:06.152Z ---
+Error: Validation error
+    at exports.handleValidationErrors (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-02T12:04:44.897Z ---
+Error: Validation error
+    at exports.handleValidationErrors (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-02T12:04:45.763Z ---
+Error: Category not found
+    at exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-02T12:05:16.967Z ---
+Error: Validation error
+    at exports.handleValidationErrors (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-02T12:05:48.406Z ---
+Error: Validation error
+    at exports.handleValidationErrors (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-02T12:05:49.468Z ---
+Error: Category not found
+    at exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-02T12:06:19.911Z ---
+Error: Validation error
+    at exports.handleValidationErrors (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-02T12:07:09.784Z ---
+Error: Validation error
+    at exports.handleValidationErrors (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-02T12:07:10.393Z ---
+Error: Category not found
+    at exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-02T12:07:37.556Z ---
+Error: Validation error
+    at exports.handleValidationErrors (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-02T12:08:13.580Z ---
+Error: Validation error
+    at exports.handleValidationErrors (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-02T12:08:14.424Z ---
+Error: Category not found
+    at exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-02T12:08:46.115Z ---
+Error: Validation error
+    at exports.handleValidationErrors (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-02T12:09:14.678Z ---
+Error: Validation error
+    at exports.handleValidationErrors (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-02T12:10:53.917Z ---
+SequelizeConnectionError: Connection terminated unexpectedly
+    at Client._connectionCallback (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\postgres\connection-manager.js:149:20)
+    at Connection.<anonymous> (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\pg\lib\client.js:193:18)
+    at Object.onceWrapper (node:events:622:28)
+    at Connection.emit (node:events:508:28)
+    at Socket.<anonymous> (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\pg\lib\connection.js:61:12)
+    at Socket.emit (node:events:508:28)
+    at TCP.<anonymous> (node:net:346:12)
+
+--- 2026-05-02T12:10:53.975Z ---
+Error: Category not found
+    at exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-02T12:10:54.274Z ---
+Error: Validation error
+    at exports.handleValidationErrors (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-02T12:10:55.401Z ---
+Error: Category not found
+    at exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-02T12:11:21.817Z ---
+Error: Validation error
+    at exports.handleValidationErrors (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-02T12:11:25.756Z ---
+Error: Validation error
+    at exports.handleValidationErrors (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-02T12:11:26.062Z ---
+Error: Category not found
+    at exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-02T12:11:55.704Z ---
+Error: Validation error
+    at exports.handleValidationErrors (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-02T12:15:12.672Z ---
+Error: Category not found
+    at exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-02T12:25:52.972Z ---
+Error: Category not found
+    at exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-02T12:26:14.874Z ---
+Error: Category not found
+    at exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-02T12:33:49.494Z ---
+Error: Category not found
+    at exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-02T12:33:57.203Z ---
+Error: Category not found
+    at exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-02T12:40:50.588Z ---
+Error: Category not found
+    at exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-02T12:41:01.797Z ---
+Error: Category not found
+    at exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-02T12:41:09.122Z ---
+Error
+    at Query.run (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\postgres\query.js:50:25)
+    at D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async PostgresQueryInterface.select (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\abstract\query-interface.js:407:12)
+    at async GoldSectionSettings.findAll (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1140:21)
+    at async GoldSectionSettings.findOne (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1240:12)
+    at async exports.getSettings (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\goldSection\dao.js:4:10)
+    at async exports.getSettings (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\goldSection\service.js:12:18)
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\goldSection\controller.js:7:20
+
+--- 2026-05-02T12:41:09.439Z ---
+Error
+    at Query.run (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\postgres\query.js:50:25)
+    at D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async PostgresQueryInterface.select (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\abstract\query-interface.js:407:12)
+    at async Banner.findAll (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1140:21)
+    at async Object.getAllBanners (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\banner\dao.js:31:10)
+    at async Object.getAllBanners (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\banner\service.js:156:10)
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\banner\controller.js:63:19
+
+--- 2026-05-02T12:52:16.564Z ---
+Error: Category not found
+    at exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-02T12:52:35.035Z ---
+Error
+    at Query.run (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\postgres\query.js:50:25)
+    at D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async PostgresQueryInterface.select (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\abstract\query-interface.js:407:12)
+    at async GoldSectionSettings.findAll (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1140:21)
+    at async GoldSectionSettings.findOne (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1240:12)
+    at async exports.getSettings (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\goldSection\dao.js:4:10)
+    at async exports.getSettings (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\goldSection\service.js:12:18)
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\goldSection\controller.js:7:20
+
+--- 2026-05-02T12:52:35.353Z ---
+Error
+    at Query.run (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\postgres\query.js:50:25)
+    at D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async PostgresQueryInterface.select (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\abstract\query-interface.js:407:12)
+    at async Banner.findAll (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1140:21)
+    at async Object.getAllBanners (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\banner\dao.js:31:10)
+    at async Object.getAllBanners (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\banner\service.js:156:10)
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\banner\controller.js:63:19
+
+--- 2026-05-02T13:12:16.170Z ---
+Error: Category not found
+    at exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-02T13:12:34.665Z ---
+Error
+    at Query.run (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\postgres\query.js:50:25)
+    at D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async PostgresQueryInterface.select (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\abstract\query-interface.js:407:12)
+    at async GoldSectionSettings.findAll (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1140:21)
+    at async GoldSectionSettings.findOne (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1240:12)
+    at async exports.getSettings (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\goldSection\dao.js:4:10)
+    at async exports.getSettings (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\goldSection\service.js:12:18)
+    at async D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\goldSection\controller.js:7:20
+
+--- 2026-05-02T13:12:35.002Z ---
+Error
+    at Query.run (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\postgres\query.js:50:25)
+    at D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async PostgresQueryInterface.select (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\abstract\query-interface.js:407:12)
+    at async Category.findAll (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1140:21)
+    at async exports.getCategoryTree (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\category\dao.js:139:22)
+    at async exports.getCategoryTree (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\category\service.js:344:10)
+    at async exports.getCategoryTree (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\category\controller.js:139:16)
+
+--- 2026-05-02T13:23:07.784Z ---
+Error
+    at Query.run (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\postgres\query.js:50:25)
+    at D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async PostgresQueryInterface.select (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\abstract\query-interface.js:407:12)
+    at async Category.findAll (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1140:21)
+    at async exports.getAllCategoriesPlain (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\category\dao.js:63:10)
+    at async exports.getAllCataloguesWithKeysetPagination (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\catalogue\service.js:372:32)
+    at async exports.getAllCataloguesWithKeysetPagination (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\catalogue\controller.js:133:18)
+
+--- 2026-05-02T13:23:10.066Z ---
+Error
+    at Query.run (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\postgres\query.js:50:25)
+    at D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async PostgresQueryInterface.select (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\abstract\query-interface.js:407:12)
+    at async Category.findAll (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1140:21)
+    at async exports.getAllCategoriesPlain (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\category\dao.js:63:10)
+    at async exports.getAllCataloguesWithKeysetPagination (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\catalogue\service.js:372:32)
+    at async exports.getAllCataloguesWithKeysetPagination (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\catalogue\controller.js:133:18)
+
+--- 2026-05-02T13:32:39.205Z ---
+Error
+    at Query.run (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\postgres\query.js:50:25)
+    at D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async PostgresQueryInterface.select (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\abstract\query-interface.js:407:12)
+    at async Catalogue.findAll (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1140:21)
+    at async exports.searchMinimalCatalogues (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\catalogue\dao.js:969:22)
+    at async exports.searchMinimalCatalogues (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\catalogue\service.js:504:10)
+    at async exports.searchMinimalCatalogues (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\catalogue\controller.js:113:22)
+
+--- 2026-05-02T13:32:39.338Z ---
+Error
+    at Query.run (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\postgres\query.js:50:25)
+    at D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async PostgresQueryInterface.select (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\abstract\query-interface.js:407:12)
+    at async Category.findAll (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1140:21)
+    at async Category.findOne (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1240:12)
+    at async exports.findCategoryBySlugOrName (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\category\dao.js:44:10)
+    at async exports.getAllCataloguesWithKeysetPagination (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\catalogue\service.js:363:27)
+    at async exports.getAllCataloguesWithKeysetPagination (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\catalogue\controller.js:133:18)
+
+--- 2026-05-02T13:33:46.131Z ---
+Error: Category not found
+    at exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-02T13:33:46.258Z ---
+Error: Category not found
+    at exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-02T13:35:00.104Z ---
+Error: Category not found
+    at exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)

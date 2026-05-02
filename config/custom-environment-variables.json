@@ -49,7 +49,12 @@
     "tokenKey": "SHIPROCKET_TOKEN_KEY",
     "tokenTtl": "SHIPROCKET_TOKEN_TTL",
     "token": "SHIPROCKET_TOKEN",
-    "webhookApiKey": "SHIPROCKET_WEBHOOK_API_KEY"
+    "webhookApiKey": "SHIPROCKET_WEBHOOK_API_KEY",
+    "pickupLocation": "SHIPROCKET_PICKUP_LOCATION",
+    "defaultWeight": "SHIPROCKET_DEFAULT_WEIGHT",
+    "defaultLength": "SHIPROCKET_DEFAULT_LENGTH",
+    "defaultBreadth": "SHIPROCKET_DEFAULT_BREADTH",
+    "defaultHeight": "SHIPROCKET_DEFAULT_HEIGHT"
   },
   "opentelemetry": {
     "enabled": "OTEL_ENABLED",

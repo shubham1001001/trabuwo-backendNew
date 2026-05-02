@@ -33,9 +33,9 @@ exports.creditOrderEarnings = async (order, transaction) => {
   return await sequelize.transaction({ transaction }, async (t) => {
     // 1. Record Buyer Payment in Platform Ledger
     await recordLedger(
-      order.id, 
-      "buyer_payment", 
-      order.totalAmount, 
+      order.id,
+      "buyer_payment",
+      order.totalAmount,
       `Payment received for order ${order.publicId}`,
       { paymentMethod: order.paymentMethod },
       t
@@ -45,12 +45,15 @@ exports.creditOrderEarnings = async (order, transaction) => {
     for (const item of order.items) {
       const product = item.productVariant?.product;
       if (!product) continue;
-      
+
       const sellerId = product.catalogue?.userId;
-      if (!sellerId) continue;
+      if (!sellerId) {
+        console.warn(`Seller ID not found for item ${item.id} in order ${order.id}`);
+        continue;
+      }
 
       const sellerWallet = await exports.getOrCreateWallet(sellerId, t);
-      
+
       // Credit Seller Wallet (Pending)
       await dao.createTransaction({
         walletId: sellerWallet.id,
@@ -59,10 +62,10 @@ exports.creditOrderEarnings = async (order, transaction) => {
         type: "credit",
         status: "pending",
         reason: "order_earning",
-        metadata: { 
-          itemId: item.id, 
+        metadata: {
+          itemId: item.id,
           listingPrice: item.listingPrice,
-          commissionAmount: item.commissionAmount 
+          commissionAmount: item.commissionAmount
         }
       }, { transaction: t });
 
@@ -120,7 +123,7 @@ exports.creditOrderEarnings = async (order, transaction) => {
     // Note: Logistics cost is usually known after shipment creation or via config
     const logisticsCost = await configService.getLogisticsCost();
     const shippingMargin = parseFloat(order.shippingFee) - logisticsCost;
-    
+
     await recordLedger(order.id, "shipping_margin", shippingMargin, "Shipping margin", { shippingFee: order.shippingFee, logisticsCost }, t);
   });
 };
@@ -137,7 +140,7 @@ exports.releaseFunds = async (orderId, transaction) => {
 
     for (const tx of transactions) {
       await dao.updateTransactionStatus(tx.id, "available", { transaction: t });
-      
+
       await dao.updateWalletBalances(tx.walletId, {
         pendingBalance: sequelize.literal(`pending_balance - ${tx.amount}`),
         availableBalance: sequelize.literal(`available_balance + ${tx.amount}`)
@@ -158,9 +161,9 @@ exports.handleReturn = async (orderId, transaction) => {
 
     for (const tx of transactions) {
       const fieldToDecrement = tx.status === "pending" ? "pendingBalance" : "availableBalance";
-      
+
       await dao.updateTransactionStatus(tx.id, "cancelled", { transaction: t });
-      
+
       await dao.updateWalletBalances(tx.walletId, {
         [fieldToDecrement]: sequelize.literal(`${fieldToDecrement === 'pendingBalance' ? 'pending_balance' : 'available_balance'} - ${tx.amount}`)
       }, { transaction: t });
@@ -176,7 +179,7 @@ exports.handleReturn = async (orderId, transaction) => {
 exports.requestWithdrawal = async (userId, amount) => {
   const wallet = await exports.getOrCreateWallet(userId);
   const { minSellerWithdrawal, minResellerWithdrawal } = await configService.getPayoutConfig();
-  
+
   // Basic validation (role check would be better but we'll assume caller handles it)
   // We'll check available balance
   if (parseFloat(wallet.availableBalance) < amount) {
@@ -245,7 +248,7 @@ exports.processPayoutRequest = async (requestId, status, adminNotes) => {
 
       // Record in Platform Ledger
       await recordLedger(null, "payout_disbursed", request.amount, `Payout disbursed to user ${request.userId}`, { requestId }, t);
-    } 
+    }
     else if (status === "rejected") {
       // Return from locked to available
       await dao.updateWalletBalances(request.walletId, {

@@ -52,10 +52,11 @@ const getCataloguesValidation = [
 
 const updateStockValidation = [
   body("stock")
-    .isInt({ min: 1 })
+    .isInt({ min: 0 })
     .withMessage("Stock must be a non-negative integer"),
   handleValidationErrors,
 ];
+
 
 const bulkPauseValidation = [
   body("productIds")

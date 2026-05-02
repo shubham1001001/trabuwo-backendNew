@@ -48,7 +48,12 @@
     "timeout": 30000,
     "tokenKey": "shiprocket:token",
     "tokenTtl": 777600,
-    "webhookApiKey": ""
+    "webhookApiKey": "",
+    "pickupLocation": "Primary",
+    "defaultWeight": 0.5,
+    "defaultLength": 10,
+    "defaultBreadth": 10,
+    "defaultHeight": 10
   },
   "opentelemetry": {
     "enabled": false,

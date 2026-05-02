@@ -1,41 +1,33 @@
 /**
- * Helper utility for calculating product prices based on seller requirements and platform fees.
+ * Calculates the seller payout based on the Listing Price (LP).
+ * Formula: Payout = LP - (LP * CommissionRate)
+ * 
+ * @param {Number} listingPrice The base price set by the seller.
+ * @param {Number} commissionRate The platform commission rate (as a decimal, e.g., 0.05 for 5%).
+ * @returns {Number} The seller's final payout.
  */
+const calculateSellerPayout = (listingPrice, commissionRate) => {
+  if (listingPrice == null || listingPrice < 0) return 0;
+  const commissionAmount = Number(listingPrice) * Number(commissionRate);
+  return parseFloat((Number(listingPrice) - commissionAmount).toFixed(2));
+};
 
 /**
- * Calculates the final price shown to the buyer, ensuring the seller gets their desired payout.
- * Formula: BuyerPrice = (SellerPrice + BuiltInShippingFee + PlatformFee) / (1 - CommissionRate)
+ * Calculates the final selling price for the buyer (RP - Reseller Price).
+ * Formula: SellingPrice = LP + ResellerMargin + ShippingFee + PlatformFee
  * 
- * Explanation:
- * When a buyer pays `BuyerPrice`, the platform deducts commission based on this price.
- * Commission Amount = BuyerPrice * CommissionRate
- * Remaining = BuyerPrice - CommissionAmount = BuyerPrice * (1 - CommissionRate)
- * Out of this remaining, we must pay for Shipping and Platform Fee.
- * What's left must equal SellerPrice.
- * Therefore: SellerPrice = (BuyerPrice * (1 - CommissionRate)) - BuiltInShippingFee - PlatformFee
- * Rearranging for BuyerPrice:
- * BuyerPrice * (1 - CommissionRate) = SellerPrice + BuiltInShippingFee + PlatformFee
- * BuyerPrice = (SellerPrice + BuiltInShippingFee + PlatformFee) / (1 - CommissionRate)
- * 
- * @param {Number} sellerPrice The payout amount the seller wants to receive.
- * @param {Number} commissionRate The platform commission rate (as a decimal, e.g., 0.10 for 10%).
- * @param {Number} platformFee The fixed platform fee per item.
- * @param {Number} builtInShippingFee The average shipping cost built into the price to offer "Free Delivery".
- * @returns {Number} The calculated buyer price, rounded to 2 decimal places.
+ * @param {Number} listingPrice Base seller price.
+ * @param {Number} resellerMargin Margin added by reseller.
+ * @param {Number} shippingFee Shipping fee charged to buyer.
+ * @param {Number} platformFee Platform fee charged to buyer.
+ * @returns {Number} The final price to be paid by the buyer.
  */
-const calculateBuyerPrice = (sellerPrice, commissionRate, platformFee = 0, builtInShippingFee = 0) => {
-  if (sellerPrice == null || sellerPrice < 0) {
-    return 0;
-  }
-  
-  // Prevent division by zero or negative values if commission rate is >= 100%
-  const safeCommissionRate = Math.min(commissionRate, 0.99);
-  
-  const buyerPrice = (Number(sellerPrice) + Number(builtInShippingFee) + Number(platformFee)) / (1 - safeCommissionRate);
-  
-  return parseFloat(buyerPrice.toFixed(2));
+const calculateSellingPrice = (listingPrice, resellerMargin = 0, shippingFee = 0, platformFee = 0) => {
+  const total = Number(listingPrice) + Number(resellerMargin) + Number(shippingFee) + Number(platformFee);
+  return parseFloat(total.toFixed(2));
 };
 
 module.exports = {
-  calculateBuyerPrice
+  calculateSellerPayout,
+  calculateSellingPrice
 };

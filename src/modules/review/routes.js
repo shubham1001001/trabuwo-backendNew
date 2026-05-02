@@ -211,6 +211,53 @@ router.get(
   asyncHandler(controller.getStoreRatingHistogram)
 );
 
+/**
+ * @swagger
+ * /api/review/product/{productId}/summary:
+ *   get:
+ *     summary: Get rating histogram for a specific product
+ *     tags: [Review]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: productId
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: Product ID
+ *         example: "123e4567-e89b-12d3-a456-426614174000"
+ *     responses:
+ *       200:
+ *         description: Product rating histogram retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Success'
+ *             example:
+ *               success: true
+ *               message: ""
+ *               data:
+ *                 "1": 5
+ *                 "2": 2
+ *                 "3": 3
+ *                 "4": 10
+ *                 "5": 15
+ *       400:
+ *         $ref: '#/components/responses/BadRequest'
+ *       404:
+ *         description: Product not found
+ *       500:
+ *         $ref: '#/components/responses/InternalError'
+ */
+router.get(
+  "/product/:productId/summary",
+  validation.productHistogramValidation,
+  asyncHandler(controller.getProductReviewSummary)
+);
+
+
 router.use(authenticate);
 
 /**

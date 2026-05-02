@@ -76,3 +76,8 @@ exports.getStoreRatingHistogram = async (req, res) => {
   const result = await service.getStoreRatingHistogram(req.params.storeId);
   return apiResponse.success(res, result);
 };
+
+exports.getProductReviewSummary = async (req, res) => {
+  const result = await service.getProductRatingHistogram(req.params.productId);
+  return apiResponse.success(res, result);
+};

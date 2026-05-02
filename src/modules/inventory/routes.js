@@ -205,6 +205,45 @@ router.put(
 
 /**
  * @swagger
+ * /api/inventory/variants/{variantId}/stock:
+ *   put:
+ *     summary: Update specific product variant stock
+ *     tags: [Inventory]
+ *     parameters:
+ *       - in: path
+ *         name: variantId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Variant ID to update stock
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - stock
+ *             properties:
+ *               stock:
+ *                 type: integer
+ *                 minimum: 0
+ *                 description: New stock quantity
+ *     responses:
+ *       200:
+ *         description: Variant stock updated successfully
+ *       404:
+ *         description: Variant not found
+ */
+router.put(
+  "/variants/:variantId/stock",
+  validation.updateStockValidation,
+  controller.updateVariantStock
+);
+
+
+/**
+ * @swagger
  * /api/inventory/catalogues/{catalogueId}/products/pause:
  *   put:
  *     summary: Pause multiple products in a catalogue

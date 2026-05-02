@@ -102,7 +102,10 @@ exports.getUserViewHistory = async (userId, options = {}) => {
         variants: product.variants || [],
         category: product.catalogue?.category || null,
         catalogue: product.catalogue || null,
+        averageRatingFromReviews: product.catalogue?.averageRating || 0,
+        reviewsCountFromReviews: product.catalogue?.reviewsCount || 0,
       };
+
       return productData;
     });
 
