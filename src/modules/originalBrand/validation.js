@@ -18,6 +18,16 @@ exports.createOriginalBrandValidation = [
     })
     .isInt({ min: 1 })
     .withMessage("redirectCategoryId must be a positive integer"),
+  body("mobileBannerRedirectCategoryId")
+    .optional({ checkFalsy: true })
+    .customSanitizer((value) => {
+      if (value === "" || value === null || value === undefined || value === "null") {
+        return null;
+      }
+      return value;
+    })
+    .isInt({ min: 1 })
+    .withMessage("mobileBannerRedirectCategoryId must be a positive integer"),
   body("displayOrder")
     .optional()
     .isInt({ min: 1 })
@@ -48,6 +58,16 @@ exports.updateOriginalBrandValidation = [
     })
     .isInt({ min: 1 })
     .withMessage("redirectCategoryId must be a positive integer"),
+  body("mobileBannerRedirectCategoryId")
+    .optional({ checkFalsy: true })
+    .customSanitizer((value) => {
+      if (value === "" || value === null || value === undefined || value === "null") {
+        return null;
+      }
+      return value;
+    })
+    .isInt({ min: 1 })
+    .withMessage("mobileBannerRedirectCategoryId must be a positive integer"),
   body("displayOrder")
     .optional()
     .isInt({ min: 1 })

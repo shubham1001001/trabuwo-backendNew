@@ -16,7 +16,7 @@ router.get("/list", controller.list);
 router.post(
   "/", 
   authenticate, 
-  upload.single("image"), 
+  upload.fields([{ name: "image", maxCount: 1 }, { name: "mobileBanner", maxCount: 1 }]), 
   createOriginalBrandValidation, 
   controller.create
 );
@@ -24,7 +24,7 @@ router.post(
 router.put(
   "/:publicId", 
   authenticate, 
-  upload.single("image"), 
+  upload.fields([{ name: "image", maxCount: 1 }, { name: "mobileBanner", maxCount: 1 }]), 
   updateOriginalBrandValidation, 
   controller.update
 );

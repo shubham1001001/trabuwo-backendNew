@@ -28,6 +28,20 @@ const OriginalBrandCategory = sequelize.define(
       allowNull: true,
       field: "img_url",
     },
+    mobileBannerImgUrl: {
+      type: DataTypes.STRING(500),
+      allowNull: true,
+      field: "mobile_banner_img_url",
+    },
+    mobileBannerRedirectCategoryId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      field: "mobile_banner_redirect_category_id",
+      references: {
+        model: "categories",
+        key: "id",
+      },
+    },
     displayOrder: {
       type: DataTypes.INTEGER,
       allowNull: false,

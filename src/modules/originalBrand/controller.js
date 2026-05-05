@@ -19,8 +19,9 @@ const create = async (req, res) => {
   try {
     const data = { ...req.body };
     if (data.redirectCategoryId === "") data.redirectCategoryId = null;
+    if (data.mobileBannerRedirectCategoryId === "") data.mobileBannerRedirectCategoryId = null;
 
-    const brand = await service.createOriginalBrand(data, req.file);
+    const brand = await service.createOriginalBrand(data, req.files);
     return res.status(201).json({
       success: true,
       message: "Original Brand Category created successfully",
@@ -39,8 +40,9 @@ const update = async (req, res) => {
     const { publicId } = req.params;
     const data = { ...req.body };
     if (data.redirectCategoryId === "") data.redirectCategoryId = null;
+    if (data.mobileBannerRedirectCategoryId === "") data.mobileBannerRedirectCategoryId = null;
 
-    await service.updateOriginalBrand(publicId, data, req.file);
+    await service.updateOriginalBrand(publicId, data, req.files);
     return res.status(200).json({
       success: true,
       message: "Original Brand Category updated successfully",

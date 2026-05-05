@@ -1613,3 +1613,46 @@ Error
     at async RefreshToken.findOne (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1240:12)
     at async exports.verifyRefreshToken (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\auth\service.js:56:23)
     at async exports.refreshToken (D:\InurumProject\TrabuwoComplete\trabuwo-backendNew\src\modules\auth\controller.js:88:23)
+
+--- 2026-05-05T16:29:08.664Z ---
+Error: Invalid email or password
+    at exports.authenticateWithPassword (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\auth\service.js:272:11)
+    at async exports.loginUserWithPassword (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\auth\controller.js:26:18)
+
+--- 2026-05-05T16:30:04.172Z ---
+Error: Validation error
+    at exports.handleValidationErrors (E:\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-05T16:30:04.552Z ---
+Error: Category not found
+    at exports.getAvailableFilters (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-05T16:30:31.066Z ---
+Error: Validation error
+    at exports.handleValidationErrors (E:\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-05T16:46:48.262Z ---
+Error: Validation error
+    at exports.handleValidationErrors (E:\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-05T16:46:48.667Z ---
+Error: Category not found
+    at exports.getAvailableFilters (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
