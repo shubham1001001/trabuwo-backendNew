@@ -227,6 +227,108 @@ router.get("/mobile-home", asyncHandler(controller.getMobileHomeCategoryTree));
 
 /**
  * @swagger
+ * /api/category/search:
+ *   get:
+ *     summary: Search categories with chain
+ *     tags: [Category]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: searchTerm
+ *         schema:
+ *           type: string
+ *         description: Search term for category names
+ *       - in: query
+ *         name: parentId
+ *         schema:
+ *           type: integer
+ *         description: Filter by parent category ID
+ *       - in: query
+ *         name: isVisible
+ *         schema:
+ *           type: boolean
+ *         description: Filter by visibility status
+ *       - in: query
+ *         name: isDeleted
+ *         schema:
+ *           type: boolean
+ *         description: Filter by deletion status
+ *     responses:
+ *       200:
+ *         description: Categories search completed successfully
+ *       401:
+ *         $ref: '#/components/responses/Unauthorized'
+ *       403:
+ *         $ref: '#/components/responses/Forbidden'
+ *       500:
+ *         $ref: '#/components/responses/InternalError'
+ */
+router.get(
+  "/search",
+  authenticate,
+  validation.searchCategoriesValidation,
+  asyncHandler(controller.searchCategoriesWithChain)
+);
+
+/**
+ * @swagger
+ * /api/category/search-filters:
+ *   get:
+ *     summary: Search categories and get filters for the most likely match
+ *     tags: [Category]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: searchTerm
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Search term for category names
+ *     responses:
+ *       200:
+ *         description: Category filters retrieved successfully
+ *       400:
+ *         $ref: '#/components/responses/BadRequest'
+ *       401:
+ *         $ref: '#/components/responses/Unauthorized'
+ *       403:
+ *         $ref: '#/components/responses/Forbidden'
+ *       404:
+ *         $ref: '#/components/responses/NotFound'
+ *       500:
+ *         $ref: '#/components/responses/InternalError'
+ */
+router.get(
+  "/search-filters",
+  authenticate,
+  validation.searchCategoryFiltersValidation,
+  asyncHandler(controller.searchCategoryFilters)
+);
+
+/**
+ * @swagger
+ * /api/category/last-used:
+ *   get:
+ *     summary: Get last used uploaded catalogue's category with chain for the user
+ *     tags: [Category]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Last used category with chain fetched successfully
+ *       404:
+ *         description: No last used category found for user
+ *       401:
+ *         $ref: '#/components/responses/Unauthorized'
+ *       500:
+ *         $ref: '#/components/responses/InternalError'
+ */
+router.get("/last-used", authenticate, asyncHandler(controller.lastUsedCategoryWithChain));
+
+/**
+ * @swagger
  * /api/category/{id}:
  *   get:
  *     summary: Get category by ID
@@ -323,131 +425,6 @@ router.post(
 );
 
 
-/**
- * @swagger
- * /api/category/search:
- *   get:
- *     summary: Search categories with chain
- *     tags: [Category]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: query
- *         name: searchTerm
- *         schema:
- *           type: string
- *         description: Search term for category names
- *       - in: query
- *         name: parentId
- *         schema:
- *           type: integer
- *         description: Filter by parent category ID
- *       - in: query
- *         name: isVisible
- *         schema:
- *           type: boolean
- *         description: Filter by visibility status
- *       - in: query
- *         name: isDeleted
- *         schema:
- *           type: boolean
- *         description: Filter by deletion status
- *     responses:
- *       200:
- *         description: Categories search completed successfully
- *       401:
- *         $ref: '#/components/responses/Unauthorized'
- *       403:
- *         $ref: '#/components/responses/Forbidden'
- *       500:
- *         $ref: '#/components/responses/InternalError'
- */
-router.get(
-  "/search",
-  validation.searchCategoriesValidation,
-  asyncHandler(controller.searchCategoriesWithChain)
-);
-
-/**
- * @swagger
- * /api/category/search-filters:
- *   get:
- *     summary: Search categories and get filters for the most likely match
- *     tags: [Category]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: query
- *         name: searchTerm
- *         required: true
- *         schema:
- *           type: string
- *         description: Search term for category names
- *     responses:
- *       200:
- *         description: Category filters retrieved successfully
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Success'
- *             example:
- *               success: true
- *               message: "Category filters retrieved successfully"
- *               data:
- *                 category:
- *                   id: 1
- *                   name: "Electronics"
- *                   chain: ["All", "Electronics"]
- *                   departmentId: 1
- *                 filters:
- *                   productFilters:
- *                     - fieldName: "brand"
- *                       fieldType: "select"
- *                       label: "Brand"
- *                       options: ["Apple", "Samsung", "Sony"]
- *                       section: "basicDetails"
- *                   variantFilters:
- *                     - fieldName: "size"
- *                       fieldType: "select"
- *                       label: "Size"
- *                       options: ["S", "M", "L", "XL"]
- *                       section: "addVariant"
- *       400:
- *         $ref: '#/components/responses/BadRequest'
- *       401:
- *         $ref: '#/components/responses/Unauthorized'
- *       403:
- *         $ref: '#/components/responses/Forbidden'
- *       404:
- *         $ref: '#/components/responses/NotFound'
- *       500:
- *         $ref: '#/components/responses/InternalError'
- */
-router.get(
-  "/search-filters",
-  validation.searchCategoryFiltersValidation,
-  asyncHandler(controller.searchCategoryFilters)
-);
-
-/**
- * @swagger
- * /api/category/last-used:
- *   get:
- *     summary: Get last used uploaded catalogue's category with chain for the user
- *     tags: [Category]
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: Last used category with chain fetched successfully
- *       404:
- *         description: No last used category found for user
- *       401:
- *         $ref: '#/components/responses/Unauthorized'
- *       500:
- *         $ref: '#/components/responses/InternalError'
- */
-router.get("/last-used", asyncHandler(controller.lastUsedCategoryWithChain));
 
 /**
  * @swagger

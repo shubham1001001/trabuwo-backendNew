@@ -27,7 +27,30 @@ const calculateSellingPrice = (listingPrice, resellerMargin = 0, shippingFee = 0
   return parseFloat(total.toFixed(2));
 };
 
+/**
+ * Calculates the buyer price (selling price) incorporating platform fees and commission.
+ * Formula: BuyerPrice = (SellerPrice + Shipping + PlatformFee) / (1 - CommissionRate)
+ * 
+ * @param {Number} sellerPrice The payout amount the seller wants.
+ * @param {Number} commissionRate The platform commission rate (decimal).
+ * @param {Number} platformFee The fixed platform fee.
+ * @param {Number} shippingFee The shipping fee.
+ * @returns {Number} The final buyer price rounded up.
+ */
+const calculateBuyerPrice = (sellerPrice, commissionRate = 0, platformFee = 0, shippingFee = 0) => {
+  if (sellerPrice == null || isNaN(sellerPrice)) return 0;
+  
+  const payout = Number(sellerPrice);
+  const commRate = Number(commissionRate);
+  const platFee = Number(platformFee);
+  const shipFee = Number(shippingFee);
+
+  const buyerPrice = (payout + shipFee + platFee) / (1 - commRate);
+  return Math.ceil(buyerPrice);
+};
+
 module.exports = {
   calculateSellerPayout,
-  calculateSellingPrice
+  calculateSellingPrice,
+  calculateBuyerPrice
 };

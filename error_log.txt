@@ -1656,3 +1656,304 @@ Error: Category not found
     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
     at async exports.getAvailableFiltersWithCategories (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
     at async exports.getAvailableFilters (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-05T16:56:35.674Z ---
+Error: Invalid email or password
+    at exports.authenticateWithPassword (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\auth\service.js:272:11)
+    at async exports.loginUserWithPassword (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\auth\controller.js:26:18)
+
+--- 2026-05-05T16:56:51.927Z ---
+Error
+    at Query.run (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\postgres\query.js:50:25)
+    at E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async PostgresQueryInterface.rawSelect (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\abstract\query-interface.js:434:18)
+    at async Order.aggregate (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1277:19)
+    at async Order.count (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1306:20)
+    at async Promise.all (index 1)
+    at async Object.getDashboardCards (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\businessDashboard\dao.js:484:7)
+    at async exports.getDashboardCards (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\businessDashboard\controller.js:55:16)
+
+--- 2026-05-05T16:59:02.006Z ---
+Error: Validation error
+    at exports.handleValidationErrors (E:\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-05T16:59:02.014Z ---
+Error: Validation error
+    at exports.handleValidationErrors (E:\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-05T16:59:02.808Z ---
+Error: Category not found
+    at exports.getAvailableFilters (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-05T16:59:50.257Z ---
+Error: Validation error
+    at exports.handleValidationErrors (E:\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-05T16:59:58.304Z ---
+Error: Validation error
+    at exports.handleValidationErrors (E:\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-05T17:03:34.291Z ---
+Error: Validation error
+    at exports.handleValidationErrors (E:\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-05T17:03:34.294Z ---
+Error: Validation error
+    at exports.handleValidationErrors (E:\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-05T17:03:48.581Z ---
+Error: Validation error
+    at exports.handleValidationErrors (E:\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-05T17:05:16.188Z ---
+Error: No token provided
+    at module.exports.authenticate (E:\TrabuwoComplete\trabuwo-backendNew\src\middleware\auth.js:8:17)
+    at Layer.handleRequest (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:117:3)
+    at handle (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at E:\TrabuwoComplete\trabuwo-backendNew\node_modules\router\index.js:295:15
+    at processParams (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\router\index.js:582:12)
+    at next (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\router\index.js:291:5)
+    at router.handle (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\router\index.js:186:3)
+    at router (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\router\index.js:60:12)
+    at Layer.handleRequest (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\router\index.js:342:13)
+    at E:\TrabuwoComplete\trabuwo-backendNew\node_modules\router\index.js:297:9
+    at processParams (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\router\index.js:582:12)
+    at next (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\router\index.js:291:5)
+
+--- 2026-05-05T17:06:17.112Z ---
+Error: Validation error
+    at exports.handleValidationErrors (E:\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-05T17:06:17.821Z ---
+Error: Category not found
+    at exports.getAvailableFilters (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-05T17:06:24.248Z ---
+Error: Validation error
+    at exports.handleValidationErrors (E:\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-05T17:06:46.846Z ---
+Error: Validation error
+    at exports.handleValidationErrors (E:\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-05T17:07:26.532Z ---
+Error: Validation error
+    at exports.handleValidationErrors (E:\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-05T17:09:13.823Z ---
+Error: Circular reference detected in category hierarchy at category ID 6616. Please fix the parent-child relationships in the database.
+    at getCategoryAncestorsWithRoot (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\category\helper.js:183:13)
+    at E:\TrabuwoComplete\trabuwo-backendNew\src\modules\category\service.js:464:20
+    at Array.map (<anonymous>)
+    at exports.searchCategoriesWithChain (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\category\service.js:463:28)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.searchCategoriesWithChain (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\category\controller.js:204:18)
+
+--- 2026-05-05T17:09:20.049Z ---
+Error: Circular reference detected in category hierarchy at category ID 6616. Please fix the parent-child relationships in the database.
+    at getCategoryAncestorsWithRoot (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\category\helper.js:183:13)
+    at E:\TrabuwoComplete\trabuwo-backendNew\src\modules\category\service.js:464:20
+    at Array.map (<anonymous>)
+    at exports.searchCategoriesWithChain (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\category\service.js:463:28)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.searchCategoriesWithChain (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\category\controller.js:204:18)
+
+--- 2026-05-05T17:09:20.684Z ---
+Error: Circular reference detected in category hierarchy at category ID 6616. Please fix the parent-child relationships in the database.
+    at getCategoryAncestorsWithRoot (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\category\helper.js:183:13)
+    at E:\TrabuwoComplete\trabuwo-backendNew\src\modules\category\service.js:464:20
+    at Array.map (<anonymous>)
+    at exports.searchCategoriesWithChain (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\category\service.js:463:28)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.searchCategoriesWithChain (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\category\controller.js:204:18)
+
+--- 2026-05-05T17:12:38.015Z ---
+Error
+    at Query.run (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\postgres\query.js:50:25)
+    at E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async PostgresQueryInterface.select (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\abstract\query-interface.js:407:12)
+    at async PlatformConfig.findAll (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1140:21)
+    at async PlatformConfig.findOne (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1240:12)
+    at async exports.getConfigByKey (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\platformConfig\dao.js:7:10)
+    at async getConfigValue (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\platformConfig\service.js:32:18)
+    at async exports.getBuiltInShippingFee (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\platformConfig\service.js:62:10)
+    at async Promise.all (index 1)
+    at async E:\TrabuwoComplete\trabuwo-backendNew\src\modules\platformConfig\controller.js:100:61
+
+--- 2026-05-05T17:14:39.156Z ---
+TypeError: pricingHelper.calculateBuyerPrice is not a function
+    at E:\TrabuwoComplete\trabuwo-backendNew\src\modules\product\service.js:81:38
+    at Array.map (<anonymous>)
+    at enrichVariantsPricing (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\product\service.js:79:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async E:\TrabuwoComplete\trabuwo-backendNew\src\modules\product\service.js:372:9
+    at async E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:507:18
+    at async exports.createBulkCataloguesWithProducts (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\product\service.js:279:10)
+    at async exports.createSingleCatalogueWithProducts (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\product\service.js:406:18)
+    at async exports.createSingleCatalogueWithProducts (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\product\controller.js:74:28)
+
+--- 2026-05-05T17:15:10.548Z ---
+TypeError: pricingHelper.calculateBuyerPrice is not a function
+    at E:\TrabuwoComplete\trabuwo-backendNew\src\modules\product\service.js:81:38
+    at Array.map (<anonymous>)
+    at enrichVariantsPricing (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\product\service.js:79:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async E:\TrabuwoComplete\trabuwo-backendNew\src\modules\product\service.js:372:9
+    at async E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:507:18
+    at async exports.createBulkCataloguesWithProducts (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\product\service.js:279:10)
+    at async exports.createSingleCatalogueWithProducts (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\product\service.js:406:18)
+    at async exports.createSingleCatalogueWithProducts (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\product\controller.js:74:28)
+
+--- 2026-05-05T17:15:23.343Z ---
+TypeError: pricingHelper.calculateBuyerPrice is not a function
+    at E:\TrabuwoComplete\trabuwo-backendNew\src\modules\product\service.js:81:38
+    at Array.map (<anonymous>)
+    at enrichVariantsPricing (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\product\service.js:79:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async E:\TrabuwoComplete\trabuwo-backendNew\src\modules\product\service.js:372:9
+    at async E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:507:18
+    at async exports.createBulkCataloguesWithProducts (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\product\service.js:279:10)
+    at async exports.createSingleCatalogueWithProducts (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\product\service.js:406:18)
+    at async exports.createSingleCatalogueWithProducts (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\product\controller.js:74:28)
+
+--- 2026-05-05T17:17:06.663Z ---
+TypeError: pricingHelper.calculateBuyerPrice is not a function
+    at E:\TrabuwoComplete\trabuwo-backendNew\src\modules\product\service.js:81:38
+    at Array.map (<anonymous>)
+    at enrichVariantsPricing (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\product\service.js:79:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async E:\TrabuwoComplete\trabuwo-backendNew\src\modules\product\service.js:372:9
+    at async E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:507:18
+    at async exports.createBulkCataloguesWithProducts (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\product\service.js:279:10)
+    at async exports.createSingleCatalogueWithProducts (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\product\service.js:406:18)
+    at async exports.createSingleCatalogueWithProducts (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\product\controller.js:74:28)
+
+--- 2026-05-05T17:23:58.897Z ---
+Error: Circular reference detected in category hierarchy at category ID 6616. Please fix the parent-child relationships in the database.
+    at getCategoryAncestorsWithRoot (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\category\helper.js:183:13)
+    at E:\TrabuwoComplete\trabuwo-backendNew\src\modules\category\service.js:464:20
+    at Array.map (<anonymous>)
+    at exports.searchCategoriesWithChain (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\category\service.js:463:28)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.searchCategoriesWithChain (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\category\controller.js:204:18)
+
+--- 2026-05-05T17:23:59.246Z ---
+Error: Circular reference detected in category hierarchy at category ID 6616. Please fix the parent-child relationships in the database.
+    at getCategoryAncestorsWithRoot (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\category\helper.js:183:13)
+    at E:\TrabuwoComplete\trabuwo-backendNew\src\modules\category\service.js:464:20
+    at Array.map (<anonymous>)
+    at exports.searchCategoriesWithChain (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\category\service.js:463:28)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.searchCategoriesWithChain (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\category\controller.js:204:18)
+
+--- 2026-05-05T17:27:27.199Z ---
+Error
+    at Query.run (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\postgres\query.js:50:25)
+    at E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async PostgresQueryInterface.select (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\abstract\query-interface.js:407:12)
+    at async Category.findAll (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1140:21)
+    at async Category.findOne (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1240:12)
+    at async exports.getCategoryByPublicId (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\category\dao.js:38:10)
+    at async E:\TrabuwoComplete\trabuwo-backendNew\src\modules\product\service.js:284:24
+    at async E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:507:18
+    at async exports.createBulkCataloguesWithProducts (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\product\service.js:279:10)
+    at async exports.createSingleCatalogueWithProducts (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\product\service.js:406:18)
+    at async exports.createSingleCatalogueWithProducts (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\product\controller.js:74:28)
+
+--- 2026-05-05T17:34:16.536Z ---
+Error
+    at Query.run (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\postgres\query.js:50:25)
+    at E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async PostgresQueryInterface.select (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\abstract\query-interface.js:407:12)
+    at async Category.findAll (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1140:21)
+    at async Category.findOne (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1240:12)
+    at async exports.getCategoryByPublicId (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\category\dao.js:38:10)
+    at async validateProductsWithCategory (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\product\service.js:897:20)
+    at async exports.validateProductsDynamicFields (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\product\service.js:912:5)
+    at async exports.createSingleCatalogueWithProducts (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\product\service.js:402:3)
+    at async exports.createSingleCatalogueWithProducts (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\product\controller.js:74:28)
+
+--- 2026-05-05T17:34:59.465Z ---
+Error
+    at Query.run (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\postgres\query.js:50:25)
+    at E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async PostgresQueryInterface.select (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\abstract\query-interface.js:407:12)
+    at async Category.findAll (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1140:21)
+    at async Category.findOne (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1240:12)
+    at async exports.getCategoryByPublicId (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\category\dao.js:38:10)
+    at async E:\TrabuwoComplete\trabuwo-backendNew\src\modules\product\service.js:284:24
+    at async E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:507:18
+    at async exports.createBulkCataloguesWithProducts (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\product\service.js:279:10)
+    at async exports.createSingleCatalogueWithProducts (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\product\service.js:406:18)
+    at async exports.createSingleCatalogueWithProducts (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\product\controller.js:74:28)
+
+--- 2026-05-05T17:35:23.509Z ---
+TypeError: pricingHelper.calculateBuyerPrice is not a function
+    at E:\TrabuwoComplete\trabuwo-backendNew\src\modules\product\service.js:81:38
+    at Array.map (<anonymous>)
+    at enrichVariantsPricing (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\product\service.js:79:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async E:\TrabuwoComplete\trabuwo-backendNew\src\modules\product\service.js:372:9
+    at async E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:507:18
+    at async exports.createBulkCataloguesWithProducts (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\product\service.js:279:10)
+    at async exports.createSingleCatalogueWithProducts (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\product\service.js:406:18)
+    at async exports.createSingleCatalogueWithProducts (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\product\controller.js:74:28)
