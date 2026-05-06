@@ -1957,3 +1957,64 @@ TypeError: pricingHelper.calculateBuyerPrice is not a function
     at async exports.createBulkCataloguesWithProducts (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\product\service.js:279:10)
     at async exports.createSingleCatalogueWithProducts (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\product\service.js:406:18)
     at async exports.createSingleCatalogueWithProducts (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\product\controller.js:74:28)
+
+--- 2026-05-05T18:20:41.122Z ---
+Error: Validation error
+    at exports.handleValidationErrors (E:\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-05T18:20:41.203Z ---
+Error
+    at Query.run (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\postgres\query.js:50:25)
+    at E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async PostgresQueryInterface.select (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\abstract\query-interface.js:407:12)
+    at async CategorySection.findAll (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1140:21)
+    at async exports.getSectionsWithAssetsByCategoryId (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySection\dao.js:69:10)
+    at async exports.getPublicSectionsByCategoryId (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySection\service.js:42:10)
+    at async E:\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySection\controller.js:43:20
+
+--- 2026-05-05T18:20:41.317Z ---
+Error
+    at Query.run (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\postgres\query.js:50:25)
+    at E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async PostgresQueryInterface.select (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\abstract\query-interface.js:407:12)
+    at async GoldSectionSettings.findAll (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1140:21)
+    at async GoldSectionSettings.findOne (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1240:12)
+    at async exports.getSettings (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\goldSection\dao.js:4:10)
+    at async exports.getSettings (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\goldSection\service.js:12:18)
+    at async E:\TrabuwoComplete\trabuwo-backendNew\src\modules\goldSection\controller.js:7:20
+
+--- 2026-05-05T18:20:41.993Z ---
+Error: Category not found
+    at exports.getAvailableFilters (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-05-05T18:25:41.755Z ---
+Error: Validation error
+    at exports.handleValidationErrors (E:\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-05T18:25:50.512Z ---
+Error: Validation error
+    at exports.handleValidationErrors (E:\TrabuwoComplete\trabuwo-backendNew\src\utils\validation.js:8:7)
+    at Layer.handleRequest (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\layer.js:152:17)
+    at next (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\router\lib\route.js:157:13)
+    at middleware (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+--- 2026-05-05T18:25:51.199Z ---
+Error: Category not found
+    at exports.getAvailableFilters (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:348:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.getAvailableFiltersWithCategories (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
+    at async exports.getAvailableFilters (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
