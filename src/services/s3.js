@@ -17,6 +17,7 @@ const s3Client = new S3Client({
     accessKeyId: config.get("digitalocean.accessKeyId"),
     secretAccessKey: config.get("digitalocean.secretAccessKey"),
   },
+  forcePathStyle: false, // Recommended for DigitalOcean Spaces
 });
 
 const generateFileName = (originalName, userId, folder) => {
@@ -43,6 +44,9 @@ const generatePresignedUrl = async (fileName, contentType, userId, folder) => {
     Key: key,
     ContentType: contentType,
     ACL: "public-read",
+    Metadata: {
+      "x-amz-acl": "public-read", // Fallback for some S3-compatible providers
+    },
   });
 
   try {
@@ -108,6 +112,7 @@ const uploadBuffer = async (buffer, key, contentType) => {
       ContentType: contentType,
       ACL: "public-read",
       Metadata: {
+        "x-amz-acl": "public-read",
         "uploaded-by": "system",
         "upload-type": "banner",
       },
@@ -135,6 +140,7 @@ const generatePresignedUrlBulk = async (images, userId) => {
         ContentType: image.contentType,
         ACL: "public-read",
         Metadata: {
+          "x-amz-acl": "public-read",
           "uploaded-by": userId.toString(),
           "original-name": image.fileName,
           "bulk-upload": "true",
@@ -187,7 +193,8 @@ const uploadProfileBuffer = async (buffer, key, contentType, metadata = {}) => {
       ContentType: contentType,
       ACL: "public-read",
       Metadata: {
-        ...metadata, //now defined
+        ...metadata,
+        "x-amz-acl": "public-read",
       },
     });
 

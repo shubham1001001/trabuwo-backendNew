@@ -580,17 +580,24 @@ async updateVariantStock(variantId, newStock, userId) {
         ],
       },
       {
-  model: ProductVariant,
-  as: "variants",
-  attributes: [
-    "id",
-    "publicId",
-    "trabuwoPrice",
-    "mrp",
-    "inventory",
-    "skuId"
-  ],
-},
+        model: ProductVariant,
+        as: "variants",
+        attributes: [
+          "id",
+          "publicId",
+          "trabuwoPrice",
+          "mrp",
+          "inventory",
+          "skuId"
+        ],
+      },
+      {
+        model: ProductImage,
+        as: "images",
+        attributes: ["imageUrl", "isPrimary", "sortOrder"],
+        where: { isDeleted: false },
+        required: false,
+      },
     ],
     order: [["createdAt", "DESC"]],
   });
