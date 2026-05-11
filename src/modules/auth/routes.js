@@ -243,6 +243,55 @@ router.post(
 
 /**
  * @swagger
+ * /api/auth/reactivate-account:
+ *   post:
+ *     summary: Reactivate a soft-deleted account within the 30-day grace period
+ *     description: |
+ *       Allows a user to reactivate their account if it was previously deleted.
+ *       The reactivation is only possible within a 30-day grace period from the time of deletion.
+ *       Verification is done via mobile OTP.
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - mobile
+ *               - otp
+ *             properties:
+ *               mobile:
+ *                 type: string
+ *                 pattern: '^91\d{10}$'
+ *                 description: Mobile number in Indian format with country code
+ *                 example: "919876543210"
+ *               otp:
+ *                 type: string
+ *                 description: One-Time Password received via SMS
+ *                 example: "123456"
+ *     responses:
+ *       200:
+ *         description: Account reactivated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Success'
+ *       401:
+ *         description: Unauthorized - Invalid OTP or grace period expired
+ *       404:
+ *         description: Not Found - User not found
+ *       500:
+ *         $ref: '#/components/responses/InternalError'
+ */
+router.post(
+  "/reactivate-account",
+  require("./validation").reactivateAccountValidation,
+  asyncHandler(authController.reactivateAccount)
+);
+
+/**
+ * @swagger
  * /api/auth/refresh:
  *   post:
  *     summary: Refresh access token using refresh token

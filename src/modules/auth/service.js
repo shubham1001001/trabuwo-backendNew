@@ -239,6 +239,43 @@ exports.authenticateWithOtp = async ({ mobile, otp }) => {
   });
 };
 
+exports.reactivateAccount = async ({ mobile, otp }) => {
+  await exports.verifyOtp({ mobile, otp });
+
+  // findUserWithRoles doesn't filter by status
+  const user = await dao.findUserWithRoles({ mobile });
+
+  if (!user) {
+    throw new NotFoundError("User not found");
+  }
+
+  if (user.status === "active") {
+    return exports.generateAuthResponse(user);
+  }
+
+  // Check 30-day grace period
+  const deletionDate = new Date(user.updatedAt);
+  const now = new Date();
+  const gracePeriodDays = 30;
+  const diffInTime = now.getTime() - deletionDate.getTime();
+  const diffInDays = diffInTime / (1000 * 3600 * 24);
+
+  if (diffInDays > gracePeriodDays) {
+    throw new AuthenticationError(
+      "Your account reactivation period has expired. Please contact support for assistance."
+    );
+  }
+
+  await user.update({ status: "active" });
+
+  const authResponse = await exports.generateAuthResponse(user);
+
+  return Result.success({
+    ...authResponse,
+    message: "Account reactivated and logged in successfully",
+  });
+};
+
 exports.authenticateWithPassword = async ({ email, password }) => {
   const isEmail = email.includes("@");
   const isMobile = !isEmail && /^(91)?\d{10}$/.test(email);

@@ -73,6 +73,35 @@ exports.loginWithOtp = async (req, res) => {
   });
 };
 
+exports.reactivateAccount = async (req, res) => {
+  const { mobile, otp } = req.body;
+
+  const result = await authService.reactivateAccount({ mobile, otp });
+  const authData = result.data;
+
+  const platform = req.header("X-Platform")?.toLowerCase();
+
+  if (platform === "web") {
+    res.cookie("refreshToken", authData.refreshToken, {
+      httpOnly: true,
+      secure: false, //change to true in production
+      sameSite: "lax", //change to strict in production
+      path: "/",
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+    });
+  }
+
+  return apiResponse.success(
+    res,
+    {
+      accessToken: authData.accessToken,
+      refreshToken: authData.refreshToken,
+      user: authData.user,
+    },
+    authData.message
+  );
+};
+
 exports.refreshToken = async (req, res) => {
   let { refreshToken } = req.body;
   const platform = req.header("X-Platform")?.toLowerCase();

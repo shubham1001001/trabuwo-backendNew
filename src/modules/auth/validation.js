@@ -29,6 +29,17 @@ exports.loginWithOtpValidation = [
   handleValidationErrors,
 ];
 
+exports.reactivateAccountValidation = [
+  body("mobile")
+    .notEmpty()
+    .withMessage("Mobile is required")
+    .customSanitizer((value) => value.replace(/\D/g, ""))
+    .matches(/^91\d{10}$/)
+    .withMessage("Mobile must be in the format 919234567890"),
+  body("otp").notEmpty().withMessage("OTP is required"),
+  handleValidationErrors,
+];
+
 exports.refreshTokenValidation = [
   body("refreshToken").notEmpty().withMessage("Refresh token is required"),
   handleValidationErrors,
