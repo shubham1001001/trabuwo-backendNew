@@ -105,8 +105,9 @@ router.get("/", controller.getMyReturns);
  *       500:
  *         $ref: '#/components/responses/InternalError'
  */
-router.get(
-  "/:id",
+router.get("/reasons", controller.getReturnReasons);
+
+router.get("/:id",
   validation.getReturnByIdValidation,
   controller.getReturnById
 );

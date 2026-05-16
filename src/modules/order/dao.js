@@ -409,6 +409,9 @@ exports.getOrdersBySellerIdWithProductSearch = async (
 exports.updateOrderStatus = (id, status) =>
   Order.update({ status }, { where: { id } });
 
+exports.updateOrder = (id, data, options = {}) => 
+  Order.update(data, { where: { id }, ...options });
+
 exports.getOrderByIdForSeller = (id, sellerId) =>
   Order.findOne({
     where: { publicId: id },

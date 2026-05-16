@@ -178,36 +178,30 @@ exports.processRefund = async (returnId, sellerId) => {
   }
 
   const refundAmount = Number(orderItem.price) * Number(orderItem.quantity);
-  const refundAmountInPaise = Math.round(refundAmount * 100);
-
-  const razorpayRefund = await paymentService.processRefund(
-    payment.gatewayPaymentId,
-    refundAmountInPaise,
-    returnRecord.reason
-  );
 
   await sequelize.transaction(async (t) => {
     // 1. Update Return Status
     await dao.updateReturn(
       returnRecord.id,
       {
-        razorpayRefundId: razorpayRefund.id,
         refundedAt: new Date(),
         status: "refunded",
         metadata: {
           ...returnRecord.metadata,
-          razorpayRefund: razorpayRefund,
+          refundMethod: "trabuwo_balance"
         },
       },
       { transaction: t }
     );
 
-    // 2. Update Payment Status
-    await paymentDao.updatePaymentStatusById(payment.id, "refunded", {
-      refundedAt: new Date(),
-    }, { transaction: t });
+    // 2. Update Payment Status (If exists)
+    if (payment) {
+      await paymentDao.updatePaymentStatusById(payment.id, "refunded", {
+        refundedAt: new Date(),
+      }, { transaction: t });
+    }
 
-    // 3. Adjust Wallets (Debit Seller/Reseller)
+    // 3. Adjust Wallets (Debit Seller/Reseller earnings)
     const walletService = require("../wallet/service");
     await walletService.handleReturn(order.id, t);
 

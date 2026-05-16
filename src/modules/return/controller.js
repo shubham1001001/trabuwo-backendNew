@@ -1,6 +1,8 @@
 const service = require("./service");
 const asyncHandler = require("../../utils/asyncHandler");
 const apiResponse = require("../../utils/apiResponse");
+const { OrderCancelReason } = require("../order/cancelReasonModel");
+
 
 exports.initiateReturn = asyncHandler(async (req, res) => {
   const { orderItemPublicId, reason, subreason } = req.body;
@@ -48,5 +50,22 @@ exports.processRefund = asyncHandler(async (req, res) => {
     returnRecord,
     "Refund processed successfully"
   );
+});
+
+exports.getReturnReasons = asyncHandler(async (req, res) => {
+  const reasons = await OrderCancelReason.findAll({
+    where: { userType: "buyer", isActive: true, type: "return" },
+    attributes: ["reason", "description", "subreasons"],
+    order: [["id", "ASC"]]
+  });
+
+  const formattedReasons = reasons.map(r => {
+    const reasonObj = r.get({ plain: true });
+    if (!reasonObj.description) delete reasonObj.description;
+    if (!reasonObj.subreasons || reasonObj.subreasons.length === 0) delete reasonObj.subreasons;
+    return reasonObj;
+  });
+
+  return apiResponse.success(res, formattedReasons);
 });
 

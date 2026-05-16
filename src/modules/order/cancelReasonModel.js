@@ -18,6 +18,10 @@ const OrderCancelReason = sequelize.define(
       allowNull: true,
       defaultValue: [],
     },
+    type: {
+      type: DataTypes.STRING(50),
+      defaultValue: "cancel", // 'cancel' or 'return'
+    },
     userType: {
       type: DataTypes.ENUM("buyer", "seller"),
       allowNull: false,

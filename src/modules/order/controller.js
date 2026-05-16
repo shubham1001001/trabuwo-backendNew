@@ -3,62 +3,22 @@ const { OrderCancelReason } = require("./cancelReasonModel");
 const apiResponse = require("../../utils/apiResponse");
 const asyncHandler = require("../../utils/asyncHandler");
 
-// exports.getSellerOrders = async (req, res) => {
-//   const filters = {
-//     status: req.query.status,
-//     productName: req.query.productName,
-//     skuId: req.query.skuId,
-//     startDispatchDate: req.query.startDispatchDate,
-//     endDispatchDate: req.query.endDispatchDate,
-//     startSlaDate: req.query.startSlaDate,
-//     endSlaDate: req.query.endSlaDate,
-//     slaStatus: req.query.slaStatus,
-//     page: req.query.page ? parseInt(req.query.page) : 1,
-//     limit: req.query.limit ? parseInt(req.query.limit) : 10,
-//   };
-
-//   const result = await service.getOrdersBySellerIdWithFilters(
-//     req.user.id,
-//     filters
-//   );
-
-//   return apiResponse.success(res, {
-//     orders: result.rows,
-//     pagination: {
-//       total: result.count,
-//       page: filters.page,
-//       limit: filters.limit,
-//       totalPages: Math.ceil(result.count / filters.limit),
-//     },
-//   });
-// };
-
-
-
-
 exports.getSellerOrders = async (req, res) => {
-const filters = {
-  status: req.query.status,
-  productName: req.query.productName,
-  skuId: req.query.skuId,
-  startDispatchDate: req.query.startDispatchDate,
-  endDispatchDate: req.query.endDispatchDate,
-  startSlaDate: req.query.startSlaDate,
-  endSlaDate: req.query.endSlaDate,
-  slaStatus: req.query.slaStatus,
-  startOrderDate: req.query.startOrderDate
-    ? new Date(req.query.startOrderDate)
-    : undefined,
-  endOrderDate: req.query.endOrderDate
-    ? new Date(req.query.endOrderDate)
-    : undefined,
-  page: Number.isInteger(Number(req.query.page)) ? Number(req.query.page) : 1,
-  limit: Number.isInteger(Number(req.query.limit)) ? Number(req.query.limit) : 10,
-};
-  const result = await service.getOrdersBySellerIdWithFilters(
-    req.user.id,
-    filters
-  );
+  const filters = {
+    status: req.query.status,
+    productName: req.query.productName,
+    skuId: req.query.skuId,
+    startDispatchDate: req.query.startDispatchDate,
+    endDispatchDate: req.query.endDispatchDate,
+    startSlaDate: req.query.startSlaDate,
+    endSlaDate: req.query.endSlaDate,
+    slaStatus: req.query.slaStatus,
+    startOrderDate: req.query.startOrderDate ? new Date(req.query.startOrderDate) : undefined,
+    endOrderDate: req.query.endOrderDate ? new Date(req.query.endOrderDate) : undefined,
+    page: Number.isInteger(Number(req.query.page)) ? Number(req.query.page) : 1,
+    limit: Number.isInteger(Number(req.query.limit)) ? Number(req.query.limit) : 10,
+  };
+  const result = await service.getOrdersBySellerIdWithFilters(req.user.id, filters);
 
   return apiResponse.success(res, {
     orders: result.rows,
@@ -70,6 +30,7 @@ const filters = {
     },
   });
 };
+
 exports.getSellerOrderById = async (req, res) => {
   const order = await service.getOrderByIdForSeller(req.params.id, req.user.id);
   return apiResponse.success(res, order);
@@ -88,11 +49,7 @@ exports.acceptOrder = async (req, res) => {
       pickupLocation: "HomeNew",
     },
   };
-  return apiResponse.success(
-    res,
-    responseData,
-    "Order accepted and shipment created successfully"
-  );
+  return apiResponse.success(res, responseData, "Order accepted and shipment created successfully");
 };
 
 exports.cancelOrder = async (req, res) => {
@@ -101,10 +58,7 @@ exports.cancelOrder = async (req, res) => {
 };
 
 exports.downloadShippingLabel = async (req, res) => {
-  const shippingLabel = await service.downloadShippingLabel(
-    req.params.id,
-    req.user.id
-  );
+  const shippingLabel = await service.downloadShippingLabel(req.params.id, req.user.id);
   return apiResponse.success(res, shippingLabel, "Shipping label generated");
 };
 
@@ -115,11 +69,7 @@ exports.getSellerDashboard = async (req, res) => {
 
 exports.getOrdersStatsLast30Days = async (req, res) => {
   const stats = await service.getOrdersStatsLast30Days(req.user.id);
-  return apiResponse.success(
-    res,
-    stats,
-    "Order statistics retrieved successfully"
-  );
+  return apiResponse.success(res, stats, "Order statistics retrieved successfully");
 };
 
 exports.checkout = asyncHandler(async (req, res) => {
@@ -151,7 +101,6 @@ exports.getBuyerOrders = asyncHandler(async (req, res) => {
   };
 
   const result = await service.getOrdersByBuyerId(req.user.id, filters);
-
   return apiResponse.success(res, result);
 });
 
@@ -167,10 +116,33 @@ exports.cancelBuyerOrder = asyncHandler(async (req, res) => {
 });
 
 exports.getCancelReasons = asyncHandler(async (req, res) => {
+  const { type = "cancel" } = req.query;
   const reasons = await OrderCancelReason.findAll({
-    where: { userType: "buyer", isActive: true },
+    where: { userType: "buyer", isActive: true, type },
     attributes: ["reason", "description", "subreasons"],
     order: [["id", "ASC"]]
   });
-  return apiResponse.success(res, reasons);
+
+  const formattedReasons = reasons.map(r => {
+    const reasonObj = r.get({ plain: true });
+    if (!reasonObj.description) delete reasonObj.description;
+    if (!reasonObj.subreasons || reasonObj.subreasons.length === 0) delete reasonObj.subreasons;
+    return reasonObj;
+  });
+
+  return apiResponse.success(res, formattedReasons);
+});
+
+exports.updateOrderAddress = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const { shippingAddressId } = req.body;
+  const order = await service.updateOrderAddress(id, req.user.id, shippingAddressId);
+  return apiResponse.success(res, order, "Order address updated successfully");
+});
+
+exports.updateOrderItemVariant = asyncHandler(async (req, res) => {
+  const { itemId } = req.params;
+  const { newVariantId } = req.body;
+  const order = await service.updateOrderItemVariant(itemId, req.user.id, newVariantId);
+  return apiResponse.success(res, order, "Order item variant updated successfully");
 });

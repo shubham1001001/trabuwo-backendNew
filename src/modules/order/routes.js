@@ -1714,4 +1714,16 @@ router.put(
   asyncHandler(controller.cancelBuyerOrder)
 );
 
+router.patch(
+  "/buyer/orders/:id/address",
+  authenticate,
+  asyncHandler(controller.updateOrderAddress)
+);
+
+router.patch(
+  "/buyer/order-items/:itemId/variant",
+  authenticate,
+  asyncHandler(controller.updateOrderItemVariant)
+);
+
 module.exports = router;

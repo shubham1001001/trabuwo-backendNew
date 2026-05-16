@@ -500,7 +500,8 @@ exports.checkoutCart = async (userId, userAddressPublicId, paymentMethod = "ONLI
     }
 
     const commissionAmount = Number((listingPrice * commissionRate).toFixed(2));
-    const sellerPayout = Number((listingPrice - commissionAmount).toFixed(2));
+    // Seller payout should deduct the inclusive logistics and platform fee
+    const sellerPayout = Number((listingPrice - commissionAmount - (actualLogisticsCost || 0) - (platformFee || 15)).toFixed(2));
 
     const buyerProductPrice = resellerPrice || listingPrice;
 
@@ -522,13 +523,16 @@ exports.checkoutCart = async (userId, userAddressPublicId, paymentMethod = "ONLI
     0
   );
 
+  // Logistics and Platform fees are already inclusive in the listing price
+  // The buyer should not pay them extra.
   const logisticsCost = itemsSnapshot.reduce((sum, i) => sum + i.logisticsCost, 0);
-  const shippingMargin = 20; // Fixed per order as per Document 6
+  const shippingMargin = 20; 
   const currentShippingFee = logisticsCost + shippingMargin;
   const currentPlatformFee = Number(platformFee || 15);
   const currentCodFee = isCod ? Number(codFee || 20) : 0;
 
-  const totalAmount = Number((productSubtotal + currentShippingFee + currentPlatformFee + currentCodFee).toFixed(2));
+  // Inclusive total: Buyer only pays the product price + COD fee (if applicable)
+  const totalAmount = Number((productSubtotal + currentCodFee).toFixed(2));
   const pgCost = isCod ? Number(codPgCost || 0) : Number((totalAmount * (pgPercentage / 100)).toFixed(2));
 
   const result = await sequelize.transaction(async (t) => {
@@ -676,13 +680,15 @@ exports.buyNow = async (userId, payload) => {
   }
 
   const commissionAmount = Number((listingPrice * commissionRate).toFixed(2));
-  const sellerPayout = Number((listingPrice - commissionAmount).toFixed(2));
+  // Seller payout should deduct the inclusive logistics and platform fee
+  const sellerPayout = Number((listingPrice - commissionAmount - logisticsCost - currentPlatformFee).toFixed(2));
 
   // Buyer Product Price is either RP (Reseller Price) or LP (Listing Price)
   const buyerProductPrice = resellerPrice || listingPrice;
   const productSubtotal = buyerProductPrice * quantity;
   
-  const totalAmount = Number((productSubtotal + currentShippingFee + currentPlatformFee + currentCodFee).toFixed(2));
+  // Inclusive total: Buyer only pays the product price + COD fee (if applicable)
+  const totalAmount = Number((productSubtotal + currentCodFee).toFixed(2));
 
   const pgCost = isCod ? Number(codPgCost || 0) : Number((totalAmount * (pgPercentage / 100)).toFixed(2));
 
@@ -856,4 +862,75 @@ exports.finalizeOrderAfterPayment = async (orderId, options = {}) => {
       console.error("[finalizeOrderAfterPayment] Failed to credit wallet earnings:", err.message);
     }
   }
+};
+
+exports.updateOrderAddress = async (orderPublicId, userId, shippingAddressId) => {
+  const order = await dao.getOrderById(orderPublicId);
+  if (!order) {
+    const { NotFoundError } = require("../../utils/errors");
+    throw new NotFoundError("Order not found");
+  }
+  
+  if (order.buyerId !== userId) {
+    const { ValidationError } = require("../../utils/errors");
+    throw new ValidationError("You can only update your own orders");
+  }
+
+  if (order.status !== "pending") {
+    const { ValidationError } = require("../../utils/errors");
+    throw new ValidationError("Address can only be changed for pending orders");
+  }
+
+  // Verify address belongs to user
+  const { UserAddress } = require("../userAddress/model");
+  const address = await UserAddress.findOne({ where: { id: shippingAddressId, userId } });
+  if (!address) {
+    const { ValidationError } = require("../../utils/errors");
+    throw new ValidationError("Invalid address selected");
+  }
+
+  await dao.updateOrder(order.id, { shippingAddressId });
+  
+  return await dao.getOrderByIdForBuyer(orderPublicId, userId);
+};
+
+exports.updateOrderItemVariant = async (orderItemPublicId, userId, newVariantId) => {
+  const orderItem = await dao.getOrderItemByPublicId(orderItemPublicId, "pending");
+  if (!orderItem) {
+    const { NotFoundError } = require("../../utils/errors");
+    throw new NotFoundError("Order item not found or order not in pending status");
+  }
+
+  const order = orderItem.order;
+  if (order.buyerId !== userId) {
+    const { ValidationError } = require("../../utils/errors");
+    throw new ValidationError("Unauthorized");
+  }
+
+  // Check if new variant exists and belongs to same product
+  const { ProductVariant } = require("../product/model");
+  const newVariant = await ProductVariant.findByPk(newVariantId);
+  if (!newVariant) {
+    const { ValidationError } = require("../../utils/errors");
+    throw new ValidationError("New variant not found");
+  }
+
+  const currentVariant = await ProductVariant.findByPk(orderItem.productVariantId);
+  if (newVariant.productId !== currentVariant.productId) {
+    const { ValidationError } = require("../../utils/errors");
+    throw new ValidationError("You can only change to a variant of the same product");
+  }
+
+  // Check inventory
+  if (newVariant.inventory < orderItem.quantity) {
+    const { ValidationError } = require("../../utils/errors");
+    throw new ValidationError("Requested variant is out of stock");
+  }
+
+  // Note: Price might be different. In a real app, we might need to handle price difference.
+  // For now, let's assume price must be same or we just update it.
+  
+  await orderItem.update({ productVariantId: newVariantId });
+  
+  return await dao.getOrderByIdForBuyer(order.publicId, userId);
 };
