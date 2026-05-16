@@ -221,6 +221,11 @@ const { authenticate } = require("../../middleware/auth");
 // Apply authentication to all routes
 router.use(authenticate);
 
+router.get(
+  "/buyer/cancel-reasons",
+  asyncHandler(controller.getCancelReasons)
+);
+
 // /**
 //  * @swagger
 //  * /api/order/seller/orders:
@@ -1664,6 +1669,49 @@ router.post(
   authenticate,
   validation.checkoutValidation,
   asyncHandler(controller.checkout)
+);
+
+/**
+ * @swagger
+ * /api/order/buyer/orders/{id}/cancel:
+ *   put:
+ *     summary: Cancel order by buyer
+ *     description: Cancel an order and change its status to cancelled.
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: Order public ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - reason
+ *             properties:
+ *               reason:
+ *                 type: string
+ *                 description: Reason for cancellation
+ *               comments:
+ *                 type: string
+ *                 description: Additional comments
+ *     responses:
+ *       200:
+ *         description: Order cancelled successfully
+ */
+router.put(
+  "/buyer/orders/:id/cancel",
+  authenticate,
+  validation.cancelOrderByBuyerValidation,
+  asyncHandler(controller.cancelBuyerOrder)
 );
 
 module.exports = router;

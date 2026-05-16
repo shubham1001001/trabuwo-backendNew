@@ -67,4 +67,5 @@ router.use("/platform-config", require("../modules/platformConfig/routes"));
 router.use("/wallet", require("../modules/wallet/routes"));
 router.use("/trabuwo-balance", require("../modules/trabuwoBalance/routes"));
 
+
 module.exports = router;

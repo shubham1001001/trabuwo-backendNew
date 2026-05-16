@@ -11,7 +11,7 @@ const sequelize = require("../../config/database");
 const configService = require("../platformConfig/service");
 const trabuwoBalanceService = require("../trabuwoBalance/service");
 
-exports.initiateReturn = async (orderItemPublicId, buyerId, reason, returnType = "customer_choice") => {
+exports.initiateReturn = async (orderItemPublicId, buyerId, reason, subreason, returnType = "customer_choice") => {
   const orderItem = await OrderItem.findOne({
     where: { publicId: orderItemPublicId },
     include: [
@@ -118,6 +118,7 @@ exports.initiateReturn = async (orderItemPublicId, buyerId, reason, returnType =
     orderItemId: orderItem.id,
     status: "initiated",
     reason,
+    subreason,
     returnType,
     returnShippingCost,
     costBearer,

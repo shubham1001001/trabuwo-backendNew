@@ -188,6 +188,9 @@ exports.getBuyerOrderByIdValidation = [
 
 exports.cancelOrderByBuyerValidation = [
   param("id").isUUID().withMessage("Order ID must be a valid UUID"),
+  body("reason").notEmpty().withMessage("Reason is required"),
+  body("subreason").optional().isString(),
+  body("comments").optional().isString(),
   handleValidationErrors,
 ];
 

@@ -121,6 +121,18 @@ const Order = sequelize.define(
       allowNull: false,
       defaultValue: 0,
     },
+    cancelReason: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    cancelSubreason: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    cancelComments: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
   },
   {
     timestamps: true,

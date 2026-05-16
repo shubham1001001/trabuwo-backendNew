@@ -83,7 +83,7 @@ const generalLimiter = rateLimit({
 // Stricter limiter for Auth/OTP: max 20 requests per 15 minutes
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 20,
+  max: 100,
   message: {
     success: false,
     message: "Too many authentication attempts, please try again after 15 minutes",
@@ -158,6 +158,7 @@ app.get(
   }),
 );
 
+app.get("/api/direct-test", (req, res) => res.json({ message: "API IS WORKING" }));
 app.use("/api/auth", authLimiter);
 app.use("/api", generalLimiter);
 app.use("/api", require("./routes"));

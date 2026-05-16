@@ -298,7 +298,90 @@ exports.cancelOrder = async (orderId, sellerId) => {
       { where: { id: order.id }, transaction: t }
     );
 
-    // Credit buyer's Trabuwo balance for prepaid orders
+    // Credit buyer's wallet for prepaid orders
+    if (order.paymentMethod === "prepaid" && order.buyerId) {
+      try {
+        const payment = await paymentDao.findPaymentByOrderPublicId(order.publicId);
+        if (payment && payment.status === "captured") {
+          await walletService.refundToBuyerWallet(
+            order.buyerId,
+            Number(order.totalAmount),
+            order.id,
+            t
+          );
+        }
+      } catch (err) {
+        // Non-fatal: log but don't block the cancellation
+        console.error("[cancelOrder] Failed to credit wallet balance:", err.message);
+      }
+    }
+
+    const updatedOrder = await dao.getOrderByIdForSeller(orderId, sellerId);
+    return updatedOrder;
+  });
+
+  return result;
+};
+
+exports.buyerCancelOrder = async (orderPublicId, buyerId, cancelDetails) => {
+  const { reason, subreason, comments } = cancelDetails;
+  
+  // First get the order using buyer method to verify ownership
+  const buyerOrder = await dao.getOrderByIdForBuyer(orderPublicId, buyerId);
+  if (!buyerOrder) {
+    throw new NotFoundError("Order not found");
+  }
+
+  if (buyerOrder.status === "shipped" || buyerOrder.status === "delivered" || buyerOrder.status === "cancelled") {
+    throw new ValidationError(
+      "Order cannot be cancelled at this stage"
+    );
+  }
+
+  // Fetch full order for inventory restoration and wallet adjustments
+  const order = await dao.getOrderById(buyerOrder.id);
+  const shipment = await shiprocketDao.findShipmentByOrderId(order.id);
+
+  const result = await sequelize.transaction(async (t) => {
+    // 1. Restore inventory
+    for (const item of order.items) {
+      if (item.productVariantId) {
+        await productService.incrementInventory(
+          item.productVariantId,
+          item.quantity,
+          { transaction: t }
+        );
+      }
+    }
+
+    // 2. Cancel shipment if exists
+    if (shipment && shipment.shiprocketOrderId) {
+      try {
+        await shiprocketService.cancelOrdersByIds([shipment.shiprocketOrderId]);
+        await Shipment.update(
+          { status: "cancelled" },
+          { where: { id: shipment.id }, transaction: t }
+        );
+      } catch (error) {
+        console.error("Failed to cancel order in Shiprocket:", error);
+      }
+    }
+
+    // 3. Update order status and store cancellation details
+    await OrderModel.update(
+      { 
+        status: "cancelled",
+        cancelReason: reason,
+        cancelSubreason: subreason,
+        cancelComments: comments
+      },
+      { where: { id: order.id }, transaction: t }
+    );
+
+    // 4. Reverse seller/reseller pending earnings
+    await walletService.handleReturn(order.id, t);
+
+    // 5. Credit buyer's Trabuwo balance for prepaid orders
     if (order.paymentMethod === "prepaid" && order.buyerId) {
       try {
         const payment = await paymentDao.findPaymentByOrderPublicId(order.publicId);
@@ -312,12 +395,11 @@ exports.cancelOrder = async (orderId, sellerId) => {
           );
         }
       } catch (err) {
-        // Non-fatal: log but don't block the cancellation
-        console.error("[cancelOrder] Failed to credit Trabuwo balance:", err.message);
+        console.error("[buyerCancelOrder] Failed to credit buyer balance:", err.message);
       }
     }
 
-    const updatedOrder = await dao.getOrderByIdForSeller(orderId, sellerId);
+    const updatedOrder = await dao.getOrderByIdForBuyer(orderPublicId, buyerId);
     return updatedOrder;
   });
 

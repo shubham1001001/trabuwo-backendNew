@@ -174,6 +174,41 @@ exports.handleReturn = async (orderId, transaction) => {
 };
 
 /**
+ * Refunds prepaid order amount to buyer's wallet.
+ */
+exports.refundToBuyerWallet = async (buyerId, amount, orderId, transaction) => {
+  return await sequelize.transaction({ transaction }, async (t) => {
+    const wallet = await exports.getOrCreateWallet(buyerId, t);
+    
+    // Credit available balance
+    await dao.updateWalletBalances(wallet.id, {
+      availableBalance: sequelize.literal(`available_balance + ${amount}`)
+    }, { transaction: t });
+
+    // Create wallet transaction
+    await dao.createTransaction({
+      walletId: wallet.id,
+      orderId: orderId,
+      amount: amount,
+      type: "credit",
+      status: "available",
+      reason: "refund",
+      description: "Refund for cancelled prepaid order"
+    }, { transaction: t });
+
+    // Record in Platform Ledger
+    await recordLedger(
+      orderId,
+      "refund_issued",
+      amount,
+      `Refund issued to buyer ${buyerId} for cancelled order`,
+      { buyerId },
+      t
+    );
+  });
+};
+
+/**
  * Creates a payout request for a user.
  */
 exports.requestWithdrawal = async (userId, amount) => {

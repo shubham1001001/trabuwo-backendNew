@@ -1,4 +1,5 @@
 const service = require("./service");
+const { OrderCancelReason } = require("./cancelReasonModel");
 const apiResponse = require("../../utils/apiResponse");
 const asyncHandler = require("../../utils/asyncHandler");
 
@@ -157,4 +158,19 @@ exports.getBuyerOrders = asyncHandler(async (req, res) => {
 exports.getBuyerOrderById = asyncHandler(async (req, res) => {
   const order = await service.getOrderByIdForBuyer(req.params.id, req.user.id);
   return apiResponse.success(res, order);
+});
+
+exports.cancelBuyerOrder = asyncHandler(async (req, res) => {
+  const { reason, subreason, comments } = req.body;
+  const order = await service.buyerCancelOrder(req.params.id, req.user.id, { reason, subreason, comments });
+  return apiResponse.success(res, order, "Order cancelled successfully");
+});
+
+exports.getCancelReasons = asyncHandler(async (req, res) => {
+  const reasons = await OrderCancelReason.findAll({
+    where: { userType: "buyer", isActive: true },
+    attributes: ["reason", "description", "subreasons"],
+    order: [["id", "ASC"]]
+  });
+  return apiResponse.success(res, reasons);
 });

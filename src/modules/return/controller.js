@@ -3,13 +3,14 @@ const asyncHandler = require("../../utils/asyncHandler");
 const apiResponse = require("../../utils/apiResponse");
 
 exports.initiateReturn = asyncHandler(async (req, res) => {
-  const { orderItemPublicId, reason } = req.body;
+  const { orderItemPublicId, reason, subreason } = req.body;
   const buyerId = req.user.id;
 
   const returnRecord = await service.initiateReturn(
     orderItemPublicId,
     buyerId,
-    reason
+    reason,
+    subreason
   );
 
   return apiResponse.success(

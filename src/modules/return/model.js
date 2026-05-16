@@ -38,6 +38,14 @@ const Return = sequelize.define(
       type: DataTypes.TEXT,
       allowNull: false,
     },
+    subreason: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    comments: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
     shiprocketReturnOrderId: {
       type: DataTypes.STRING,
       allowNull: true,

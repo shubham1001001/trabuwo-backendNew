@@ -8,8 +8,12 @@ exports.initiateReturnValidation = [
   body("reason")
     .isString()
     .trim()
-    .isLength({ min: 10 })
-    .withMessage("Reason must be at least 10 characters long"),
+    .isLength({ min: 1 })
+    .withMessage("Reason is required"),
+  body("subreason")
+    .optional()
+    .isString()
+    .trim(),
   handleValidationErrors,
 ];
 
