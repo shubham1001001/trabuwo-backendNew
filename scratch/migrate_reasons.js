@@ -41,8 +41,7 @@ async function update() {
       { reason: "Quality issue", description: "Product quality is not up to the mark", subreasons: ["Poor product quality or performance", "Fabric/Material issue", "Product is not as described", "Other"] },
       { reason: "Size/Fit issue", description: "Product doesn't fit properly", subreasons: ["Too tight", "Too loose", "Length issue", "Size is different from size chart", "Other"] },
       { reason: "Received wrong product", description: "Received a different product from what was ordered", subreasons: ["Wrong color", "Wrong size", "Completely different product", "Missing parts/accessories", "Other"] },
-      { reason: "Product missing in package", description: "One or more items are missing", subreasons: ["Main product is missing", "Accessories are missing", "Freebie is missing", "Other"] },
-      { reason: "Other", description: "Any other reason", subreasons: [] }
+      { reason: "Product missing in package", description: "One or more items are missing", subreasons: ["Main product is missing", "Accessories are missing", "Freebie is missing", "Other"] }
     ];
 
     for (const r of returnReasons) {

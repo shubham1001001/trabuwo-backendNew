@@ -181,6 +181,30 @@ exports.getBuyerOrdersValidation = [
   handleValidationErrors,
 ];
 
+exports.searchBuyerOrdersValidation = [
+  query("query")
+    .optional()
+    .isString()
+    .trim(),
+  query("status")
+    .optional()
+    .isString()
+    .trim(),
+  query("page")
+    .optional()
+    .isInt({ min: 1 })
+    .withMessage("Page must be a positive integer"),
+  query("limit")
+    .optional()
+    .isInt({ min: 1, max: 100 })
+    .withMessage("Limit must be between 1 and 100"),
+  handleValidationErrors,
+];
+
+exports.getBuyerOrderFilterStatusesValidation = [
+  handleValidationErrors,
+];
+
 exports.getBuyerOrderByIdValidation = [
   param("id").isUUID().withMessage("Order ID must be a valid UUID"),
   handleValidationErrors,

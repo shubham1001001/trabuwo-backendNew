@@ -104,6 +104,36 @@ exports.getBuyerOrders = asyncHandler(async (req, res) => {
   return apiResponse.success(res, result);
 });
 
+exports.searchBuyerOrders = asyncHandler(async (req, res) => {
+  const filters = {
+    query: req.query.query || "",
+    status: req.query.status || "",
+    page: req.query.page ? parseInt(req.query.page) : 1,
+    limit: req.query.limit ? parseInt(req.query.limit) : 10,
+  };
+
+  const result = await service.searchOrdersByBuyerId(req.user.id, filters);
+
+  if (result.orders.length === 0) {
+    return apiResponse.success(res, {
+      orders: [],
+      pagination: {
+        total: 0,
+        page: filters.page,
+        limit: filters.limit,
+        totalPages: 0,
+      }
+    }, "No result matches");
+  }
+
+  return apiResponse.success(res, result);
+});
+
+exports.getBuyerOrderFilterStatuses = asyncHandler(async (req, res) => {
+  const counts = await service.getBuyerOrderStatusCounts(req.user.id);
+  return apiResponse.success(res, counts);
+});
+
 exports.getBuyerOrderById = asyncHandler(async (req, res) => {
   const order = await service.getOrderByIdForBuyer(req.params.id, req.user.id);
   return apiResponse.success(res, order);

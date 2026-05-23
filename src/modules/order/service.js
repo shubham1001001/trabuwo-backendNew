@@ -798,6 +798,25 @@ exports.getOrdersByBuyerId = async (buyerId, filters = {}) => {
   };
 };
 
+exports.searchOrdersByBuyerId = async (buyerId, filters = {}) => {
+  const result = await dao.searchOrdersByBuyerId(buyerId, filters);
+
+  return {
+    orders: result.rows,
+    pagination: {
+      total: result.count,
+      page: filters.page || 1,
+      limit: filters.limit || 10,
+      totalPages: Math.ceil(result.count / (filters.limit || 10)),
+    },
+  };
+};
+
+exports.getBuyerOrderStatusCounts = async (buyerId) => {
+  return await dao.getBuyerOrderStatusCounts(buyerId);
+};
+
+
 exports.getOrderByIdForBuyer = async (orderPublicId, buyerId) => {
   const order = await dao.getOrderByIdForBuyer(orderPublicId, buyerId);
   if (!order) {

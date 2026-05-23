@@ -1,5 +1,6 @@
 const { Order, OrderItem } = require("./model");
 const { Product, ProductImage, ProductVariant } = require("../product/model");
+const { Return } = require("../return/model");
 const Catalogue = require("../catalogue/model");
 const { User } = require("../auth/model");
 const { UserAddress } = require("../userAddress/model");
@@ -861,3 +862,224 @@ exports.getOrderByIdForBuyer = (orderPublicId, buyerId) =>
       },
     ],
   });
+
+exports.searchOrdersByBuyerId = async (buyerId, filters = {}) => {
+  const page = filters.page || 1;
+  const limit = filters.limit || 10;
+  const offset = (page - 1) * limit;
+  const searchVal = filters.query ? filters.query.trim().toLowerCase() : "";
+  const statusFilter = filters.status ? filters.status.trim().toLowerCase() : "";
+
+  // 1. Base where clause for Order
+  const orderWhere = { buyerId };
+
+  // 2. Handle Status Filter
+  if (statusFilter && statusFilter !== "all") {
+    if (statusFilter === "ordered") {
+      orderWhere.status = { [Op.in]: ["pending", "ready_to_ship", "on_hold"] };
+    } else if (statusFilter === "confirmed") {
+      orderWhere.status = { [Op.in]: ["pending", "ready_to_ship"] };
+    } else if (statusFilter === "shipped") {
+      orderWhere.status = "shipped";
+    } else if (statusFilter === "delivered") {
+      orderWhere.status = "delivered";
+    } else if (statusFilter === "cancelled") {
+      orderWhere.status = "cancelled";
+    } else if (statusFilter === "on_hold") {
+      orderWhere.status = "on_hold";
+    } else if (statusFilter === "pending") {
+      orderWhere.status = "pending";
+    } else if (statusFilter === "ready_to_ship") {
+      orderWhere.status = "ready_to_ship";
+    } else if (statusFilter === "return" || statusFilter === "exchange") {
+      orderWhere.id = {
+        [Op.in]: sequelize.literal(`(
+          SELECT DISTINCT order_id FROM order_items oi
+          INNER JOIN returns r ON r.order_item_id = oi.id
+        )`)
+      };
+    } else {
+      // Direct raw status mapping if passed
+      orderWhere.status = statusFilter;
+    }
+  }
+
+  // 3. Handle Keyword Search ('query')
+  if (searchVal) {
+    const statusMappings = {
+      ordered: ["pending", "ready_to_ship", "on_hold"],
+      shipped: ["shipped"],
+      delivered: ["delivered"],
+      cancelled: ["cancelled"],
+    };
+
+    const matchedStatuses = [];
+    Object.keys(statusMappings).forEach(key => {
+      if (key.includes(searchVal) || searchVal.includes(key)) {
+        matchedStatuses.push(...statusMappings[key]);
+      }
+    });
+
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(searchVal);
+
+    const orConditions = [
+      sequelize.literal(`EXISTS (
+        SELECT 1 FROM order_items oi
+        INNER JOIN product_variants pv ON pv.id = oi.product_variant_id
+        INNER JOIN products p ON p.id = pv.product_id
+        WHERE oi.order_id = "Order".id
+        AND (LOWER(p.name) LIKE ${sequelize.escape(`%${searchVal}%`)} 
+             OR LOWER(p.description) LIKE ${sequelize.escape(`%${searchVal}%`)})
+      )`)
+    ];
+
+    if (isUuid) {
+      orConditions.push({ publicId: searchVal });
+    }
+
+    if (matchedStatuses.length > 0) {
+      orConditions.push({ status: { [Op.in]: matchedStatuses } });
+    }
+
+    if ("return".includes(searchVal) || "exchange".includes(searchVal)) {
+      orConditions.push(sequelize.literal(`EXISTS (
+        SELECT 1 FROM order_items oi
+        INNER JOIN returns r ON r.order_item_id = oi.id
+        WHERE oi.order_id = "Order".id
+      )`));
+    }
+
+    orderWhere[Op.or] = orConditions;
+  }
+
+  // Stage 1: Get count and matching IDs
+  const { count, rows: matchedOrders } = await Order.findAndCountAll({
+    where: orderWhere,
+    attributes: ["id"],
+    order: [["createdAt", "DESC"]],
+    limit,
+    offset,
+    raw: true
+  });
+
+  if (count === 0 || matchedOrders.length === 0) {
+    return { count: 0, rows: [] };
+  }
+
+  const ids = matchedOrders.map(o => o.id);
+
+  // Stage 2: Get complete data with left joins for matched IDs
+  const includeClause = [
+    {
+      model: OrderItem,
+      as: "items",
+      required: false,
+      attributes: ["publicId", "quantity", "price"],
+      include: [
+        {
+          model: ProductVariant,
+          as: "productVariant",
+          required: false,
+          attributes: ["publicId", "trabuwoPrice", "mrp", "dynamicFields"],
+          include: [
+            {
+              model: Product,
+              as: "product",
+              required: false,
+              attributes: ["publicId", "name", "description"],
+              include: [
+                {
+                  model: ProductImage,
+                  as: "images",
+                  required: false,
+                  where: { isDeleted: false },
+                  attributes: [
+                    "publicId",
+                    "imageUrl",
+                    "imageKey",
+                    "altText",
+                    "caption",
+                    "sortOrder",
+                    "isPrimary",
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+        {
+          model: Return,
+          as: "returns",
+          required: false,
+          attributes: ["publicId", "status", "reason"],
+        }
+      ],
+    },
+  ];
+
+  const fullOrders = await Order.findAll({
+    where: { id: { [Op.in]: ids } },
+    attributes: ["publicId", "status", "totalAmount", "createdAt"],
+    include: includeClause,
+    order: [["createdAt", "DESC"]],
+  });
+
+  return { count, rows: fullOrders };
+};
+
+exports.getBuyerOrderStatusCounts = async (buyerId) => {
+  const allCount = await Order.count({ where: { buyerId } }).catch(() => 0);
+  
+  const orderedCount = await Order.count({
+    where: {
+      buyerId,
+      status: { [Op.in]: ["pending", "ready_to_ship", "on_hold"] }
+    }
+  }).catch(() => 0);
+
+  const shippedCount = await Order.count({
+    where: {
+      buyerId,
+      status: "shipped"
+    }
+  }).catch(() => 0);
+
+  const deliveredCount = await Order.count({
+    where: {
+      buyerId,
+      status: "delivered"
+    }
+  }).catch(() => 0);
+
+  const cancelledCount = await Order.count({
+    where: {
+      buyerId,
+      status: "cancelled"
+    }
+  }).catch(() => 0);
+
+  const returnCount = await Order.count({
+    where: {
+      buyerId,
+      id: {
+        [Op.in]: sequelize.literal(`(
+          SELECT DISTINCT order_id FROM order_items oi
+          INNER JOIN returns r ON r.order_item_id = oi.id
+        )`)
+      }
+    }
+  }).catch(() => 0);
+
+  const exchangeCount = 0; // Currently mapped to 0 as exchange logic is not implemented separately
+
+  return [
+    { key: "all", label: "All", count: allCount },
+    { key: "ordered", label: "Ordered", count: orderedCount },
+    { key: "shipped", label: "Shipped", count: shippedCount },
+    { key: "delivered", label: "Delivered", count: deliveredCount },
+    { key: "cancelled", label: "Cancelled", count: cancelledCount },
+    { key: "exchange", label: "Exchange", count: exchangeCount },
+    { key: "return", label: "Return", count: returnCount }
+  ];
+};
+

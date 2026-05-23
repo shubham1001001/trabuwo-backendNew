@@ -1291,6 +1291,18 @@ router.get(
   asyncHandler(controller.getBuyerOrders)
 );
 
+router.get(
+  "/buyer/orders/search",
+  validation.searchBuyerOrdersValidation,
+  asyncHandler(controller.searchBuyerOrders)
+);
+
+router.get(
+  "/buyer/orders/filter-statuses",
+  validation.getBuyerOrderFilterStatusesValidation,
+  asyncHandler(controller.getBuyerOrderFilterStatuses)
+);
+
 /**
  * @swagger
  * /api/order/buyer/orders/{id}:
