@@ -3707,3 +3707,84 @@ Error
     at async exports.searchOrdersByBuyerId (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\order\dao.js:996:10)
     at async exports.searchOrdersByBuyerId (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\order\service.js:802:18)
     at async E:\TrabuwoComplete\trabuwo-backendNew\src\modules\order\controller.js:115:18
+
+--- 2026-05-23T12:05:51.462Z ---
+SequelizeConnectionError: connect ENETUNREACH 165.22.210.2:5432
+    at Client._connectionCallback (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\postgres\connection-manager.js:145:24)
+    at Client._handleErrorWhileConnecting (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\pg\lib\client.js:379:19)
+    at Client._handleErrorEvent (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\pg\lib\client.js:389:19)
+    at Connection.emit (node:events:508:28)
+    at Socket.reportStreamError (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\pg\lib\connection.js:56:12)
+    at Socket.emit (node:events:508:28)
+    at emitErrorNT (node:internal/streams/destroy:170:8)
+    at emitErrorCloseNT (node:internal/streams/destroy:129:3)
+    at process.processTicksAndRejections (node:internal/process/task_queues:89:21)
+
+--- 2026-05-23T12:05:51.473Z ---
+SequelizeConnectionError: connect ENETUNREACH 165.22.210.2:5432
+    at Client._connectionCallback (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\postgres\connection-manager.js:145:24)
+    at Client._handleErrorWhileConnecting (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\pg\lib\client.js:379:19)
+    at Client._handleErrorEvent (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\pg\lib\client.js:389:19)
+    at Connection.emit (node:events:508:28)
+    at Socket.reportStreamError (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\pg\lib\connection.js:56:12)
+    at Socket.emit (node:events:508:28)
+    at emitErrorNT (node:internal/streams/destroy:170:8)
+    at emitErrorCloseNT (node:internal/streams/destroy:129:3)
+    at process.processTicksAndRejections (node:internal/process/task_queues:89:21)
+
+--- 2026-05-23T12:05:51.486Z ---
+SequelizeConnectionError: connect ENETUNREACH 165.22.210.2:5432
+    at Client._connectionCallback (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\postgres\connection-manager.js:145:24)
+    at Client._handleErrorWhileConnecting (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\pg\lib\client.js:379:19)
+    at Client._handleErrorEvent (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\pg\lib\client.js:389:19)
+    at Connection.emit (node:events:508:28)
+    at Socket.reportStreamError (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\pg\lib\connection.js:56:12)
+    at Socket.emit (node:events:508:28)
+    at emitErrorNT (node:internal/streams/destroy:170:8)
+    at emitErrorCloseNT (node:internal/streams/destroy:129:3)
+    at process.processTicksAndRejections (node:internal/process/task_queues:89:21)
+
+--- 2026-05-23T12:05:51.499Z ---
+SequelizeConnectionError: connect ENETUNREACH 165.22.210.2:5432
+    at Client._connectionCallback (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\postgres\connection-manager.js:145:24)
+    at Client._handleErrorWhileConnecting (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\pg\lib\client.js:379:19)
+    at Client._handleErrorEvent (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\pg\lib\client.js:389:19)
+    at Connection.emit (node:events:508:28)
+    at Socket.reportStreamError (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\pg\lib\connection.js:56:12)
+    at Socket.emit (node:events:508:28)
+    at emitErrorNT (node:internal/streams/destroy:170:8)
+    at emitErrorCloseNT (node:internal/streams/destroy:129:3)
+    at process.processTicksAndRejections (node:internal/process/task_queues:89:21)
+
+--- 2026-05-28T18:41:45.258Z ---
+Error: Invalid email or password
+    at exports.authenticateWithPassword (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\auth\service.js:309:11)
+    at async exports.loginUserWithPassword (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\auth\controller.js:26:18)
+
+--- 2026-05-28T18:42:05.291Z ---
+Error: Invalid email or password
+    at exports.authenticateWithPassword (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\auth\service.js:309:11)
+    at async exports.loginUserWithPassword (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\auth\controller.js:26:18)
+
+--- 2026-05-28T18:56:49.609Z ---
+Error
+    at Query.run (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\postgres\query.js:50:25)
+    at E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async PostgresQueryInterface.select (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\abstract\query-interface.js:407:12)
+    at async MobileCategorySection.findAll (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1140:21)
+    at async MobileCategorySection.findOne (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1240:12)
+    at async exports.getById (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\mobileCategorySection\dao.js:25:10)
+    at async exports.updateSection (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\mobileCategorySection\service.js:57:20)
+    at async exports.update (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\mobileCategorySection\controller.js:33:20)
+
+--- 2026-05-28T18:57:50.174Z ---
+Error
+    at Query.run (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\postgres\query.js:50:25)
+    at E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async PostgresQueryInterface.select (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\abstract\query-interface.js:407:12)
+    at async MobileCategorySection.findAll (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1140:21)
+    at async exports.getAll (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\mobileCategorySection\dao.js:11:10)
+    at async exports.getAllSections (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\mobileCategorySection\service.js:47:10)
+    at async exports.getAll (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\mobileCategorySection\controller.js:15:20)

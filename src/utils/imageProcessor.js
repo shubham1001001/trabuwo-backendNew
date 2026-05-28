@@ -42,8 +42,8 @@ async function convertToWebP(
   buffer,
   quality = DEFAULT_QUALITY,
   mimeType = null,
-  width = 1024,
-  height = 1024
+  width = null,
+  height = null
 ) {
   try {
     let sharpInstance = sharp(buffer);
@@ -51,10 +51,16 @@ async function convertToWebP(
     // Detect SVG and rasterize at high resolution for better quality
     const isSVG = mimeType === "image/svg+xml" || mimeType === "image/svg";
     if (isSVG) {
-      // Rasterize SVG at 1024px for good quality in card displays
-      sharpInstance = sharpInstance.resize(width, height, {
-        // fit: "inside",
+      // Rasterize SVG for good quality in card displays
+      sharpInstance = sharpInstance.resize(width || 1024, height || 1024, {
+        fit: "inside",
         withoutEnlargement: false,
+      });
+    } else if (width || height) {
+      // Resize non-SVG images maintaining aspect ratio without cropping (fit: "inside")
+      sharpInstance = sharpInstance.resize(width, height, {
+        fit: "inside",
+        withoutEnlargement: true,
       });
     }
 
