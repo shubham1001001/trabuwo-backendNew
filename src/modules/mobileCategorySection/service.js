@@ -22,6 +22,7 @@ exports.createSection = async (data, files) => {
 
   for (let i = 0; i < tilesCount; i++) {
     const redirectionId = data[`tile_redirection_${i}`];
+    const tileName = data[`tile_name_${i}`];
     let tileImageUrl = null;
 
     const tileFile = (files || []).find(f => f.fieldname === `tile_image_${i}`);
@@ -34,6 +35,7 @@ exports.createSection = async (data, files) => {
     }
 
     tiles.push({
+      name: tileName || null,
       imageUrl: tileImageUrl,
       redirection_id: redirectionId,
     });
@@ -76,6 +78,7 @@ exports.updateSection = async (id, data, files) => {
 
     for (let i = 0; i < tilesCount; i++) {
       const redirectionId = data[`tile_redirection_${i}`];
+      const tileName = data[`tile_name_${i}`];
       let tileImageUrl = data[`tile_existing_url_${i}`] || null;
 
       const tileFile = (files || []).find(f => f.fieldname === `tile_image_${i}`);
@@ -88,6 +91,7 @@ exports.updateSection = async (id, data, files) => {
       }
 
       tiles.push({
+        name: tileName || null,
         imageUrl: tileImageUrl,
         redirection_id: redirectionId,
       });
