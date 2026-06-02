@@ -5,6 +5,48 @@ const { v7: uuidv7 } = require("uuid");
 const logger = require("../../config/logger");
 const { ValidationError, NotFoundError } = require("../../utils/errors");
 
+const processTilesRecursively = async (tilesArray, files) => {
+  if (!Array.isArray(tilesArray)) return [];
+  const processed = [];
+  for (const tile of tilesArray) {
+    let imageUrl = tile.imageUrl || null;
+    if (tile.imageFieldKey) {
+      const tileFile = (files || []).find(f => f.fieldname === tile.imageFieldKey);
+      if (tileFile) {
+        const webpBuffer = await convertToWebP(tileFile.buffer, DEFAULT_QUALITY, tileFile.mimetype, 512, 512);
+        const sanitizedName = sanitizeFileName(tileFile.originalname);
+        const key = `mobile-sections/tiles/${uuidv7()}-${sanitizedName}.webp`;
+        await s3Service.uploadBuffer(webpBuffer, key, "image/webp");
+        imageUrl = s3Service.getFileUrl(key);
+      }
+    }
+
+    let bannerUrl = tile.bannerUrl || null;
+    if (tile.bannerFieldKey) {
+      const bannerFile = (files || []).find(f => f.fieldname === tile.bannerFieldKey);
+      if (bannerFile) {
+        const webpBuffer = await convertToWebP(bannerFile.buffer, DEFAULT_QUALITY, bannerFile.mimetype, 512, 512);
+        const sanitizedName = sanitizeFileName(bannerFile.originalname);
+        const key = `mobile-sections/tiles/${uuidv7()}-${sanitizedName}.webp`;
+        await s3Service.uploadBuffer(webpBuffer, key, "image/webp");
+        bannerUrl = s3Service.getFileUrl(key);
+      }
+    }
+
+    const processedTile = {
+      name: tile.name || null,
+      imageUrl: imageUrl,
+      bannerUrl: bannerUrl,
+      redirection_id: tile.redirection_id || null,
+    };
+    if (tile.tiles && Array.isArray(tile.tiles)) {
+      processedTile.tiles = await processTilesRecursively(tile.tiles, files);
+    }
+    processed.push(processedTile);
+  }
+  return processed;
+};
+
 exports.createSection = async (data, files) => {
   // Handle Section Icon
   const sectionFile = (files || []).find(f => f.fieldname === 'image');
@@ -17,28 +59,33 @@ exports.createSection = async (data, files) => {
   }
 
   // Handle Tiles
-  const tiles = [];
-  const tilesCount = parseInt(data.tilesCount || 0);
+  let tiles = [];
+  if (data.tilesStructure) {
+    const structure = JSON.parse(data.tilesStructure);
+    tiles = await processTilesRecursively(structure, files);
+  } else {
+    // Fallback to legacy flat format
+    const tilesCount = parseInt(data.tilesCount || 0);
+    for (let i = 0; i < tilesCount; i++) {
+      const redirectionId = data[`tile_redirection_${i}`];
+      const tileName = data[`tile_name_${i}`];
+      let tileImageUrl = null;
 
-  for (let i = 0; i < tilesCount; i++) {
-    const redirectionId = data[`tile_redirection_${i}`];
-    const tileName = data[`tile_name_${i}`];
-    let tileImageUrl = null;
+      const tileFile = (files || []).find(f => f.fieldname === `tile_image_${i}`);
+      if (tileFile) {
+        const webpBuffer = await convertToWebP(tileFile.buffer, DEFAULT_QUALITY, tileFile.mimetype, 512, 512);
+        const sanitizedName = sanitizeFileName(tileFile.originalname);
+        const key = `mobile-sections/tiles/${uuidv7()}-${sanitizedName}.webp`;
+        await s3Service.uploadBuffer(webpBuffer, key, "image/webp");
+        tileImageUrl = s3Service.getFileUrl(key);
+      }
 
-    const tileFile = (files || []).find(f => f.fieldname === `tile_image_${i}`);
-    if (tileFile) {
-      const webpBuffer = await convertToWebP(tileFile.buffer, DEFAULT_QUALITY, tileFile.mimetype, 512, 512);
-      const sanitizedName = sanitizeFileName(tileFile.originalname);
-      const key = `mobile-sections/tiles/${uuidv7()}-${sanitizedName}.webp`;
-      await s3Service.uploadBuffer(webpBuffer, key, "image/webp");
-      tileImageUrl = s3Service.getFileUrl(key);
+      tiles.push({
+        name: tileName || null,
+        imageUrl: tileImageUrl,
+        redirection_id: redirectionId,
+      });
     }
-
-    tiles.push({
-      name: tileName || null,
-      imageUrl: tileImageUrl,
-      redirection_id: redirectionId,
-    });
   }
 
   data.tiles = tiles;
@@ -71,8 +118,12 @@ exports.updateSection = async (id, data, files) => {
     updateData.imageUrl = s3Service.getFileUrl(key);
   }
 
-  // Handle Tiles Update (this logic assumes a full replacement for simplicity in this version)
-  if (data.tilesCount !== undefined) {
+  // Handle Tiles Update
+  if (data.tilesStructure) {
+    const structure = JSON.parse(data.tilesStructure);
+    updateData.tiles = await processTilesRecursively(structure, files);
+  } else if (data.tilesCount !== undefined) {
+    // Fallback to legacy flat format
     const tiles = [];
     const tilesCount = parseInt(data.tilesCount || 0);
 

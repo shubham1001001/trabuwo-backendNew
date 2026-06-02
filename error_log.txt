@@ -3923,3 +3923,29 @@ Error
     at async exports.getAllCategories (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\category\dao.js:53:10)
     at async exports.getAllCategories (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\category\service.js:155:10)
     at async exports.getAllCategories (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\category\controller.js:59:22)
+
+--- 2026-06-02T17:21:53.743Z ---
+Error: Invalid email or password
+    at exports.authenticateWithPassword (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\auth\service.js:309:11)
+    at async exports.loginUserWithPassword (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\auth\controller.js:26:18)
+
+--- 2026-06-02T17:22:15.271Z ---
+Error: Invalid email or password
+    at exports.authenticateWithPassword (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\auth\service.js:309:11)
+    at async exports.loginUserWithPassword (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\auth\controller.js:26:18)
+
+--- 2026-06-02T17:22:45.564Z ---
+Error: Invalid email or password
+    at exports.authenticateWithPassword (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\auth\service.js:309:11)
+    at async exports.loginUserWithPassword (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\auth\controller.js:26:18)
+
+--- 2026-06-02T17:45:05.373Z ---
+Error
+    at Query.run (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\postgres\query.js:50:25)
+    at E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async PostgresQueryInterface.select (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\abstract\query-interface.js:407:12)
+    at async MobileCategorySection.findAll (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1140:21)
+    at async exports.getAll (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\mobileCategorySection\dao.js:11:10)
+    at async exports.getAllSections (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\mobileCategorySection\service.js:82:10)
+    at async exports.getAll (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\mobileCategorySection\controller.js:15:20)
