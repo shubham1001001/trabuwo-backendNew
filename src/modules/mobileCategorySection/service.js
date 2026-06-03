@@ -38,6 +38,7 @@ const processTilesRecursively = async (tilesArray, files) => {
       imageUrl: imageUrl,
       bannerUrl: bannerUrl,
       redirection_id: tile.redirection_id || null,
+      tiles: [],
     };
     if (tile.tiles && Array.isArray(tile.tiles)) {
       processedTile.tiles = await processTilesRecursively(tile.tiles, files);
@@ -84,22 +85,45 @@ exports.createSection = async (data, files) => {
         name: tileName || null,
         imageUrl: tileImageUrl,
         redirection_id: redirectionId,
+        tiles: [],
       });
     }
   }
 
   data.tiles = tiles;
-  return await dao.create(data);
+  const created = await dao.create(data);
+  return sanitizeSection(created);
+};
+
+const sanitizeTiles = (tiles) => {
+  if (!Array.isArray(tiles)) return [];
+  return tiles.map(tile => {
+    return {
+      name: tile.name || null,
+      imageUrl: tile.imageUrl || null,
+      bannerUrl: tile.bannerUrl || null,
+      redirection_id: tile.redirection_id || null,
+      tiles: sanitizeTiles(tile.tiles)
+    };
+  });
+};
+
+const sanitizeSection = (section) => {
+  if (!section) return null;
+  const plainSection = typeof section.toJSON === "function" ? section.toJSON() : section;
+  plainSection.tiles = sanitizeTiles(plainSection.tiles);
+  return plainSection;
 };
 
 exports.getAllSections = async (filters) => {
-  return await dao.getAll(filters);
+  const sections = await dao.getAll(filters);
+  return sections.map(sanitizeSection);
 };
 
 exports.getSectionById = async (id) => {
   const section = await dao.getById(id);
   if (!section) throw new NotFoundError("Section not found");
-  return section;
+  return sanitizeSection(section);
 };
 
 exports.updateSection = async (id, data, files) => {
@@ -145,13 +169,15 @@ exports.updateSection = async (id, data, files) => {
         name: tileName || null,
         imageUrl: tileImageUrl,
         redirection_id: redirectionId,
+        tiles: [],
       });
     }
     updateData.tiles = tiles;
   }
 
   await dao.update(id, updateData);
-  return await dao.getById(id);
+  const updated = await dao.getById(id);
+  return sanitizeSection(updated);
 };
 
 exports.deleteSection = async (id) => {
@@ -162,5 +188,6 @@ exports.getSectionsByCategoryId = async (categoryId) => {
   if (!categoryId || isNaN(categoryId)) {
     throw new ValidationError("Valid categoryId is required");
   }
-  return await dao.getByCategoryId(parseInt(categoryId));
+  const sections = await dao.getByCategoryId(parseInt(categoryId));
+  return sections.map(sanitizeSection);
 };

@@ -17,7 +17,7 @@ exports.getAll = async (filters = {}) => {
         attributes: ["id", "name", "breadCrumb"],
       },
     ],
-    order: [["displayOrder", "ASC"]],
+    order: [["displayOrder", "ASC"], ["id", "DESC"]],
   });
 };
 
@@ -43,7 +43,7 @@ exports.getByCategoryId = async (categoryId) => {
   return await MobileCategorySection.findAll({
     where: { categoryId, isVisible: true, isDeleted: false },
     attributes: ["id", "publicId", "name", "displayOrder", "imageUrl", "tiles"],
-    order: [["displayOrder", "ASC"]],
+    order: [["displayOrder", "ASC"], ["id", "DESC"]],
   });
 };
 
