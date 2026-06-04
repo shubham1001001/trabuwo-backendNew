@@ -49,6 +49,9 @@ const processTilesRecursively = async (tilesArray, files) => {
 };
 
 exports.createSection = async (data, files) => {
+  if (data.imageUrl === 'null' || data.imageUrl === '') {
+    data.imageUrl = null;
+  }
   // Handle Section Icon
   const sectionFile = (files || []).find(f => f.fieldname === 'image');
   if (sectionFile) {
@@ -131,6 +134,9 @@ exports.updateSection = async (id, data, files) => {
   if (!existing) throw new NotFoundError("Section not found");
 
   const updateData = { ...data };
+  if (updateData.imageUrl === 'null' || updateData.imageUrl === '') {
+    updateData.imageUrl = null;
+  }
 
   // Handle Section Icon Update
   const sectionFile = (files || []).find(f => f.fieldname === 'image');
