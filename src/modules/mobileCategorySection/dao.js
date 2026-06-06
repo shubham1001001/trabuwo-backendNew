@@ -42,7 +42,7 @@ exports.update = async (id, data) => {
 exports.getByCategoryId = async (categoryId) => {
   return await MobileCategorySection.findAll({
     where: { categoryId, isVisible: true, isDeleted: false },
-    attributes: ["id", "publicId", "name", "displayOrder", "imageUrl", "tiles"],
+    attributes: ["id", "publicId", "name", "sectionName", "displayOrder", "imageUrl", "tiles"],
     order: [["displayOrder", "ASC"], ["id", "DESC"]],
   });
 };

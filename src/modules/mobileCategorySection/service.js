@@ -35,6 +35,7 @@ const processTilesRecursively = async (tilesArray, files) => {
 
     const processedTile = {
       name: tile.name || null,
+      sectionName: tile.sectionName || null,
       imageUrl: imageUrl,
       bannerUrl: bannerUrl,
       redirection_id: tile.redirection_id || null,
@@ -86,6 +87,7 @@ exports.createSection = async (data, files) => {
 
       tiles.push({
         name: tileName || null,
+        sectionName: null,
         imageUrl: tileImageUrl,
         redirection_id: redirectionId,
         tiles: [],
@@ -103,6 +105,7 @@ const sanitizeTiles = (tiles) => {
   return tiles.map(tile => {
     return {
       name: tile.name || null,
+      sectionName: tile.sectionName || null,
       imageUrl: tile.imageUrl || null,
       bannerUrl: tile.bannerUrl || null,
       redirection_id: tile.redirection_id || null,
@@ -173,6 +176,7 @@ exports.updateSection = async (id, data, files) => {
 
       tiles.push({
         name: tileName || null,
+        sectionName: null,
         imageUrl: tileImageUrl,
         redirection_id: redirectionId,
         tiles: [],

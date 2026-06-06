@@ -31,6 +31,11 @@ const MobileCategorySection = sequelize.define(
       type: DataTypes.STRING(255),
       allowNull: false,
     },
+    sectionName: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+      field: "section_name",
+    },
     displayOrder: {
       type: DataTypes.INTEGER,
       allowNull: false,

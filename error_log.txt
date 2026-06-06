@@ -4122,3 +4122,47 @@ Error: Category not found
     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
     at async exports.getAvailableFiltersWithCategories (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\service.js:487:19)
     at async exports.getAvailableFilters (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\categorySchema\controller.js:258:33)
+
+--- 2026-06-06T09:08:14.649Z ---
+Error
+    at Query.run (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\postgres\query.js:50:25)
+    at E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async PostgresQueryInterface.select (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\abstract\query-interface.js:407:12)
+    at async Category.findAll (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1140:21)
+    at async exports.getAllCategories (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\category\dao.js:53:10)
+    at async exports.getAllCategories (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\category\service.js:155:10)
+    at async exports.getAllCategories (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\category\controller.js:59:22)
+
+--- 2026-06-06T09:08:14.686Z ---
+Error
+    at Query.run (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\postgres\query.js:50:25)
+    at E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async PostgresQueryInterface.select (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\abstract\query-interface.js:407:12)
+    at async Category.findAll (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1140:21)
+    at async exports.getAllCategories (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\category\dao.js:53:10)
+    at async exports.getAllCategories (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\category\service.js:155:10)
+    at async exports.getAllCategories (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\category\controller.js:59:22)
+
+--- 2026-06-06T09:25:35.565Z ---
+Error
+    at Query.run (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\postgres\query.js:50:25)
+    at E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async PostgresQueryInterface.select (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\abstract\query-interface.js:407:12)
+    at async Category.findAll (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1140:21)
+    at async exports.getAllCategories (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\category\dao.js:53:10)
+    at async exports.getAllCategories (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\category\service.js:155:10)
+    at async exports.getAllCategories (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\category\controller.js:59:22)
+
+--- 2026-06-06T09:25:35.589Z ---
+Error
+    at Query.run (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\postgres\query.js:50:25)
+    at E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async PostgresQueryInterface.select (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\dialects\abstract\query-interface.js:407:12)
+    at async Category.findAll (E:\TrabuwoComplete\trabuwo-backendNew\node_modules\sequelize\lib\model.js:1140:21)
+    at async exports.getAllCategories (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\category\dao.js:53:10)
+    at async exports.getAllCategories (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\category\service.js:155:10)
+    at async exports.getAllCategories (E:\TrabuwoComplete\trabuwo-backendNew\src\modules\category\controller.js:59:22)
