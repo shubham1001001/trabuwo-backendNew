@@ -691,4 +691,47 @@ router.get(
   businessDashboardValidation.validateTopSellingCategories,
   businessDashboardController.getTopSellingCategories
 );
+
+/**
+ * @swagger
+ * /api/business-dashboard/seller-status:
+ *   patch:
+ *     summary: Update seller status (Accept/Reject)
+ *     tags: [Business Dashboard]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - sellerId
+ *               - status
+ *             properties:
+ *               sellerId:
+ *                 type: string
+ *                 format: uuid
+ *                 description: The publicId of the seller
+ *               status:
+ *                 type: string
+ *                 enum: [COMPLETED, REJECTED]
+ *                 description: The new status for the seller
+ *     responses:
+ *       200:
+ *         description: Seller status updated successfully
+ *       400:
+ *         description: Validation error
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Seller not found
+ */
+router.patch(
+  "/seller-status",
+  businessDashboardValidation.validateUpdateSellerStatus,
+  businessDashboardController.updateSellerStatus
+);
+
 module.exports = router;

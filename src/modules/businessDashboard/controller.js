@@ -171,3 +171,18 @@ exports.getTopSellingCategories = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.updateSellerStatus = async (req, res, next) => {
+  try {
+    const { sellerId, status } = req.body;
+    const result = await service.updateSellerStatus(sellerId, status);
+    
+    return apiResponse.success(
+      res,
+      result,
+      "Seller status updated successfully"
+    );
+  } catch (error) {
+    next(error);
+  }
+};

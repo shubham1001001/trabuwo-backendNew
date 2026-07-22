@@ -2,10 +2,10 @@ const { Op, fn, col } = require("sequelize");
 const { ProductMetricsDaily } = require("./model");
 const { Product, ProductImage } = require("../product/model");
 const Catalogue = require("../catalogue/model");
-const { User ,Role } = require("../auth/model");
+const { User, Role } = require("../auth/model");
 const { SellerOnboarding, Store } = require("../sellerOnboarding/model");
-const { Order,OrderItem } = require("../order/model");
-const { ProductVariant } = require("../product/model"); 
+const { Order, OrderItem } = require("../order/model");
+const { ProductVariant } = require("../product/model");
 const { UserAddress } = require("../userAddress/model");
 const { Payment, Refund } = require("../payment/model");
 const Category = require("../category/model");
@@ -487,7 +487,7 @@ async function getDashboardCards() {
     User.count({
       where: {
         createdAt: {
-          [Op.gte]: new Date(new Date().setHours(0,0,0,0))
+          [Op.gte]: new Date(new Date().setHours(0, 0, 0, 0))
         }
       }
     }),
@@ -564,14 +564,14 @@ async function getBuyerList(page, limit) {
   const offset = (page - 1) * limit;
 
   const { count, rows } = await User.findAndCountAll({
-     attributes: {
-      exclude: ["password"],  
+    attributes: {
+      exclude: ["password"],
     },
     include: [
       {
         model: Role,
         as: "Roles",
-        where: { name: "buyer" }, 
+        where: { name: "buyer" },
         through: { attributes: [] },
       },
     ],
@@ -647,7 +647,7 @@ async function getDashboardSummary() {
   // Total Revenue (excluding cancelled)
   const totalRevenueData = await Order.findOne({
     attributes: [
-    [fn("SUM", col("total_amount")), "totalRevenue"],
+      [fn("SUM", col("total_amount")), "totalRevenue"],
     ],
     where: {
       status: {
@@ -840,11 +840,37 @@ async function getTopSellingCategories(limit) {
 
   return result;
 }
+
+async function updateSellerStatus(sellerId, status) {
+  const { NotFoundError } = require("../../utils/errors");
+  const onboarding = await SellerOnboarding.findByPk(sellerId);
+
+  if (!onboarding) {
+    throw new NotFoundError("Seller onboarding record not found");
+  }
+
+  await onboarding.update({ currentStep: status });
+
+  // If status is COMPLETED, assign the seller role as well to be safe
+  if (status === "COMPLETED") {
+    const { UserRole, Role } = require("../auth/model");
+    const sellerRole = await Role.findOne({ where: { name: "seller" } });
+    if (sellerRole) {
+      await UserRole.findOrCreate({
+        where: { userId: onboarding.userId, roleId: sellerRole.id },
+        defaults: { userId: onboarding.userId, roleId: sellerRole.id }
+      });
+    }
+  }
+
+  return { message: `Seller status updated to ${status}` };
+}
+
 module.exports = {
   getProductsMetrics,
   getTotalMetrics,
   getWeeklyComparisonStats,
-  getDashboardCards, 
+  getDashboardCards,
   getSellerList,
   getBuyerList,
   getOrderList,
@@ -852,5 +878,6 @@ module.exports = {
   getDashboardRiskSummary,
   getPaymentOverview,
   getDashboardGraph,
-  getTopSellingCategories
+  getTopSellingCategories,
+  updateSellerStatus
 };

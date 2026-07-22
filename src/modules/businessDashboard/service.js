@@ -76,3 +76,7 @@ exports.getTopSellingCategories = async (query) => {
   return await dao.getTopSellingCategories(limit);
 
 };
+
+exports.updateSellerStatus = async (sellerId, status) => {
+  return dao.updateSellerStatus(sellerId, status);
+};

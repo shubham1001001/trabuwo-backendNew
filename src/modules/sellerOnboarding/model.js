@@ -10,13 +10,7 @@ const SellerOnboarding = sequelize.define(
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     userId: { type: DataTypes.INTEGER, allowNull: false },
     currentStep: {
-      type: DataTypes.ENUM(
-        "TAX_IDENTITY",
-        "ADDRESS",
-        "BANK_DETAILS",
-        "STORE_INFO",
-        "COMPLETED"
-      ),
+      type: DataTypes.STRING,
       allowNull: false,
       defaultValue: "TAX_IDENTITY",
     },

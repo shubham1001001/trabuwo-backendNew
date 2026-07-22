@@ -1,4 +1,4 @@
-const { query } = require("express-validator");
+const { query, body } = require("express-validator");
 const { handleValidationErrors } = require("../../utils/validation");
 
 exports.validateGetProductsMetrics = [
@@ -52,5 +52,19 @@ exports.validateTopSellingCategories = [
 ];
 
 exports.validateGetCards = [
+  handleValidationErrors,
+];
+
+exports.validateUpdateSellerStatus = [
+  body("sellerId")
+    .notEmpty()
+    .withMessage("sellerId is required")
+    .isUUID()
+    .withMessage("sellerId must be a valid UUID"),
+  body("status")
+    .notEmpty()
+    .withMessage("status is required")
+    .isIn(["COMPLETED", "REJECTED"])
+    .withMessage("status must be either COMPLETED or REJECTED"),
   handleValidationErrors,
 ];
